@@ -8,6 +8,7 @@ public interface IState<T>
     void Exit(T entity);
 }
 
+
 public class StateMachine<T>
 {
     private T _owner;
