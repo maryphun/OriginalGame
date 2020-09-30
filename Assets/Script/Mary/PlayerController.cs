@@ -11,12 +11,16 @@ public class PlayerController : MonoBehaviour
     private PlayerInput input;
     private float turnMoveVelocity, targetAngle;
     private Transform camera;
+    private Animator anim;
 
     // Start is called before the first frame update
     void Awake()
     {
         input = new PlayerInput();
         camera = Camera.main.transform;
+        anim = GetComponentInChildren<Animator>();
+
+        input.Player.Attack.performed += _ => Attack();
     }
 
     private void OnEnable()
@@ -46,5 +50,24 @@ public class PlayerController : MonoBehaviour
 
         float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnMoveVelocity, turnSmoothTime);
         transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
+
+        // Animation
+        anim.SetFloat("Speed", direction.magnitude);
+    }
+
+    private void Attack()
+    {
+        var attackScript = anim.GetBehaviours<Attack>();
+        if (attackScript != null)
+        {
+            if (attackScript.)
+            {
+                anim.SetTrigger("Attack");
+            }
+        }
+        else
+        {
+            Debug.Log("Attack script not found");
+        }
     }
 }
