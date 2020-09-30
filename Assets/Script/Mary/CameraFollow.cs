@@ -7,8 +7,28 @@ public class CameraFollow : MonoBehaviour
 {
     [SerializeField] Transform followCharacter = null;
     [SerializeField] float followSpeed = 0.2f;
+    [SerializeField] float maxCameraDifferent = 2f;
 
     private Vector3 cameraDistance;
+    private CameraInput mouseInput;
+
+    private Camera cam;
+
+    private void Awake()
+    {
+        mouseInput = new CameraInput();
+        cam = GetComponent<Camera>();
+    }
+
+    private void OnEnable()
+    {
+        mouseInput.Enable();
+    }
+
+    private void OnDisable()
+    {
+        mouseInput.Disable();
+    }
 
     private void Start()
     {
@@ -19,7 +39,27 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
-        Vector3 targetPos = followCharacter.position;
+        // Get mouse position Input
+        Vector2 mousePositionValue = mouseInput.Camera.MousePosition.ReadValue<Vector2>();
+
+        Vector3 mouseWorldPosition = GetWorldPosition(new Vector2(mousePositionValue.x - Screen.width /2f, mousePositionValue.y - Screen.height / 2f));
+        Vector3 screenCenterWorldPosition = GetWorldPosition(new Vector2(0.5f, 0.5f));
+        Vector3 delta = mouseWorldPosition - screenCenterWorldPosition;
+        
+
+        // limitation
+        delta = Vector3.ClampMagnitude(delta, maxCameraDifferent);
+        
+
+        // Follow Target GameObject
+        Vector3 targetPos = delta + followCharacter.position;
         transform.DOMove(new Vector3(targetPos.x + cameraDistance.x, transform.position.y, targetPos.z + cameraDistance.z), followSpeed, false);
+    }
+    
+    private Vector3 GetWorldPosition(Vector2 mouseValue)
+    {
+        Ray camRay = cam.ScreenPointToRay(mouseValue);
+        float t = (followCharacter.position.y - camRay.origin.y) / camRay.direction.y;
+        return camRay.origin + camRay.direction * t;
     }
 }

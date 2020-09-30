@@ -41,6 +41,14 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""CameraFollow"",
+                    ""type"": ""Value"",
+                    ""id"": ""8f7eeb24-d4c3-4334-a36f-458199a0a894"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -120,6 +128,17 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c26b0869-2cd4-4bc1-a90a-08d6339a0cc4"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraFollow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -131,6 +150,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_Player_HorizontalMove = m_Player.FindAction("HorizontalMove", throwIfNotFound: true);
         m_Player_VerticalMove = m_Player.FindAction("VerticalMove", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
+        m_Player_CameraFollow = m_Player.FindAction("CameraFollow", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -183,6 +203,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_HorizontalMove;
     private readonly InputAction m_Player_VerticalMove;
     private readonly InputAction m_Player_Attack;
+    private readonly InputAction m_Player_CameraFollow;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
@@ -190,6 +211,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @HorizontalMove => m_Wrapper.m_Player_HorizontalMove;
         public InputAction @VerticalMove => m_Wrapper.m_Player_VerticalMove;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
+        public InputAction @CameraFollow => m_Wrapper.m_Player_CameraFollow;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -208,6 +230,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Attack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
                 @Attack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
                 @Attack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                @CameraFollow.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraFollow;
+                @CameraFollow.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraFollow;
+                @CameraFollow.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraFollow;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -221,6 +246,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
+                @CameraFollow.started += instance.OnCameraFollow;
+                @CameraFollow.performed += instance.OnCameraFollow;
+                @CameraFollow.canceled += instance.OnCameraFollow;
             }
         }
     }
@@ -230,5 +258,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnHorizontalMove(InputAction.CallbackContext context);
         void OnVerticalMove(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnCameraFollow(InputAction.CallbackContext context);
     }
 }

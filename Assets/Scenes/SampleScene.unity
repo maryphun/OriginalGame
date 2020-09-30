@@ -501,6 +501,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followCharacter: {fileID: 1180819341}
   followSpeed: 0.15
+  maxCameraDifferent: 0.5
 --- !u!4 &1180819341 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8784423685983364432, guid: b54f4763cbeb8814b87c24afa4a572fc,
@@ -688,6 +689,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8784423685983364435, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 112
       objectReference: {fileID: 0}
     - target: {fileID: 8784423685983364438, guid: b54f4763cbeb8814b87c24afa4a572fc,
         type: 3}
