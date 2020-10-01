@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class Enemy : MonoBehaviour
     private string currentState;
     private StateMachine<Enemy> stateMachine;
     private GameObject targetPlayer;
-    public NavMeshAgent agent;
+    public EnemyEvent enemyEvent;
 
     private void Awake()
     {
@@ -21,10 +22,11 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        targetPlayer = GameObject.FindGameObjectWithTag("Player");
         stateMachine = new StateMachine<Enemy>();
         stateMachine.Setup(this, new EnemyMovement());
         currentState = stateMachine.GetCurrentState.ToString();
-        targetPlayer = GameObject.FindGameObjectWithTag("Player");
+      
     }
 
     // Update is called once per frame
@@ -49,4 +51,13 @@ public class Enemy : MonoBehaviour
         get { return currentState; }
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        Quaternion rightRayRotation = Quaternion.AngleAxis(enemyStat.visionAngle/2, Vector3.up);
+        Quaternion leftRayRotation = Quaternion.AngleAxis(-enemyStat.visionAngle/2, Vector3.up);
+        Vector3 rightRayDirection = rightRayRotation * transform.forward;
+        Vector3 leftRayDirection = leftRayRotation * transform.forward;
+        Gizmos.DrawRay(transform.position, leftRayDirection * enemyStat.visionRadius);
+        Gizmos.DrawRay(transform.position, rightRayDirection * enemyStat.visionRadius);
+    }
 }

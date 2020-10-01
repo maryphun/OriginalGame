@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum AttackType
 {
@@ -18,5 +19,13 @@ public struct EnemyStat
     public float visionRadius;
     public float visionAngle;
   
+}
+
+[System.Serializable]
+public struct EnemyEvent
+{
+    public UnityEvent onDetectingPlayer;
+    public UnityEvent onMoving;
+    public UnityEvent onTriggerEnter;
 }
 
