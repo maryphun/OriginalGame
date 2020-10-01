@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput input;
     private float turnMoveVelocity, targetAngle, moveSpeedMax;
-    private Transform camera;
+    private new Transform camera;
     private Animator anim;
 
     // Start is called before the first frame update

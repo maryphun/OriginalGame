@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerAnimator : MonoBehaviour
 {
+    [SerializeField] private Transform headAim;
+
     private Animator anim;
+    private Camera cam;
     private PlayerController controller;
 
     // Start is called before the first frame update
@@ -12,6 +15,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         controller = GetComponentInParent<PlayerController>();
+        cam = Camera.main;
     }
     
     /// <summary>
@@ -31,4 +35,9 @@ public class PlayerAnimator : MonoBehaviour
             controller.ResetMoveSpeedMax();
         }
     }
+
+    //private void Update()
+    //{
+    //    headAim.position = cam.GetComponent<CameraFollow>().GetMousePositionInWorld();
+    //}
 }

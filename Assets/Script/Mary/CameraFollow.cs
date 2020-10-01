@@ -8,11 +8,12 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] Transform followCharacter = null;
     [SerializeField] float followSpeed = 0.2f;
     [SerializeField] float maxCameraDifferent = 2f;
-
+    [SerializeField] float mouseFollowSpeed = 1f;
+ 
     private Vector3 cameraDistance;
     private CameraInput mouseInput;
-
     private Camera cam;
+    private Vector3 lastDelta, targetPos;
 
     private void Awake()
     {
@@ -49,10 +50,14 @@ public class CameraFollow : MonoBehaviour
 
         // limitation
         delta = Vector3.ClampMagnitude(delta, maxCameraDifferent);
-        
+
+        // lerp delta
+        lastDelta = Vector3.MoveTowards(lastDelta, delta, mouseFollowSpeed * Time.deltaTime);
 
         // Follow Target GameObject
-        Vector3 targetPos = delta + followCharacter.position;
+        targetPos = lastDelta + followCharacter.position;
+
+        // Set Camera
         transform.DOMove(new Vector3(targetPos.x + cameraDistance.x, transform.position.y, targetPos.z + cameraDistance.z), followSpeed, false);
     }
     
@@ -61,5 +66,10 @@ public class CameraFollow : MonoBehaviour
         Ray camRay = cam.ScreenPointToRay(mouseValue);
         float t = (followCharacter.position.y - camRay.origin.y) / camRay.direction.y;
         return camRay.origin + camRay.direction * t;
+    }
+
+    public Vector3 GetMousePositionInWorld()
+    {
+        return targetPos;
     }
 }
