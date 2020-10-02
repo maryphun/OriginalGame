@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioSource audioSource;
     private Coroutine coroutine;
-    public AudioClip clip;
+    public AudioClip[] clip;
 
     [Range(0.0f,1.0f)]
     public float masterVolume = 0.5f;

@@ -25,6 +25,14 @@ public class @Debuginput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""EnemyKnockback"",
+                    ""type"": ""Button"",
+                    ""id"": ""31dbdeb2-c395-447b-b1d6-309782cf08a0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -38,6 +46,17 @@ public class @Debuginput : IInputActionCollection, IDisposable
                     ""action"": ""Option"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f23fe714-208e-4fd3-955d-1620d4f91fea"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EnemyKnockback"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -47,6 +66,7 @@ public class @Debuginput : IInputActionCollection, IDisposable
         // debugging
         m_debugging = asset.FindActionMap("debugging", throwIfNotFound: true);
         m_debugging_Option = m_debugging.FindAction("Option", throwIfNotFound: true);
+        m_debugging_EnemyKnockback = m_debugging.FindAction("EnemyKnockback", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -97,11 +117,13 @@ public class @Debuginput : IInputActionCollection, IDisposable
     private readonly InputActionMap m_debugging;
     private IDebuggingActions m_DebuggingActionsCallbackInterface;
     private readonly InputAction m_debugging_Option;
+    private readonly InputAction m_debugging_EnemyKnockback;
     public struct DebuggingActions
     {
         private @Debuginput m_Wrapper;
         public DebuggingActions(@Debuginput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Option => m_Wrapper.m_debugging_Option;
+        public InputAction @EnemyKnockback => m_Wrapper.m_debugging_EnemyKnockback;
         public InputActionMap Get() { return m_Wrapper.m_debugging; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -114,6 +136,9 @@ public class @Debuginput : IInputActionCollection, IDisposable
                 @Option.started -= m_Wrapper.m_DebuggingActionsCallbackInterface.OnOption;
                 @Option.performed -= m_Wrapper.m_DebuggingActionsCallbackInterface.OnOption;
                 @Option.canceled -= m_Wrapper.m_DebuggingActionsCallbackInterface.OnOption;
+                @EnemyKnockback.started -= m_Wrapper.m_DebuggingActionsCallbackInterface.OnEnemyKnockback;
+                @EnemyKnockback.performed -= m_Wrapper.m_DebuggingActionsCallbackInterface.OnEnemyKnockback;
+                @EnemyKnockback.canceled -= m_Wrapper.m_DebuggingActionsCallbackInterface.OnEnemyKnockback;
             }
             m_Wrapper.m_DebuggingActionsCallbackInterface = instance;
             if (instance != null)
@@ -121,6 +146,9 @@ public class @Debuginput : IInputActionCollection, IDisposable
                 @Option.started += instance.OnOption;
                 @Option.performed += instance.OnOption;
                 @Option.canceled += instance.OnOption;
+                @EnemyKnockback.started += instance.OnEnemyKnockback;
+                @EnemyKnockback.performed += instance.OnEnemyKnockback;
+                @EnemyKnockback.canceled += instance.OnEnemyKnockback;
             }
         }
     }
@@ -128,5 +156,6 @@ public class @Debuginput : IInputActionCollection, IDisposable
     public interface IDebuggingActions
     {
         void OnOption(InputAction.CallbackContext context);
+        void OnEnemyKnockback(InputAction.CallbackContext context);
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
+    private Debuginput input;
     [SerializeField]
     private EnemyStat enemyStat;
     [ReadOnly]
@@ -14,6 +15,7 @@ public class Enemy : MonoBehaviour
     private StateMachine<Enemy> stateMachine;
     private GameObject targetPlayer;
     public EnemyEvent enemyEvent;
+    private Rigidbody enemyRigidbody;
 
     private void Awake()
     {
@@ -26,7 +28,12 @@ public class Enemy : MonoBehaviour
         stateMachine = new StateMachine<Enemy>();
         stateMachine.Setup(this, new EnemyMovement());
         currentState = stateMachine.GetCurrentState.ToString();
-      
+        enemyRigidbody = GetComponent<Rigidbody>();
+
+        input = new Debuginput();
+        input.Enable();
+
+        input.debugging.EnemyKnockback.performed += _ => ReceiveDamage();
     }
 
     // Update is called once per frame
@@ -51,6 +58,7 @@ public class Enemy : MonoBehaviour
         get { return currentState; }
     }
 
+
     private void OnDrawGizmosSelected()
     {
         Quaternion rightRayRotation = Quaternion.AngleAxis(enemyStat.visionAngle/2, Vector3.up);
@@ -59,5 +67,30 @@ public class Enemy : MonoBehaviour
         Vector3 leftRayDirection = leftRayRotation * transform.forward;
         Gizmos.DrawRay(transform.position, leftRayDirection * enemyStat.visionRadius);
         Gizmos.DrawRay(transform.position, rightRayDirection * enemyStat.visionRadius);
+    }
+
+    public void ReceiveDamage(Collider damageOwner = null)
+    {
+        stateMachine.Setup(this, new EnemyGetHit());
+        if (damageOwner)
+        {
+            enemyStat.health -= damageOwner.GetComponent<Damage>().damageValue;
+        }
+        Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
+        enemyRigidbody.AddForce(moveDirection * -500f);
+    
+    }
+
+    public void ChangeState(IState<Enemy> state)
+    {
+        stateMachine.ChangeState(state);
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon"))
+        {
+            ReceiveDamage(other);
+        }
     }
 }
