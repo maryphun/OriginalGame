@@ -1,0 +1,33 @@
+{
+    "name": "debuginput",
+    "maps": [
+        {
+            "name": "debugging",
+            "id": "16d5fcc1-d9c5-4807-8126-60f96a240fec",
+            "actions": [
+                {
+                    "name": "Option",
+                    "type": "Button",
+                    "id": "82652603-e746-4303-9b20-3e50f72b12ec",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "361837a2-1ecb-40f1-be75-a12051b67dd7",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Option",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
