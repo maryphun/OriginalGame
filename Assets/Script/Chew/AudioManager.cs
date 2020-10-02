@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class AudioManager : MonoBehaviour
 {
     [SerializeField]
     private AudioSource audioSource;
     private Coroutine coroutine;
     public AudioClip clip;
-    public float volume = 0.5f;
+
+    [Range(0.0f,1.0f)]
+    public float masterVolume = 0.5f;
+
+    [Range(0.0f, 1.0f)]
+    public float soundEffectVolume = 0.5f;
+
+    [Range(0.0f, 1.0f)]
+    public float BGMVolume = 0.5f;
 
 
     private void Awake()
@@ -27,7 +36,7 @@ public class AudioManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        SetMasterVolume(masterVolume);
     }
 
     public void SetMasterVolume(float value)
@@ -35,16 +44,16 @@ public class AudioManager : MonoBehaviour
         AudioListener.volume = value;
     }
 
-    public void PlaySE(AudioClip clip,float volume)
+    public void PlaySE(AudioClip clip)
     {
-        audioSource.PlayOneShot(clip,volume);
+        audioSource.PlayOneShot(clip, soundEffectVolume);
     }
 
-    public void PlayBGM(AudioClip clip, float volume)
+    public void PlayBGM(AudioClip clip)
     {
         if (coroutine == null)
         {
-            coroutine = StartCoroutine(SoundLoop(clip,volume));
+            coroutine = StartCoroutine(SoundLoop(clip, BGMVolume));
         }
     }
 
