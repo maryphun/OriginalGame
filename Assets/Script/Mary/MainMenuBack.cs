@@ -14,7 +14,14 @@ public class MainMenuBack : MonoBehaviour
     void Start()
     {
         timeCnt = lightningTime / 3.5f;
-        Random.InitState(3456789);
+        Random.InitState((int)Time.time);
+
+        // sound manager singleton init
+        SoundManager.Instance().Initialize();
+        SoundManager.Instance().PlayBgm("MainMenuBGM", 0.85f);
+        
+        //SoundManager.Instance().SetSeLoop(2, true);
+        SoundManager.Instance().PlaySe("rain", 0.035f);
     }
 
     // Update is called once per frame
@@ -24,6 +31,7 @@ public class MainMenuBack : MonoBehaviour
         if (timeCnt <= 0.0f)
         {
             timeCnt = lightningTime;
+            SoundManager.Instance().PlaySe("thunder", 0.25f);
             StartCoroutine(Lightning(backImage));
         }
     }

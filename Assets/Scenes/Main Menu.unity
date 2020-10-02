@@ -358,9 +358,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: {fileID: 1217927743}
-  start: {fileID: 0}
-  exit: {fileID: 0}
-  option: {fileID: 0}
+  start: {fileID: 1981718113}
+  exit: {fileID: 907820260}
+  option: {fileID: 768436105}
 --- !u!1 &517333111
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,7 +479,7 @@ GameObject:
   - component: {fileID: 556563727}
   - component: {fileID: 556563726}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -915,8 +915,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -271.9, y: -176.1}
-  m_SizeDelta: {x: 202.89917, y: 56.710785}
+  m_AnchoredPosition: {x: -297.5, y: -176.1}
+  m_SizeDelta: {x: 100.60803, y: 56.710785}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &768436105
 MonoBehaviour:
@@ -1125,8 +1125,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 272, y: -176.1}
-  m_SizeDelta: {x: 202.89917, y: 56.710785}
+  m_AnchoredPosition: {x: 308, y: -176.1}
+  m_SizeDelta: {x: 81.66531, y: 56.710785}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &907820260
 MonoBehaviour:
@@ -1170,7 +1170,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 907820261}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 173124021}
+        m_TargetAssemblyTypeName: MainMenuFront, Assembly-CSharp
+        m_MethodName: doExitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &907820261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6615,8 +6627,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -176.1}
-  m_SizeDelta: {x: 202.89917, y: 56.710785}
+  m_AnchoredPosition: {x: 0.0000038146973, y: -176.1}
+  m_SizeDelta: {x: 93.97803, y: 35.873703}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1981718113
 MonoBehaviour:

@@ -15,10 +15,14 @@ public class ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         {
             txt.color = targetColor;
         }
+
+        SoundManager.Instance().PlaySe("ButtonHover", 0.25f);
     }
     public void OnPointerExit(PointerEventData eventData)
     {
         var txt = GetComponentInChildren<TMP_Text>();
         txt.color = originalColor;
+
+        SoundManager.Instance().PlaySe("ButtonHover", 0.25f);
     }
 }

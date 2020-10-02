@@ -27,4 +27,18 @@ public class MainMenuFront : MonoBehaviour
             yield return null;
         }
     }
+
+    public void doExitGame()
+    {
+        Application.Quit();
+    }
+
+    public void doStartGame()
+    {
+    }
+
+    public void doOption()
+    {
+       
+    }
 }

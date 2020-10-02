@@ -411,7 +411,7 @@ MonoBehaviour:
     IsHidden: 0
   - Type: 1
     Key: Assets/Script/Mary
-    Ordinal: 31
+    Ordinal: 33
     Priority: 0
     IconType: 1230
     SmallIcon: {fileID: 0}
@@ -423,7 +423,7 @@ MonoBehaviour:
     IsHidden: 0
   - Type: 1
     Key: Assets/Material
-    Ordinal: 32
+    Ordinal: 34
     Priority: 0
     IconType: 2170
     SmallIcon: {fileID: 0}
@@ -435,9 +435,21 @@ MonoBehaviour:
     IsHidden: 0
   - Type: 1
     Key: Assets/Prefab
-    Ordinal: 33
+    Ordinal: 35
     Priority: 0
     IconType: 2110
+    SmallIcon: {fileID: 0}
+    LargeIcon: {fileID: 0}
+    IsIconRecursive: 0
+    BackgroundType: 0
+    BackgroundTexture: {fileID: 0}
+    IsBackgroundRecursive: 0
+    IsHidden: 0
+  - Type: 1
+    Key: Assets/Sound
+    Ordinal: 36
+    Priority: 0
+    IconType: 2020
     SmallIcon: {fileID: 0}
     LargeIcon: {fileID: 0}
     IsIconRecursive: 0
