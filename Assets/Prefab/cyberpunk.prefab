@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 427083867158740297}
   - component: {fileID: 5613087782680801855}
   - component: {fileID: 3996530374473894183}
+  - component: {fileID: 7407867178126612564}
   m_Layer: 0
   m_Name: cyberpunk
   m_TagString: Untagged
@@ -53,6 +54,7 @@ MonoBehaviour:
     attackRange: 5
     visionRadius: 5
     visionAngle: 60
+    stunTime: 0
   currentState: 
   enemyEvent:
     onDetectingPlayer:
@@ -93,6 +95,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!135 &7407867178126612564
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904338040190982498}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &3605329634659321666
 PrefabInstance:
   m_ObjectHideFlags: 0

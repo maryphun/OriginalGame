@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
     private GameObject targetPlayer;
     public EnemyEvent enemyEvent;
     private Rigidbody enemyRigidbody;
+    private bool isDeath;
 
     private void Awake()
     {
@@ -24,6 +25,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isDeath = false;
         targetPlayer = GameObject.FindGameObjectWithTag("Player");
         stateMachine = new StateMachine<Enemy>();
         stateMachine.Setup(this, new EnemyMovement());
@@ -39,6 +41,12 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (enemyStat.health <= 0)
+        {
+            isDeath = true;
+            stateMachine.ChangeState(new EnemyDeath());
+        }
+        
         stateMachine.Update();
         currentState = stateMachine.GetCurrentState.ToString();
      
@@ -57,7 +65,6 @@ public class Enemy : MonoBehaviour
     {
         get { return currentState; }
     }
-
 
     private void OnDrawGizmosSelected()
     {
@@ -79,6 +86,11 @@ public class Enemy : MonoBehaviour
         Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
         enemyRigidbody.AddForce(moveDirection * -500f);
     
+    }
+
+    public float CheckDistance()
+    {
+        return Vector3.Distance(transform.position, targetPlayer.transform.position);
     }
 
     public void ChangeState(IState<Enemy> state)

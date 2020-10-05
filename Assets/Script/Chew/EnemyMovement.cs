@@ -72,10 +72,16 @@ public class EnemyMovement : IState<Enemy>
 
         float angle = Mathf.SmoothDampAngle(enemy.transform.eulerAngles.y, targetAngle,ref turnVelocity, 0.05f);
         enemy.transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
+
+        if (enemy.CheckDistance() <= enemy.EnemyStat.attackRange)
+        {
+            enemy.ChangeState(new EnemyAttack());
+        }
     }
 
     public void Exit(Enemy enemy)
     {
 
     }
+
 }
