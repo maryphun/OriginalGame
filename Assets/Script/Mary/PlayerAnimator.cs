@@ -33,11 +33,7 @@ public class PlayerAnimator : MonoBehaviour
         if (attackScript.canAttack)
         {
             controller.ResetMoveSpeedMax();
+            controller.SetIsAttacking(false);
         }
     }
-
-    //private void Update()
-    //{
-    //    headAim.position = cam.GetComponent<CameraFollow>().GetMousePositionInWorld();
-    //}
 }

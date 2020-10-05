@@ -70,6 +70,23 @@ public class CameraFollow : MonoBehaviour
 
     public Vector3 GetMousePositionInWorld()
     {
-        return targetPos;
+        // Get mouse position Input
+        Vector2 mousePositionValue = mouseInput.Camera.MousePosition.ReadValue<Vector2>();
+
+        Vector3 mouseWorldPosition = GetWorldPosition(new Vector2(mousePositionValue.x - Screen.width / 2f, mousePositionValue.y - Screen.height / 2f));
+        Vector3 screenCenterWorldPosition = GetWorldPosition(new Vector2(0.5f, 0.5f));
+        Vector3 delta = mouseWorldPosition - screenCenterWorldPosition;
+
+        return delta + followCharacter.position ;
+    }
+
+    public Vector2 GetMousePosition()
+    {
+        return mouseInput.Camera.MousePosition.ReadValue<Vector2>();
+    }
+
+    public Ray MousePositionPointToRay()
+    {
+        return cam.ScreenPointToRay(mouseInput.Camera.MousePosition.ReadValue<Vector2>());
     }
 }

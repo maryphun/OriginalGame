@@ -22,7 +22,7 @@ public class @CameraInput : IInputActionCollection, IDisposable
                     ""name"": ""MousePosition"",
                     ""type"": ""Value"",
                     ""id"": ""67797d83-597d-4bfc-9788-aae479448696"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Vector3"",
                     ""processors"": """",
                     ""interactions"": """"
                 }

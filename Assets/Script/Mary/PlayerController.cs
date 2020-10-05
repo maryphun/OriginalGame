@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private float turnMoveVelocity, targetAngle, moveSpeedMax;
     private new Transform camera;
     private Animator anim;
+    private bool isAttacking;
 
     // Start is called before the first frame update
     void Awake()
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
         // value initialization
         moveSpeedMax = moveSpeed;
+        isAttacking = false;
     }
 
     private void OnEnable()
@@ -47,6 +49,8 @@ public class PlayerController : MonoBehaviour
         {
             Move(moveInput);
         }
+
+        Rotate();
     }
 
     private void Attack()
@@ -58,6 +62,20 @@ public class PlayerController : MonoBehaviour
             {
                 anim.SetTrigger("Attack");
                 moveSpeedMax = 0.0f;
+
+                Ray ray = camera.GetComponent<CameraFollow>().MousePositionPointToRay();
+                Plane groundplane = new Plane(Vector3.up, Vector3.zero);
+                float rayLength;
+
+                if (groundplane.Raycast(ray, out rayLength))
+                {
+                    Vector3 pointToLook = ray.GetPoint(rayLength);
+                    Debug.DrawLine(ray.origin, pointToLook, Color.red, 1.0f);
+
+                    var tmp = (pointToLook - transform.position).normalized;
+                    targetAngle = Mathf.Atan2(tmp.x, tmp.z) * Mathf.Rad2Deg;
+                    isAttacking = true;
+                }
             }
         }
         else
@@ -68,6 +86,8 @@ public class PlayerController : MonoBehaviour
 
     private void Move(Vector3 keyinput)
     {
+        if (isAttacking) { return; }
+
         Vector3 direction = new Vector3(keyinput.x, 0.0f, keyinput.y).normalized;
         if (direction.magnitude >= 0.1f)
         {
@@ -81,9 +101,6 @@ public class PlayerController : MonoBehaviour
                        transform.position.y, transform.position.z + moveDir.z * moveMagnitude * Time.deltaTime);
         }
 
-        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnMoveVelocity, turnSmoothTime);
-        transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
-
         // Animation
         anim.SetFloat("Speed", direction.magnitude);
     }
@@ -91,5 +108,16 @@ public class PlayerController : MonoBehaviour
     public void ResetMoveSpeedMax()
     {
         moveSpeedMax = moveSpeed;
+    }
+
+    private void Rotate()
+    {
+        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnMoveVelocity, turnSmoothTime);
+        transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
+    }
+
+    public void SetIsAttacking(bool boolean)
+    {
+        isAttacking = boolean;
     }
 }
