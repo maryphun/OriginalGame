@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyDeath : MonoBehaviour
+public class EnemyDeath : IState<Enemy>
 {
     // Start is called before the first frame update
     public void Enter(Enemy enemy)
