@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
+    public Debuginput input;
     [SerializeField]
     private EnemyStat enemyStat;
     [ReadOnly]
@@ -14,7 +16,9 @@ public class Enemy : MonoBehaviour
     private StateMachine<Enemy> stateMachine;
     private GameObject targetPlayer;
     public EnemyEvent enemyEvent;
-
+    private Rigidbody enemyRigidbody;
+    private bool isDeath;
+    private ItemDropEvent dropableItem;
     private void Awake()
     {
 
@@ -22,16 +26,31 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        dropableItem = GetComponent<ItemDropEvent>();
+
+        isDeath = false;
         targetPlayer = GameObject.FindGameObjectWithTag("Player");
         stateMachine = new StateMachine<Enemy>();
         stateMachine.Setup(this, new EnemyMovement());
         currentState = stateMachine.GetCurrentState.ToString();
-      
+        enemyRigidbody = GetComponent<Rigidbody>();
+
+        input = new Debuginput();
+        input.Enable();
+
+        input.debugging.EnemyKnockback.performed += _ => ReceiveDamage();
+        input.debugging.DropItem.performed += _ => dropableItem.DropItem();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (enemyStat.health <= 0 /*&& !isDeath*/)
+        {
+            isDeath = true;
+            stateMachine.ChangeState(new EnemyDeath());
+        }
+        
         stateMachine.Update();
         currentState = stateMachine.GetCurrentState.ToString();
      
@@ -59,5 +78,35 @@ public class Enemy : MonoBehaviour
         Vector3 leftRayDirection = leftRayRotation * transform.forward;
         Gizmos.DrawRay(transform.position, leftRayDirection * enemyStat.visionRadius);
         Gizmos.DrawRay(transform.position, rightRayDirection * enemyStat.visionRadius);
+    }
+
+    public void ReceiveDamage(Collider damageOwner = null)
+    {
+        stateMachine.Setup(this, new EnemyGetHit());
+        if (damageOwner)
+        {
+            enemyStat.health -= damageOwner.GetComponent<Damage>().damageValue;
+        }
+        Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
+        enemyRigidbody.AddForce(moveDirection * -500f);
+    
+    }
+
+    public float CheckDistance()
+    {
+        return Vector3.Distance(transform.position, targetPlayer.transform.position);
+    }
+
+    public void ChangeState(IState<Enemy> state)
+    {
+        stateMachine.ChangeState(state);
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon"))
+        {
+            ReceiveDamage(other);
+        }
     }
 }

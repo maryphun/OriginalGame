@@ -18,7 +18,8 @@ public struct EnemyStat
     public float attackRange;
     public float visionRadius;
     public float visionAngle;
-  
+    public float stunTime;
+
 }
 
 [System.Serializable]
