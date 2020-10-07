@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
-    private Debuginput input;
+    public Debuginput input;
     [SerializeField]
     private EnemyStat enemyStat;
     [ReadOnly]
@@ -17,7 +18,7 @@ public class Enemy : MonoBehaviour
     public EnemyEvent enemyEvent;
     private Rigidbody enemyRigidbody;
     private bool isDeath;
-
+    private ItemDropEvent dropableItem;
     private void Awake()
     {
 
@@ -25,6 +26,8 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        dropableItem = GetComponent<ItemDropEvent>();
+
         isDeath = false;
         targetPlayer = GameObject.FindGameObjectWithTag("Player");
         stateMachine = new StateMachine<Enemy>();
@@ -36,12 +39,13 @@ public class Enemy : MonoBehaviour
         input.Enable();
 
         input.debugging.EnemyKnockback.performed += _ => ReceiveDamage();
+        input.debugging.DropItem.performed += _ => dropableItem.DropItem();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (enemyStat.health <= 0)
+        if (enemyStat.health <= 0 /*&& !isDeath*/)
         {
             isDeath = true;
             stateMachine.ChangeState(new EnemyDeath());

@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class EnemyDeath : IState<Enemy>
 {
+    private ItemDropEvent dropableItem;
     // Start is called before the first frame update
     public void Enter(Enemy enemy)
     {
-
+        dropableItem = enemy.GetComponent<ItemDropEvent>();
+        if (dropableItem)
+        {
+            dropableItem.DropItem();
+        }
     }
 
     // Update is called once per frame
