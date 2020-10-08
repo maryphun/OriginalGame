@@ -49,8 +49,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SurfaceDistortion:
         m_Texture: {fileID: 2800000, guid: b7c5cc6f7a13173439793c1796fff2eb, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Scale: {x: 0.5, y: 2}
+        m_Offset: {x: 0.25, y: 0}
     - _SurfaceNoise:
         m_Texture: {fileID: 2800000, guid: 25e6a8e78b4ea9049a6c5cf95c30e68a, type: 3}
         m_Scale: {x: 1, y: 4}
@@ -89,9 +89,10 @@ Material:
     - _DepthGradientDeep: {r: 0.01960782, g: 0.671129, b: 0.85882354, a: 0.749}
     - _DepthGradientShallow: {r: 0.20797431, g: 0.69993705, b: 0.8679245, a: 0.725}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShallowColor: {r: 0.325, g: 0.807, b: 0.971, a: 0.725}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _SurfaceNoiseScroll: {r: 0.03, g: 0.03, b: 0, a: 0}
+    - _SurfaceNoiseScroll: {r: 0.09, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1466084455965134097
 MonoBehaviour:

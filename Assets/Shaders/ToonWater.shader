@@ -9,21 +9,36 @@
         _SurfaceDistortionAmount("Surface Distortion Amount", Range(0, 1)) = 0.27
         _FoamMaxDistance("Foam Maximum Distance", Float) = 0.4
         _FoamMinDistance("Foam Minimum Distance", Float) = 0.04
+        _FoamColor("Foam Color", Color) = (1,1,1,1)
         _DepthGradientShallow("Depth Gradient Shallow", Color) = (0.325, 0.807, 0.971, 0.725)
         _DepthGradientDeep("Depth Gradient Deep", Color) = (0.086, 0.407, 1, 0.749)
         _DepthMaxDistance("Depth Maximum Distance", Float) = 1
     }
     SubShader
     {
+        Tags
+        {
+            "Queue" = "Transparent"
+        }
         Pass
         {
+            Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite Off
 			CGPROGRAM
+            #define SMOOTHSTEP_AA 0.01
+
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
 
+            float4 alphaBlend(float4 top, float4 bottom)
+            {           
+                float3 color = (top.rgb * top.a) + (bottom.rgb * (1 - top.a));
+                float alpha = top.a + bottom.a * (1 - top.a);
 
+                return float4(color, alpha);
+            }
 
             struct appdata
             {
@@ -58,6 +73,8 @@
             float4 _SurfaceDistortion_ST;
             float _SurfaceDistortionAmount;
             sampler2D _CameraNormalsTexture;
+            float4 _FoamColor;
+
 
             v2f vert (appdata v)
             {
@@ -89,11 +106,11 @@
                 float foamDistance = lerp(_FoamMaxDistance, _FoamMinDistance, normalDot);
                 float foamDepthDifference01 = saturate(depthDifference / foamDistance);
                 float surfaceNoiseCutoff = foamDepthDifference01 * _SurfaceNoiseCutoff;
+                float surfaceNoise = smoothstep(surfaceNoiseCutoff - SMOOTHSTEP_AA, surfaceNoiseCutoff + SMOOTHSTEP_AA, surfaceNoiseSample);
+                float4 surfaceNoiseColor = _FoamColor;
+                surfaceNoiseColor.a *= surfaceNoise;
 
-                float surfaceNoise = surfaceNoiseSample > surfaceNoiseCutoff ? 1 : 0;
-     
-
-                return waterColor + surfaceNoise;
+                return alphaBlend(surfaceNoiseColor, waterColor);
             }   
             ENDCG
         }
