@@ -19,6 +19,11 @@ public class Enemy : MonoBehaviour
     private Rigidbody enemyRigidbody;
     private bool isDeath;
     private ItemDropEvent dropableItem;
+    private Animator anim;
+    private bool isAttacking;
+    [HideInInspector] public bool canAttack;
+
+
     private void Awake()
     {
 
@@ -27,6 +32,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         dropableItem = GetComponent<ItemDropEvent>();
+        anim = GetComponentInChildren<Animator>();
 
         isDeath = false;
         targetPlayer = GameObject.FindGameObjectWithTag("Player");
@@ -34,6 +40,7 @@ public class Enemy : MonoBehaviour
         stateMachine.Setup(this, new EnemyMovement());
         currentState = stateMachine.GetCurrentState.ToString();
         enemyRigidbody = GetComponent<Rigidbody>();
+        canAttack = true;
 
         input = new Debuginput();
         input.Enable();
@@ -68,6 +75,11 @@ public class Enemy : MonoBehaviour
     public string CurrentState
     {
         get { return currentState; }
+    }
+
+    public Animator Anim
+    {
+        get { return anim; }
     }
 
     private void OnDrawGizmosSelected()
