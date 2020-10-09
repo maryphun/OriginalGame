@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dungeon_Material_01
+  m_Name: Dungeon_Material_ShieldCustom
   m_Shader: {fileID: 4800000, guid: d1ff127197c5001448606a7f3ba7c414, type: 3}
   m_ShaderKeywords: _EMISSION _METALLICSPECGLOSSMAP
   m_LightmapFlags: 2
@@ -78,7 +78,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaClip: 0
-    - _Ambient: 0.632
+    - _Ambient: 0.99
     - _Blend: 0
     - _BumpScale: 1
     - _Cull: 2

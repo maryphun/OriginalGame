@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class PlayerAnimator : MonoBehaviour
 {
     [SerializeField] private Transform headAim;
+    [SerializeField] private GameObject[] slashFX;
 
     private Animator anim;
     private Camera cam;
@@ -24,16 +26,37 @@ public class PlayerAnimator : MonoBehaviour
     /// <param name="boolean"></param>
     public void SetCanAttack(int boolean)
     {
-        var attackScript = anim.GetBehaviour<Attack>();
-        if (attackScript != null)
+        controller.canAttack = (boolean != 0);
+
+        if (controller.canAttack)
         {
-            attackScript.canAttack = (boolean != 0);
+            controller.SetIsAttacking(false);
+            controller.ResetMoveSpeedMax();
+            controller.AttackEnd();
+        }
+    }
+
+    public void MoveForward(float distance)
+    {
+        controller.Move(distance);
+    }
+
+    public void SlashFX(int variation)
+    {
+        switch (variation)
+        {
+            case 1:
+                Destroy(Instantiate(slashFX[0], transform, false), 1.5f);
+                break;
+            case 2:
+                Destroy(Instantiate(slashFX[1], transform, false), 1.5f);
+                break;
+            case 3:
+                Destroy(Instantiate(slashFX[2], transform, false), 1.5f);
+                break;
+            default:
+                break;
         }
 
-        if (attackScript.canAttack)
-        {
-            controller.ResetMoveSpeedMax();
-            controller.SetIsAttacking(false);
-        }
     }
 }

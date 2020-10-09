@@ -78,6 +78,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaClip: 0
+    - _Ambient: 0.5
     - _Blend: 0
     - _BumpScale: 1
     - _Cull: 2
@@ -89,6 +90,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 1
     - _GlossyReflections: 1
+    - _LambertValue: 0.25
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

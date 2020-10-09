@@ -1124,6 +1124,45 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: slashFX.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: slashFX
+      value: 
+      objectReference: {fileID: 2914804735397938804, guid: e2ba15adf14f3d74fac949b763359243,
+        type: 3}
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: slashFX.Array.data[0]
+      value: 
+      objectReference: {fileID: 2914804735397938804, guid: e2ba15adf14f3d74fac949b763359243,
+        type: 3}
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: slashFX.Array.data[1]
+      value: 
+      objectReference: {fileID: 2914804735397938804, guid: 471adab33e573c245bdde6dac3752b6d,
+        type: 3}
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: slashFX.Array.data[2]
+      value: 
+      objectReference: {fileID: 6657524970162813016, guid: 02ab147f472ff6c45899fd5d7c01df8d,
+        type: 3}
+    - target: {fileID: 5836286055962583864, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 42b64fdb315e3054ea757d8d1c4bcfa7, type: 2}
+    - target: {fileID: 6547062688569763966, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 829673705987f0a4db88645b9c1387f5, type: 2}
     - target: {fileID: 7235161112364481304, guid: b54f4763cbeb8814b87c24afa4a572fc,
         type: 3}
       propertyPath: m_WarningMessage
@@ -1188,6 +1227,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8784423685983364433, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: attackAnimFrame.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8784423685983364433, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: comboResetTime
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8784423685983364433, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: attackAnimFrame.Array.data[0]
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8784423685983364433, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: attackAnimFrame.Array.data[1]
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8784423685983364433, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: attackAnimFrame.Array.data[2]
+      value: 0.125
       objectReference: {fileID: 0}
     - target: {fileID: 8784423685983364438, guid: b54f4763cbeb8814b87c24afa4a572fc,
         type: 3}
