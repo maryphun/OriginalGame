@@ -1024,6 +1024,8 @@ GameObject:
   - component: {fileID: 839951022}
   - component: {fileID: 839951024}
   - component: {fileID: 839951023}
+  - component: {fileID: 839951025}
+  - component: {fileID: 839951026}
   m_Layer: 5
   m_Name: Knight image
   m_TagString: Untagged
@@ -1062,7 +1064,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: a4acf33e0d5580a4bb9e6cbf59a561d8, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -1088,6 +1090,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 839951021}
   m_CullTransparentMesh: 0
+--- !u!114 &839951025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839951021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee158225ee1e59f4791627785501d950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &839951026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839951021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1625263d85e5d554284989eb9052e863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateEveryFrame: 1
 --- !u!1 &907820258
 GameObject:
   m_ObjectHideFlags: 0
@@ -1292,7 +1319,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Original Game
+  m_text: Elysium
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0ba14bcadbaa31e47862f40fcc59889c, type: 2}
   m_sharedMaterial: {fileID: 7295046419925425131, guid: 0ba14bcadbaa31e47862f40fcc59889c,

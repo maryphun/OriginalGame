@@ -7,6 +7,7 @@ public class PlayerAnimator : MonoBehaviour
 {
     [SerializeField] private Transform headAim;
     [SerializeField] private GameObject[] slashFX;
+    [SerializeField] private GameObject dashFX;
 
     private Animator anim;
     private Camera cam;
@@ -19,7 +20,7 @@ public class PlayerAnimator : MonoBehaviour
         controller = GetComponentInParent<PlayerController>();
         cam = Camera.main;
     }
-    
+
     /// <summary>
     /// 0 = false else = true
     /// </summary>
@@ -58,5 +59,28 @@ public class PlayerAnimator : MonoBehaviour
                 break;
         }
 
+    }
+
+    public void StartRegisterAttack()
+    {
+        controller.StartRegisterAttack();
+    }
+
+    public void DashEnd()
+    {
+        controller.ResetMoveSpeedMax();
+        controller.Dashing(false);
+    }
+
+    public void DashFX()
+    {
+        ParticleSystem fx = Instantiate(dashFX, transform, false).GetComponent<ParticleSystem>();
+        StartCoroutine(StopEmission(fx, 0.3f));
+    }
+
+    private IEnumerator StopEmission(ParticleSystem targetFX, float time)
+    {
+        yield return new WaitForSeconds(time);
+        targetFX.enableEmission = false;
     }
 }

@@ -49,6 +49,14 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""cd43ffc0-d6f3-4c2e-9c1d-791eb5c3a4f0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -139,6 +147,82 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""action"": ""CameraFollow"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""393bfba3-121f-4483-8d52-6561814e6d73"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Debug"",
+            ""id"": ""a995fb53-bdb5-498e-ae4d-bf21def76c6f"",
+            ""actions"": [
+                {
+                    ""name"": ""Z"",
+                    ""type"": ""Button"",
+                    ""id"": ""1b61035a-8387-4b14-9eaf-367101e0b6d6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""X"",
+                    ""type"": ""Button"",
+                    ""id"": ""3be65d77-9dbc-4d78-8559-6a2a7464fb51"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""C"",
+                    ""type"": ""Button"",
+                    ""id"": ""4ac79346-0731-4a92-877f-67eb903266e5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""a4ac6c76-dc69-4737-8e12-2d207b60721e"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Z"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9751b96c-89fe-44d9-96ba-5aca5ade208b"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""X"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""96168151-4143-4235-99d1-917880d76138"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""C"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -151,6 +235,12 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_Player_VerticalMove = m_Player.FindAction("VerticalMove", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_CameraFollow = m_Player.FindAction("CameraFollow", throwIfNotFound: true);
+        m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        // Debug
+        m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
+        m_Debug_Z = m_Debug.FindAction("Z", throwIfNotFound: true);
+        m_Debug_X = m_Debug.FindAction("X", throwIfNotFound: true);
+        m_Debug_C = m_Debug.FindAction("C", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -204,6 +294,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_VerticalMove;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_CameraFollow;
+    private readonly InputAction m_Player_Dash;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
@@ -212,6 +303,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @VerticalMove => m_Wrapper.m_Player_VerticalMove;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @CameraFollow => m_Wrapper.m_Player_CameraFollow;
+        public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -233,6 +325,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @CameraFollow.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraFollow;
                 @CameraFollow.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraFollow;
                 @CameraFollow.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraFollow;
+                @Dash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
+                @Dash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
+                @Dash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -249,15 +344,74 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @CameraFollow.started += instance.OnCameraFollow;
                 @CameraFollow.performed += instance.OnCameraFollow;
                 @CameraFollow.canceled += instance.OnCameraFollow;
+                @Dash.started += instance.OnDash;
+                @Dash.performed += instance.OnDash;
+                @Dash.canceled += instance.OnDash;
             }
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Debug
+    private readonly InputActionMap m_Debug;
+    private IDebugActions m_DebugActionsCallbackInterface;
+    private readonly InputAction m_Debug_Z;
+    private readonly InputAction m_Debug_X;
+    private readonly InputAction m_Debug_C;
+    public struct DebugActions
+    {
+        private @PlayerInput m_Wrapper;
+        public DebugActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Z => m_Wrapper.m_Debug_Z;
+        public InputAction @X => m_Wrapper.m_Debug_X;
+        public InputAction @C => m_Wrapper.m_Debug_C;
+        public InputActionMap Get() { return m_Wrapper.m_Debug; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DebugActions set) { return set.Get(); }
+        public void SetCallbacks(IDebugActions instance)
+        {
+            if (m_Wrapper.m_DebugActionsCallbackInterface != null)
+            {
+                @Z.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnZ;
+                @Z.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnZ;
+                @Z.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnZ;
+                @X.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnX;
+                @X.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnX;
+                @X.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnX;
+                @C.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnC;
+                @C.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnC;
+                @C.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnC;
+            }
+            m_Wrapper.m_DebugActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Z.started += instance.OnZ;
+                @Z.performed += instance.OnZ;
+                @Z.canceled += instance.OnZ;
+                @X.started += instance.OnX;
+                @X.performed += instance.OnX;
+                @X.canceled += instance.OnX;
+                @C.started += instance.OnC;
+                @C.performed += instance.OnC;
+                @C.canceled += instance.OnC;
+            }
+        }
+    }
+    public DebugActions @Debug => new DebugActions(this);
     public interface IPlayerActions
     {
         void OnHorizontalMove(InputAction.CallbackContext context);
         void OnVerticalMove(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnCameraFollow(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
+    }
+    public interface IDebugActions
+    {
+        void OnZ(InputAction.CallbackContext context);
+        void OnX(InputAction.CallbackContext context);
+        void OnC(InputAction.CallbackContext context);
     }
 }
