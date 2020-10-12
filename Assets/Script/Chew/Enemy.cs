@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
     private Animator anim;
     private bool isAttacking;
     [HideInInspector] public bool canAttack;
-
+    private float maxHealth;
 
     private void Awake()
     {
@@ -41,18 +41,18 @@ public class Enemy : MonoBehaviour
         currentState = stateMachine.GetCurrentState.ToString();
         enemyRigidbody = GetComponent<Rigidbody>();
         canAttack = true;
+        maxHealth = enemyStat.health;
 
         input = new Debuginput();
         input.Enable();
 
-        input.debugging.EnemyKnockback.performed += _ => ReceiveDamage();
         input.debugging.DropItem.performed += _ => dropableItem.DropItem();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (enemyStat.health <= 0 /*&& !isDeath*/)
+        if (enemyStat.health <= 0 && !isDeath)
         {
             isDeath = true;
             stateMachine.ChangeState(new EnemyDeath());
@@ -92,15 +92,14 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawRay(transform.position, rightRayDirection * enemyStat.visionRadius);
     }
 
-    public void ReceiveDamage(Collider damageOwner = null)
+    public void ReceiveDamage(float damage)
     {
         stateMachine.Setup(this, new EnemyGetHit());
-        if (damageOwner)
-        {
-            enemyStat.health -= damageOwner.GetComponent<Damage>().damageValue;
-        }
-        Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
-        enemyRigidbody.AddForce(moveDirection * -500f);
+
+        enemyStat.health = Mathf.Clamp(enemyStat.health - damage, 0.0f, maxHealth);
+
+       // Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
+       // enemyRigidbody.AddForce(moveDirection * -500f);
     
     }
 
@@ -112,13 +111,5 @@ public class Enemy : MonoBehaviour
     public void ChangeState(IState<Enemy> state)
     {
         stateMachine.ChangeState(state);
-    }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Weapon"))
-        {
-            ReceiveDamage(other);
-        }
     }
 }

@@ -252,6 +252,16 @@ public class PlayerController : MonoBehaviour
             {
                 attackedEnemy.Add(enemy.transform);
                 visualScript.HitFX(Random.Range(0, 2), enemy.transform.position + Vector3.up);
+
+                EnemyHitPoint enemyScript = enemy.GetComponent<EnemyHitPoint>();
+                if (enemyScript != null)
+                {
+                    enemyScript.TakeDamage(20f);
+                }
+                else
+                {
+                    Debug.LogWarning("Enemy Properties script not found in attacked enemy. this enemy won't take damage and show hp bar.");
+                }
             }
         }
     }
@@ -279,8 +289,6 @@ public class PlayerController : MonoBehaviour
         {
             return true;
         }
-        Debug.Log("angle = " + angle);
-        Debug.Log("distance = " + dist);
         return false;
     }
 
