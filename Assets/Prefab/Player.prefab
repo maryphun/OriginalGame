@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 5217206820307308445}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -312,6 +312,8 @@ MonoBehaviour:
   - 0.4
   - 0.1
   - 0.125
+  damageRange: 4
+  damageAngle: 45
   wall:
     serializedVersion: 2
     m_Bits: 256
@@ -427,6 +429,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
         type: 3}
+      propertyPath: hitFX.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
+        type: 3}
       propertyPath: headAim
       value: 
       objectReference: {fileID: 54942569}
@@ -453,6 +460,24 @@ PrefabInstance:
       propertyPath: dashFX
       value: 
       objectReference: {fileID: 1049843463841446, guid: cbddbe61932ac4049a1f0b6e7922acd0,
+        type: 3}
+    - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
+        type: 3}
+      propertyPath: hitFX.Array.data[0]
+      value: 
+      objectReference: {fileID: 1812881953744270, guid: 96788fb03d2719041a5d0d173e0e269f,
+        type: 3}
+    - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
+        type: 3}
+      propertyPath: hitFX.Array.data[1]
+      value: 
+      objectReference: {fileID: 1994431116057926, guid: 5035c29d7ee247f499db665186795b97,
+        type: 3}
+    - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
+        type: 3}
+      propertyPath: hitFX.Array.data[2]
+      value: 
+      objectReference: {fileID: 1814450909871590, guid: b1fdcbeb2d155e547b136670366c9cb4,
         type: 3}
     - target: {fileID: 3789448736045965556, guid: 880858dfd9b1e784e89d45242bf78d2b,
         type: 3}
