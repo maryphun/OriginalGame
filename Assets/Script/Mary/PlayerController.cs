@@ -12,37 +12,47 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float dashDistance = 2f;
     [SerializeField] float dashTime = 0.5f;
     [SerializeField] float[] attackAnimFrame;
+    [SerializeField] float damageRange = 1.5f;
+    [SerializeField] float damageAngle = 45;
     [SerializeField] LayerMask wall;
 
     private PlayerInput input;
     private float turnMoveVelocity, targetAngle, moveSpeedMax, attackAngle, comboTimerCount;
     private int comboCount;
     private new Transform camera;
+    private PlayerAnimator visualScript;
     private Animator anim;
     private bool isAttacking, shouldAttack, canRegisterAttack;
     private bool isDashing, canRegisterDash;
     private Collider collider;
+    private List<Transform> attackedEnemy = new List<Transform>();
+    private HitPoint hpbar;
     [HideInInspector] public bool canAttack;
 
     // Start is called before the first frame update
     void Awake()
     {
+        // references initialization
         input = new PlayerInput();
         camera = Camera.main.transform;
         anim = GetComponentInChildren<Animator>();
+        visualScript = GetComponentInChildren<PlayerAnimator>();
         collider = GetComponent<Collider>();
-        shouldAttack = false;
-        canAttack = true;
-        canRegisterAttack = false;
-        isDashing = false;
-        canRegisterDash = true;
+        hpbar = GameObject.FindGameObjectWithTag("Hpbar").GetComponent<HitPoint>();
 
+        // key registration
         input.Player.Attack.performed += _ => Attack();
         input.Player.Dash.performed += _ => Dash(new Vector2(input.Player.HorizontalMove.ReadValue<float>(), input.Player.VerticalMove.ReadValue<float>()));
 
         // value initialization
         moveSpeedMax = moveSpeed;
         isAttacking = false;
+        attackedEnemy.Clear();
+        shouldAttack = false;
+        canAttack = true;
+        canRegisterAttack = false;
+        isDashing = false;
+        canRegisterDash = true;
 
         //debug
         // Time.timeScale = 0.2f;
@@ -116,6 +126,7 @@ public class PlayerController : MonoBehaviour
                 isDashing = false;
             }
             moveSpeedMax = 0.0f;
+            attackedEnemy.Clear();
 
             Ray ray = camera.GetComponent<CameraFollow>().MousePositionPointToRay();
             Plane groundplane = new Plane(Vector3.up, Vector3.zero);
@@ -231,5 +242,50 @@ public class PlayerController : MonoBehaviour
             return;
         }
         transform.DOMove(transform.position + normalizedVector * distance, time, false);
+    }
+
+    public void DealDamage()
+    {
+        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            if (IsTargetInAttackRange(enemy.transform) && !attackedEnemy.Contains(enemy.transform))
+            {
+                attackedEnemy.Add(enemy.transform);
+                visualScript.HitFX(Random.Range(0, 2), enemy.transform.position + Vector3.up);
+            }
+        }
+    }
+
+    public bool IsTargetInAttackRange(Transform enemy)
+    {
+        // Vectors
+        Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
+        origin = new Vector3(origin.x, 0.0f, origin.z);
+        Vector3 target = new Vector3(enemy.position.x, 0.0f,enemy.position.z);
+
+        // debug visualization
+        Quaternion rightRayRotation = Quaternion.AngleAxis(damageAngle / 2, Vector3.up);
+        Quaternion leftRayRotation = Quaternion.AngleAxis(-damageAngle / 2, Vector3.up);
+        Vector3 rightRayDirection = rightRayRotation * transform.forward;
+        Vector3 leftRayDirection = leftRayRotation * transform.forward;
+        Debug.DrawRay(origin, leftRayDirection * damageRange, Color.white, 0.5f);
+        Debug.DrawRay(origin, rightRayDirection * damageRange, Color.white, 0.5f);
+        // ----------------------
+
+        var dir = (target - origin).normalized;
+        float angle = Vector3.Angle(dir, transform.forward);
+        var dist = Vector3.Distance(origin, target);
+        if (Mathf.Abs(angle) < damageAngle && dist < damageRange)
+        {
+            return true;
+        }
+        Debug.Log("angle = " + angle);
+        Debug.Log("distance = " + dist);
+        return false;
+    }
+
+    public void TakeDamage(int value)
+    {
+        hpbar.ChangeHp(value);
     }
 }

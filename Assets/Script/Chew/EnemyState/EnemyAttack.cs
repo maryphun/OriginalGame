@@ -37,7 +37,7 @@ public class EnemyAttack : IState<Enemy>
         {
             if (!enemy.Anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
             {
-                Debug.Log("not attacking");
+                //Debug.Log("not attacking");
                 enemy.ChangeState(new EnemyMovement());
             }
         }
