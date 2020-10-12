@@ -15,6 +15,7 @@ public struct EnemyStat
     public float health;
     public float movementSpeed;
     public AttackType attackType;
+    public float attackDelay;
     public float attackRange;
     public float visionRadius;
     public float visionAngle;
