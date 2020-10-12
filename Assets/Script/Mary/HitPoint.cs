@@ -75,12 +75,16 @@ public class HitPoint : MonoBehaviour
         }
     }
 
-    public void ChangeHp(int value)
+    /// <summary>
+    /// return with new hp value
+    /// </summary>
+    public int ChangeHp(int value)
     {
         currentHp += value;
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
         UpdateHP();
-        Debug.Log(currentHp + "hp");
+
+        return currentHp;
     }
 
     public void BreakEffect(RectTransform heartToBreak)
@@ -94,4 +98,8 @@ public class HitPoint : MonoBehaviour
         }
     }
 
+    public int GetCurrentHP()
+    {
+        return currentHp;
+    }
 }

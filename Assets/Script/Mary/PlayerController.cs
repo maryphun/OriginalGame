@@ -294,6 +294,31 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int value)
     {
-        hpbar.ChangeHp(value);
+        hpbar.ChangeHp(-value);
+
+        // Check if character is death after taking damage
+        if (IsDeath())
+        {
+            // Shouldn't be allowed to do these action
+            canAttack = false;
+            canRegisterAttack = false;
+            canRegisterDash = false;
+            moveSpeed = 0.0f;
+        }
+        else
+        {
+            // Character survived this attack.
+
+            // Camera Shake
+            StartCoroutine(camera.GetComponent<CameraFollow>().CameraShake(0.05f, 0.05f));
+
+            anim.Play("Damaged", 0, 0.05f);
+        }
+    }
+
+    public bool IsDeath()
+    {
+        // Character is considered death if hp equal to 0
+        return hpbar.GetCurrentHP() == 0;
     }
 }

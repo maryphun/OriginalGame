@@ -20,7 +20,7 @@ public class EnemyHitPoint : MonoBehaviour
 
     //private
     private const float hpBarDisplaySpeed = 0.09f;
-    private const float hpBarDisplayTime = 3.5f;
+    private const float hpBarDisplayTime = 1.5f;
     private const float hpBarLengthFormula = 1.26603870577f; // this is the best balance I found and not thinking to modifiy it anyway.
     private GameObject hpbarHandle;
     private Camera cam;
@@ -77,7 +77,7 @@ public class EnemyHitPoint : MonoBehaviour
             }
             canvas.SetProgressorColor(0, hpBarColor, enemyScript.EnemyStat.health / maxHP);
             canvas.SetProgressor(0, enemyScript.EnemyStat.health / maxHP);
-            canvas.SetProgressor(1, Mathf.MoveTowards(canvas.GetProgressor(1), enemyScript.EnemyStat.health / maxHP, 0.25f * Time.deltaTime));
+            canvas.SetProgressor(1, Mathf.MoveTowards(canvas.GetProgressor(1), enemyScript.EnemyStat.health / maxHP, 0.5f * Time.deltaTime));
         }
     }
 
