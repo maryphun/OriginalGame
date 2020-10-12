@@ -12,37 +12,47 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float dashDistance = 2f;
     [SerializeField] float dashTime = 0.5f;
     [SerializeField] float[] attackAnimFrame;
+    [SerializeField] float damageRange = 1.5f;
+    [SerializeField] float damageAngle = 45;
     [SerializeField] LayerMask wall;
 
     private PlayerInput input;
     private float turnMoveVelocity, targetAngle, moveSpeedMax, attackAngle, comboTimerCount;
     private int comboCount;
     private new Transform camera;
+    private PlayerAnimator visualScript;
     private Animator anim;
     private bool isAttacking, shouldAttack, canRegisterAttack;
     private bool isDashing, canRegisterDash;
     private Collider collider;
+    private List<Transform> attackedEnemy = new List<Transform>();
+    private HitPoint hpbar;
     [HideInInspector] public bool canAttack;
 
     // Start is called before the first frame update
     void Awake()
     {
+        // references initialization
         input = new PlayerInput();
         camera = Camera.main.transform;
         anim = GetComponentInChildren<Animator>();
+        visualScript = GetComponentInChildren<PlayerAnimator>();
         collider = GetComponent<Collider>();
-        shouldAttack = false;
-        canAttack = true;
-        canRegisterAttack = false;
-        isDashing = false;
-        canRegisterDash = true;
+        hpbar = GameObject.FindGameObjectWithTag("Hpbar").GetComponent<HitPoint>();
 
+        // key registration
         input.Player.Attack.performed += _ => Attack();
         input.Player.Dash.performed += _ => Dash(new Vector2(input.Player.HorizontalMove.ReadValue<float>(), input.Player.VerticalMove.ReadValue<float>()));
 
         // value initialization
         moveSpeedMax = moveSpeed;
         isAttacking = false;
+        attackedEnemy.Clear();
+        shouldAttack = false;
+        canAttack = true;
+        canRegisterAttack = false;
+        isDashing = false;
+        canRegisterDash = true;
 
         //debug
         // Time.timeScale = 0.2f;
@@ -116,6 +126,7 @@ public class PlayerController : MonoBehaviour
                 isDashing = false;
             }
             moveSpeedMax = 0.0f;
+            attackedEnemy.Clear();
 
             Ray ray = camera.GetComponent<CameraFollow>().MousePositionPointToRay();
             Plane groundplane = new Plane(Vector3.up, Vector3.zero);

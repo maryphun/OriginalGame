@@ -7,6 +7,7 @@ public class PlayerAnimator : MonoBehaviour
 {
     [SerializeField] private Transform headAim;
     [SerializeField] private GameObject[] slashFX;
+    [SerializeField] private GameObject[] hitFX;
     [SerializeField] private GameObject dashFX;
 
     private Animator anim;
@@ -58,6 +59,7 @@ public class PlayerAnimator : MonoBehaviour
             default:
                 break;
         }
+    }
 
     public void HitFX(int variation, Vector3 targetPos)
     {
@@ -86,5 +88,27 @@ public class PlayerAnimator : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         targetFX.enableEmission = false;
+    }
+
+    public void StartDealDamage(float time)
+    {
+        StartCoroutine(DealingDamge(time));
+    }
+
+    private IEnumerator DealingDamge(float time)
+    {
+        float timeLeft = time;
+        while (timeLeft > 0f)
+        {
+            timeLeft -= Time.deltaTime;
+            DealDamge();
+            yield return null;
+        }
+        yield return 0;
+    }
+
+    public void DealDamge()
+    {
+        controller.DealDamage();
     }
 }

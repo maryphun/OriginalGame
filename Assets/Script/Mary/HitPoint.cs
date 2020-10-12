@@ -11,7 +11,7 @@ public class HitPoint : MonoBehaviour
     [SerializeField] private Image[] breakFX;
 
     private List<RectTransform> hearts;
-    private PlayerInput input;
+    //private PlayerInput input;
     private int maxHp = 27;
 
     // Start is called before the first frame update
@@ -21,11 +21,11 @@ public class HitPoint : MonoBehaviour
         hearts = new List<RectTransform>();
         UpdateHP();
 
-        input = new PlayerInput();
-        input.Enable();
-        input.Debug.Z.performed += _ => ChangeHp(-1);
-        input.Debug.X.performed += _ => ChangeHp(0);
-        input.Debug.C.performed += _ => ChangeHp(1);
+        //input = new PlayerInput();
+        //input.Enable();
+        //input.Debug.Z.performed += _ => ChangeHp(-1);
+        //input.Debug.X.performed += _ => ChangeHp(0);
+        //input.Debug.C.performed += _ => ChangeHp(1);
     }
 
     private void UpdateHP()

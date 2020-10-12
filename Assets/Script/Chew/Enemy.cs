@@ -25,7 +25,6 @@ public class Enemy : MonoBehaviour
     [HideInInspector] public bool canMove;
     private float maxHealth;
 
-
     private void Awake()
     {
 
