@@ -32,4 +32,9 @@ public class EnemyAnimator : MonoBehaviour
             //enemyScript.SetIsAttacking(false);
         }
     }
+
+    public void DealDamage()
+    {
+        enemyScript.DealDamage();
+    }
 }

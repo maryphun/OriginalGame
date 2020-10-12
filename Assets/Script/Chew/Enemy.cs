@@ -114,7 +114,8 @@ public class Enemy : MonoBehaviour
     {
         stateMachine.ChangeState(state);
     }
-      bool DetectObject(Transform origin, Transform target,float visionAngle,float visionDistance)
+
+    public bool DetectObject(Transform origin, Transform target,float visionAngle,float visionDistance)
     {
         var dir = (target.position - origin.position).normalized;
         float angle = Vector3.Angle(dir, origin.forward);
@@ -124,5 +125,14 @@ public class Enemy : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void DealDamage()
+    {
+        if (DetectObject(transform, TargetPlayer.transform, EnemyStat.visionAngle / 2, EnemyStat.attackRange))
+        {
+            targetPlayer.GetComponent<PlayerController>().TakeDamage(1);
+        }
+
     }
 }
