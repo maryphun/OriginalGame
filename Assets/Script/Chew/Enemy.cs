@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour
     private Animator anim;
     private bool isAttacking;
     [HideInInspector] public bool canAttack;
+    [HideInInspector] public bool canMove;
+
 
 
     private void Awake()
@@ -41,6 +43,7 @@ public class Enemy : MonoBehaviour
         currentState = stateMachine.GetCurrentState.ToString();
         enemyRigidbody = GetComponent<Rigidbody>();
         canAttack = true;
+        canMove = true;
 
         input = new Debuginput();
         input.Enable();
@@ -88,8 +91,8 @@ public class Enemy : MonoBehaviour
         Quaternion leftRayRotation = Quaternion.AngleAxis(-enemyStat.visionAngle/2, Vector3.up);
         Vector3 rightRayDirection = rightRayRotation * transform.forward;
         Vector3 leftRayDirection = leftRayRotation * transform.forward;
-        Gizmos.DrawRay(transform.position, leftRayDirection * enemyStat.visionRadius);
-        Gizmos.DrawRay(transform.position, rightRayDirection * enemyStat.visionRadius);
+        Gizmos.DrawRay(transform.position + Vector3.up, leftRayDirection * enemyStat.visionRadius);
+        Gizmos.DrawRay(transform.position + Vector3.up, rightRayDirection * enemyStat.visionRadius);
     }
 
     public void ReceiveDamage(Collider damageOwner = null)
@@ -100,7 +103,7 @@ public class Enemy : MonoBehaviour
             enemyStat.health -= damageOwner.GetComponent<Damage>().damageValue;
         }
         Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
-        enemyRigidbody.AddForce(moveDirection * -500f);
+        enemyRigidbody.AddForce(moveDirection * -100f);
     
     }
 
@@ -120,5 +123,17 @@ public class Enemy : MonoBehaviour
         {
             ReceiveDamage(other);
         }
+    }
+
+      bool DetectObject(Transform origin, Transform target,float visionAngle,float visionDistance)
+    {
+        var dir = (target.position - origin.position).normalized;
+        float angle = Vector3.Angle(dir, origin.forward);
+        var dist = Vector3.Distance(origin.position, target.position);
+        if (Mathf.Abs(angle) < visionAngle && dist < visionDistance)
+        {
+            return true;
+        }
+        return false;
     }
 }

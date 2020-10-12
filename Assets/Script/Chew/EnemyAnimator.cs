@@ -21,4 +21,15 @@ public class EnemyAnimator : MonoBehaviour
             //enemyScript.SetIsAttacking(false);
         }
     }
+
+    public void SetCanMove(int boolean)
+    {
+        enemyScript.canMove = (boolean != 0);
+
+        if (enemyScript.canMove)
+        {
+            //enemyScript.ResetMoveSpeedMax();
+            //enemyScript.SetIsAttacking(false);
+        }
+    }
 }
