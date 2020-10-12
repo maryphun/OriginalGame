@@ -59,6 +59,10 @@ public class PlayerAnimator : MonoBehaviour
                 break;
         }
 
+    public void HitFX(int variation, Vector3 targetPos)
+    {
+        if (variation < 0 || variation > hitFX.Length) return;
+        Instantiate(hitFX[variation], targetPos, Quaternion.identity);
     }
 
     public void StartRegisterAttack()

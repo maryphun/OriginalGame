@@ -232,4 +232,57 @@ public class PlayerController : MonoBehaviour
         }
         transform.DOMove(transform.position + normalizedVector * distance, time, false);
     }
+
+    public void DealDamage()
+    {
+        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            if (IsTargetInAttackRange(enemy.transform) && !attackedEnemy.Contains(enemy.transform))
+            {
+                attackedEnemy.Add(enemy.transform);
+                visualScript.HitFX(Random.Range(0, 2), enemy.transform.position + Vector3.up);
+
+                EnemyHitPoint enemyScript = enemy.GetComponent<EnemyHitPoint>();
+                if (enemyScript != null)
+                {
+                    enemyScript.TakeDamage(20f);
+                }
+                else
+                {
+                    Debug.LogWarning("Enemy Properties script not found in attacked enemy. this enemy won't take damage and show hp bar.");
+                }
+            }
+        }
+    }
+
+    public bool IsTargetInAttackRange(Transform enemy)
+    {
+        // Vectors
+        Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
+        origin = new Vector3(origin.x, 0.0f, origin.z);
+        Vector3 target = new Vector3(enemy.position.x, 0.0f,enemy.position.z);
+
+        // debug visualization
+        Quaternion rightRayRotation = Quaternion.AngleAxis(damageAngle / 2, Vector3.up);
+        Quaternion leftRayRotation = Quaternion.AngleAxis(-damageAngle / 2, Vector3.up);
+        Vector3 rightRayDirection = rightRayRotation * transform.forward;
+        Vector3 leftRayDirection = leftRayRotation * transform.forward;
+        Debug.DrawRay(origin, leftRayDirection * damageRange, Color.white, 0.5f);
+        Debug.DrawRay(origin, rightRayDirection * damageRange, Color.white, 0.5f);
+        // ----------------------
+
+        var dir = (target - origin).normalized;
+        float angle = Vector3.Angle(dir, transform.forward);
+        var dist = Vector3.Distance(origin, target);
+        if (Mathf.Abs(angle) < damageAngle && dist < damageRange)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void TakeDamage(int value)
+    {
+        hpbar.ChangeHp(value);
+    }
 }

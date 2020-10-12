@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Wall
   - Weapon
+  - Hpbar
+  - Enemy
+  - MainCanvas
   layers:
   - Default
   - TransparentFX

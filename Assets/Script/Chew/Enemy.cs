@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour
     private bool isAttacking;
     [HideInInspector] public bool canAttack;
     [HideInInspector] public bool canMove;
-
+    private float maxHealth;
 
 
     private void Awake()
@@ -44,18 +44,18 @@ public class Enemy : MonoBehaviour
         enemyRigidbody = GetComponent<Rigidbody>();
         canAttack = true;
         canMove = true;
+        maxHealth = enemyStat.health;
 
         input = new Debuginput();
         input.Enable();
 
-        input.debugging.EnemyKnockback.performed += _ => ReceiveDamage();
         input.debugging.DropItem.performed += _ => dropableItem.DropItem();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (enemyStat.health <= 0 /*&& !isDeath*/)
+        if (enemyStat.health <= 0 && !isDeath)
         {
             isDeath = true;
             stateMachine.ChangeState(new EnemyDeath());
@@ -95,15 +95,14 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawRay(transform.position + Vector3.up, rightRayDirection * enemyStat.visionRadius);
     }
 
-    public void ReceiveDamage(Collider damageOwner = null)
+    public void ReceiveDamage(float damage)
     {
         stateMachine.Setup(this, new EnemyGetHit());
-        if (damageOwner)
-        {
-            enemyStat.health -= damageOwner.GetComponent<Damage>().damageValue;
-        }
-        Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
-        enemyRigidbody.AddForce(moveDirection * -100f);
+
+        enemyStat.health = Mathf.Clamp(enemyStat.health - damage, 0.0f, maxHealth);
+
+       // Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
+       // enemyRigidbody.AddForce(moveDirection * -500f);
     
     }
 
@@ -116,15 +115,6 @@ public class Enemy : MonoBehaviour
     {
         stateMachine.ChangeState(state);
     }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Weapon"))
-        {
-            ReceiveDamage(other);
-        }
-    }
-
       bool DetectObject(Transform origin, Transform target,float visionAngle,float visionDistance)
     {
         var dir = (target.position - origin.position).normalized;
