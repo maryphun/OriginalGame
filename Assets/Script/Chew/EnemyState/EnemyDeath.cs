@@ -13,6 +13,7 @@ public class EnemyDeath : IState<Enemy>
         {
             dropableItem.DropItem();
         }
+        SelfDestruct.Destroy(enemy.gameObject);
     }
 
     // Update is called once per frame
