@@ -63,7 +63,7 @@ public class PlayerAnimator : MonoBehaviour
 
     public void HitFX(int variation, Vector3 targetPos)
     {
-        if (variation < 0 || variation > hitFX.Length) return;
+        if (variation < 0 || variation >= hitFX.Length) return;
         Instantiate(hitFX[variation], targetPos, Quaternion.identity);
     }
 

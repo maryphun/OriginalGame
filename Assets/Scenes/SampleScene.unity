@@ -9350,6 +9350,29 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: hitFX.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: hitFX.Array.data[0]
+      value: 
+      objectReference: {fileID: 1812881953744270, guid: 96788fb03d2719041a5d0d173e0e269f,
+        type: 3}
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: hitFX.Array.data[1]
+      value: 
+      objectReference: {fileID: 1994431116057926, guid: 5035c29d7ee247f499db665186795b97,
+        type: 3}
+    - target: {fileID: 4805246550369994854, guid: b54f4763cbeb8814b87c24afa4a572fc,
+        type: 3}
+      propertyPath: hitFX.Array.data[2]
+      value: 
+      objectReference: {fileID: 1814450909871590, guid: b1fdcbeb2d155e547b136670366c9cb4,
+        type: 3}
     - target: {fileID: 8784423685983364432, guid: b54f4763cbeb8814b87c24afa4a572fc,
         type: 3}
       propertyPath: m_LocalPosition.x
