@@ -134,11 +134,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hpbar: {fileID: 7234720166968363483, guid: c7d910599cab3ae498941bb276a53916, type: 3}
   hpBarRoot: {fileID: 3604940037967622764}
-  enemyName: mary bobo
+  enemyName: Siew bin king
   hpBarColor:
     serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
+    key0: {r: 0.509434, g: 0, b: 0, a: 1}
+    key1: {r: 0.6132076, g: 0, b: 0, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -164,8 +164,8 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  hpBarFollowColor: {r: 0, g: 0, b: 0, a: 0}
-  hpBarOffset: 1.29
+  hpBarFollowColor: {r: 0.29803923, g: 0, b: 0, a: 1}
+  hpBarOffset: 1.2
 --- !u!114 &1807102265
 MonoBehaviour:
   m_ObjectHideFlags: 0

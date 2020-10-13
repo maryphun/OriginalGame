@@ -225,6 +225,44 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Cinematic"",
+            ""id"": ""191e7d39-4a6b-4858-9bc8-38c72920ef55"",
+            ""actions"": [
+                {
+                    ""name"": ""Clicked"",
+                    ""type"": ""Button"",
+                    ""id"": ""e16b6846-3530-4faa-84ed-03947b3a76e1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""57ccf074-3342-4b49-8b9b-1af0958814aa"",
+                    ""path"": ""<Keyboard>/anyKey"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Clicked"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7a5c5e30-5504-4c26-b7c3-6a84c9235407"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Clicked"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -241,6 +279,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_Debug_Z = m_Debug.FindAction("Z", throwIfNotFound: true);
         m_Debug_X = m_Debug.FindAction("X", throwIfNotFound: true);
         m_Debug_C = m_Debug.FindAction("C", throwIfNotFound: true);
+        // Cinematic
+        m_Cinematic = asset.FindActionMap("Cinematic", throwIfNotFound: true);
+        m_Cinematic_Clicked = m_Cinematic.FindAction("Clicked", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -400,6 +441,39 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         }
     }
     public DebugActions @Debug => new DebugActions(this);
+
+    // Cinematic
+    private readonly InputActionMap m_Cinematic;
+    private ICinematicActions m_CinematicActionsCallbackInterface;
+    private readonly InputAction m_Cinematic_Clicked;
+    public struct CinematicActions
+    {
+        private @PlayerInput m_Wrapper;
+        public CinematicActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Clicked => m_Wrapper.m_Cinematic_Clicked;
+        public InputActionMap Get() { return m_Wrapper.m_Cinematic; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CinematicActions set) { return set.Get(); }
+        public void SetCallbacks(ICinematicActions instance)
+        {
+            if (m_Wrapper.m_CinematicActionsCallbackInterface != null)
+            {
+                @Clicked.started -= m_Wrapper.m_CinematicActionsCallbackInterface.OnClicked;
+                @Clicked.performed -= m_Wrapper.m_CinematicActionsCallbackInterface.OnClicked;
+                @Clicked.canceled -= m_Wrapper.m_CinematicActionsCallbackInterface.OnClicked;
+            }
+            m_Wrapper.m_CinematicActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Clicked.started += instance.OnClicked;
+                @Clicked.performed += instance.OnClicked;
+                @Clicked.canceled += instance.OnClicked;
+            }
+        }
+    }
+    public CinematicActions @Cinematic => new CinematicActions(this);
     public interface IPlayerActions
     {
         void OnHorizontalMove(InputAction.CallbackContext context);
@@ -413,5 +487,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnZ(InputAction.CallbackContext context);
         void OnX(InputAction.CallbackContext context);
         void OnC(InputAction.CallbackContext context);
+    }
+    public interface ICinematicActions
+    {
+        void OnClicked(InputAction.CallbackContext context);
     }
 }

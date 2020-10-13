@@ -43,21 +43,22 @@ public class PlayerController : MonoBehaviour
         visualScript = GetComponentInChildren<PlayerAnimator>();
         collider = GetComponent<Collider>();
         hpbar = GameObject.FindGameObjectWithTag("Hpbar").GetComponent<HitPoint>();
-       
+
         // key registration
         input.Player.Attack.performed += _ => Attack();
         input.Player.Dash.performed += _ => Dash(new Vector2(input.Player.HorizontalMove.ReadValue<float>(), input.Player.VerticalMove.ReadValue<float>()));
 
         // value initialization
-        moveSpeedMax = moveSpeed;
-        isAttacking = false;
-        attackedEnemy.Clear();
-        immuneEnemy.Clear();
-        shouldAttack = false;
-        canAttack = true;
-        canRegisterAttack = false;
-        isDashing = false;
-        canRegisterDash = true;
+        //moveSpeedMax = moveSpeed;
+        //isAttacking = false;
+        //attackedEnemy.Clear();
+        //immuneEnemy.Clear();
+        //shouldAttack = false;
+        //canAttack = false;
+        //canRegisterAttack = false;
+        //isDashing = false;
+        //canRegisterDash = false;
+        VariableInitialization();
 
         //debug
         // Time.timeScale = 0.2f;
@@ -283,7 +284,7 @@ public class PlayerController : MonoBehaviour
         // Vectors
         Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
         origin = new Vector3(origin.x, 0.0f, origin.z);
-        Vector3 target = new Vector3(enemy.position.x, 0.0f,enemy.position.z);
+        Vector3 target = new Vector3(enemy.position.x, 0.0f, enemy.position.z);
 
         // debug visualization
         Quaternion rightRayRotation = Quaternion.AngleAxis(damageAngle / 2, Vector3.up);
@@ -354,5 +355,24 @@ public class PlayerController : MonoBehaviour
     public bool IsImmumeTarget(Transform target)
     {
         return immuneEnemy.Contains(target);
+    }
+
+    public void PlayAnim(string targetanim, int layer, float normalizedTime)
+    {
+        anim.Play(targetanim, layer, normalizedTime);
+    }
+
+    public void VariableInitialization()
+    {
+        // value initialization
+        moveSpeedMax = moveSpeed;
+        isAttacking = false;
+        attackedEnemy.Clear();
+        immuneEnemy.Clear();
+        shouldAttack = false;
+        canAttack = true;
+        canRegisterAttack = false;
+        isDashing = false;
+        canRegisterDash = true;
     }
 }

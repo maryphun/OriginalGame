@@ -133,4 +133,9 @@ public class PlayerAnimator : MonoBehaviour
     {
         controller.DealDamage();
     }
+
+    public void WokeUp()
+    {
+        controller.VariableInitialization();
+    }
 }
