@@ -158,29 +158,27 @@ public class Enemy : MonoBehaviour
         Vector3 target = new Vector3(targetPlayer.transform.position.x, 0.0f, targetPlayer.transform.position.z);
 
         var dir = (target - origin).normalized;
-        float calcAngle = Vector3.Angle(dir, transform.forward);
-        var dist = Vector3.Distance(origin, target);
-        LayerMask playerMask = LayerMask.GetMask("Player");
+        Vector3 attPoint = transform.position + (transform.forward * EnemyStat.attackRange / 2);
+        Debug.DrawLine(attPoint - transform.forward * (enemyStat.attackRadiusOfArea / 2), attPoint + transform.forward * (enemyStat.attackRadiusOfArea / 2), Color.red, 2f);
 
-        var tmpCollider = Physics.OverlapSphere(transform.position + dir, EnemyStat.attackRange / 2,playerMask);
-        Debug.DrawLine(transform.position + dir * (- EnemyStat.attackRange / 2), transform.position + dir * ( EnemyStat.attackRange / 2), Color.red,2f);
-        if (tmpCollider[0] != null )
+        if (Vector3.Distance(attPoint,target) <= enemyStat.attackRadiusOfArea)
         {
             return true;
         }
+
         return false;
     }
 
     public void DealDamage()
     {
-        if (DetectObject(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
-        {
-            targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-        }
-        //if (DetectObjectInArea())
+        //if (DetectObject(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
         //{
-        //    targetPlayer.GetComponent<PlayerController>().TakeDamage(1);
+        //    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
         //}
+        if (DetectObjectInArea())
+        {
+            targetPlayer.GetComponent<PlayerController>().TakeDamage(1,transform);
+        }
     }
 
     public void MoveWithRayCast(Vector3 normalizedVector, float distance, float time)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEditor;
+using MyBox;
 
 public enum AttackType
 {
@@ -12,7 +13,7 @@ public enum AttackType
 };
 
 [System.Serializable]
-public struct EnemyStat
+public class EnemyStat
 {
     public float health;
     public float movementSpeed;
@@ -20,6 +21,8 @@ public struct EnemyStat
     public float attackDelay;
     public float attackRange;
     public float attackAngle;
+    [ConditionalField(nameof(attackType),false,AttackType.AreaMelee)]
+    public float attackRadiusOfArea;
     public float visionRadius;
     public float visionAngle;
     public float stunTime;
@@ -33,5 +36,4 @@ public struct EnemyEvent
     public UnityEvent onMoving;
     public UnityEvent onTriggerEnter;
 }
-
 

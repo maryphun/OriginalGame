@@ -26,7 +26,7 @@ public class EnemyAttackFinish : IState<Enemy>
     {
         Vector3 targetPos = enemy.TargetPlayer.transform.position;
         Vector3 tmpDir = (targetPos - enemy.transform.position).normalized;
-        float targetAngle = Mathf.Atan2(direction.x, direction.z)*-1 * Mathf.Rad2Deg;
+        float targetAngle = (Mathf.Atan2(-direction.x, -direction.z) * Mathf.Rad2Deg);
         direction = tmpDir;
 
         enemy.transform.position = new Vector3(enemy.transform.position.x + -direction.x * enemy.EnemyStat.movementSpeed * Time.deltaTime,

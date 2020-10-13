@@ -12,7 +12,6 @@ public class EnemyManager : MonoBehaviour
         public Vector3 spawnPosition;
         public float SpawnTime;
         public Enemy prototype;
-        public float spawnNum;
         [ReadOnly]
         public bool isSpawned;
     }
