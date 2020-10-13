@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEditor;
 
 public enum AttackType
 {
     Melee,
-    Ranged
+    Ranged,
+    AreaMelee
 };
 
 [System.Serializable]
@@ -21,7 +23,7 @@ public struct EnemyStat
     public float visionRadius;
     public float visionAngle;
     public float stunTime;
-
+    public float escapeRange;
 }
 
 [System.Serializable]
@@ -31,4 +33,5 @@ public struct EnemyEvent
     public UnityEvent onMoving;
     public UnityEvent onTriggerEnter;
 }
+
 

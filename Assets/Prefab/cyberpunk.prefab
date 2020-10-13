@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 5058491890467669056}
   - component: {fileID: 5613087782680801855}
   - component: {fileID: 3996530374473894183}
+  - component: {fileID: 694164726}
   m_Layer: 0
   m_Name: cyberpunk
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53,6 +54,7 @@ MonoBehaviour:
     attackType: 0
     attackDelay: 1
     attackRange: 1.5
+    attackAngle: 0
     visionRadius: 5
     visionAngle: 60
     stunTime: 2
@@ -68,6 +70,9 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   canAttack: 0
+  canMove: 0
+  isDeath: 0
+  isDying: 0
 --- !u!114 &5058491890467669056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,6 +118,52 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &694164726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904338040190982498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ff8d3c16c35af408f6148b5fa8750c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpbar: {fileID: 7234720166968363483, guid: c7d910599cab3ae498941bb276a53916, type: 3}
+  hpBarRoot: {fileID: 3604940037967622764}
+  enemyName: mary bobo
+  hpBarColor:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  hpBarFollowColor: {r: 0, g: 0, b: 0, a: 0}
+  hpBarOffset: 1.29
 --- !u!114 &1807102265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,6 +264,12 @@ Transform:
 --- !u!4 &3605022686582838066 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4267462005642352, guid: c9751ce6917e9a34fa65260bace8c38a,
+    type: 3}
+  m_PrefabInstance: {fileID: 3605329634659321666}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3604940037967622764 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4474935882446126, guid: c9751ce6917e9a34fa65260bace8c38a,
     type: 3}
   m_PrefabInstance: {fileID: 3605329634659321666}
   m_PrefabAsset: {fileID: 0}

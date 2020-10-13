@@ -1,18 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class EnemyAttack : IState<Enemy>
 {
     private float attDelay;
     private float tmpSpeed;
     private float attackedTime;
+    private bool hasAttacked;
     // Start is called before the first frame update
     public void Enter(Enemy enemy)
     {
         attackedTime = Time.time;
         attDelay = 0;
-        
+        hasAttacked = false;
+
+
     }
 
     // Update is called once per frame
@@ -24,16 +28,23 @@ public class EnemyAttack : IState<Enemy>
             {
                 if (Time.time >= attackedTime + attDelay)
                 {
-
-                    enemy.canAttack = false;
-                    enemy.Anim.Play("Attack", 0, 0.0f);
-                    attackedTime = Time.time;
-                    attDelay = enemy.EnemyStat.attackDelay;
+                    if (!hasAttacked)
+                    {
+                        hasAttacked = true;
+                        enemy.canAttack = false;
+                        enemy.Anim.Play("Attack", 0, 0.0f);
+                        attackedTime = Time.time;
+                        attDelay = enemy.EnemyStat.attackDelay;
+                    }
+                    else
+                    {
+                        enemy.ChangeState(new EnemyAttackFinish());
+                    }
                 }
             }
 
         }
-        else        
+        else
         {
             if (!enemy.Anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
             {

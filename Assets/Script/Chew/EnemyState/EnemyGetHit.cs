@@ -9,7 +9,7 @@ public class EnemyGetHit : IState<Enemy>
     public void Enter(Enemy enemy)
     {
         enemy.Anim.Play("Stun", 0, 0.0f);
-
+        enemy.Anim.SetFloat("Speed", 0);
         timeNow = Time.time;
     }
 
@@ -20,7 +20,7 @@ public class EnemyGetHit : IState<Enemy>
         //    enemy.canMove = false;
         //}
 
-        if (timeNow <= Time.time - enemy.EnemyStat.stunTime)
+        if (Time.time > timeNow + enemy.EnemyStat.stunTime)
         {
             enemy.ChangeState(new EnemyMovement());
         }

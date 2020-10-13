@@ -17,14 +17,16 @@ public class EnemyMovement : IState<Enemy>
     // Update is called once per frame
     public void Execute(Enemy enemy)
     {
-        
+        Vector3 targetPos = enemy.TargetPlayer.transform.position;
         LayerMask wallMask = LayerMask.GetMask("Wall");
         LayerMask playerMask = LayerMask.GetMask("Player");
         RaycastHit wallRayHit = new RaycastHit();
         Ray forwardRay = new Ray(enemy.transform.position + Vector3.up, enemy.transform.forward);
         Ray leftRay = new Ray(enemy.transform.position + Vector3.up, Quaternion.AngleAxis(-enemy.EnemyStat.visionAngle , Vector3.up) * enemy.transform.forward);
         Ray rightRay = new Ray(enemy.transform.position + Vector3.up, Quaternion.AngleAxis(enemy.EnemyStat.visionAngle, Vector3.up) * enemy.transform.forward);
-        Vector3 tmpDir = (enemy.TargetPlayer.transform.position - enemy.transform.position).normalized;
+        Vector3 tmpDir = (targetPos - enemy.transform.position).normalized;
+
+
         // Debug.Log("pos" + forwardRay.origin.y);
         //if (Physics.Raycast(forwardRay,out wallRayHit, enemy.EnemyStat.visionRadius,wallMask))
         //{
@@ -54,6 +56,10 @@ public class EnemyMovement : IState<Enemy>
         //    direction =enemy.transform.forward;
         //}
         direction = tmpDir;
+        //if (Vector3.Distance(targetPos,enemy.transform.position) > Vector3.Distance(targetPos + enemy.TargetPlayer.transform.forward, enemy.transform.position))
+        //{
+        //    direction = leftRay.direction;
+        //}
         //        else
         //        {
         //            direction = leftRay.direction;
@@ -82,7 +88,7 @@ public class EnemyMovement : IState<Enemy>
 
         enemy.Anim.SetFloat("Speed", enemy.EnemyStat.movementSpeed );
 
-        if (enemy.CheckDistance() <= enemy.EnemyStat.attackRange)
+        if (enemy.CheckDistance() <= (enemy.EnemyStat.attackRange ))
         {
             enemy.ChangeState(new EnemyAttack());
         }

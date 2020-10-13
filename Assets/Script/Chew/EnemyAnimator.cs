@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class EnemyAnimator : MonoBehaviour
 {
@@ -36,5 +37,10 @@ public class EnemyAnimator : MonoBehaviour
     public void DealDamage()
     {
         enemyScript.DealDamage();
+    }
+
+    public void MoveForward(float dist)
+    {
+        enemyScript.transform.DOMove(enemyScript.transform.position + (enemyScript.transform.forward * dist), 0.1f, false);
     }
 }

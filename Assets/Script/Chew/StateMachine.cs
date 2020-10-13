@@ -13,6 +13,7 @@ public class StateMachine<T>
 {
     private T _owner;
     IState<T> _currentState;
+    IState<T> _lastState;
     public StateMachine()
     {
         _currentState = null;
@@ -21,6 +22,11 @@ public class StateMachine<T>
     public IState<T> GetCurrentState
     {
         get { return _currentState; }
+    }
+
+    public IState<T> GetLastState
+    {
+        get { return _lastState; }
     }
     // Start is called before the first frame update
     void Start()
@@ -41,6 +47,7 @@ public class StateMachine<T>
         {
             _currentState.Exit(_owner);
         }
+        _lastState = _currentState;
         _currentState = newState;
         _currentState.Enter(_owner);
     }
@@ -51,5 +58,7 @@ public class StateMachine<T>
         _currentState = newState;
         _currentState.Enter(_owner);
     }
+
+ 
 }
 

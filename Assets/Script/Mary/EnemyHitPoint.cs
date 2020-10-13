@@ -122,4 +122,9 @@ public class EnemyHitPoint : MonoBehaviour
         }
         return false;
     }
+
+    public float HpBarDisplayTime
+    {
+        get { return hpBarDisplayTime; }
+    }
 }
