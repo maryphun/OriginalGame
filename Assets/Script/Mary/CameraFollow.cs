@@ -14,11 +14,13 @@ public class CameraFollow : MonoBehaviour
     private CameraInput mouseInput;
     private Camera cam;
     private Vector3 lastDelta, targetPos;
+    private float cameraDiff;
 
     private void Awake()
     {
         mouseInput = new CameraInput();
         cam = GetComponent<Camera>();
+        cameraDiff = maxCameraDifferent;
     }
 
     private void OnEnable()
@@ -49,7 +51,7 @@ public class CameraFollow : MonoBehaviour
         
 
         // limitation
-        delta = Vector3.ClampMagnitude(delta, maxCameraDifferent);
+        delta = Vector3.ClampMagnitude(delta, cameraDiff);
 
         // lerp delta
         lastDelta = Vector3.MoveTowards(lastDelta, delta, mouseFollowSpeed * Time.deltaTime);
@@ -109,5 +111,20 @@ public class CameraFollow : MonoBehaviour
         }
 
         transform.localPosition = originalPos;
+    }
+
+    public void SetCameraToMiddle()
+    {
+        cameraDiff = 0.0f;
+    }
+
+    public void SetCameraDiff(float value)
+    {
+        cameraDiff = value;
+    }
+
+    public void ResetCameraDiff()
+    {
+        cameraDiff = maxCameraDifferent;
     }
 }

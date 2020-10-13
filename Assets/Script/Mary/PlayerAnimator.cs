@@ -8,11 +8,12 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private Transform headAim;
     [SerializeField] private GameObject[] slashFX;
     [SerializeField] private GameObject[] hitFX;
-    [SerializeField] private GameObject dashFX;
+    [SerializeField] private GameObject[] dashFX;
 
     private Animator anim;
     private Camera cam;
     private PlayerController controller;
+    private List<GameObject> dashfxs;
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +21,7 @@ public class PlayerAnimator : MonoBehaviour
         anim = GetComponent<Animator>();
         controller = GetComponentInParent<PlayerController>();
         cam = Camera.main;
+        dashfxs =  new List<GameObject>();
     }
 
     /// <summary>
@@ -51,7 +53,10 @@ public class PlayerAnimator : MonoBehaviour
                 Destroy(Instantiate(slashFX[0], transform, false), 1.5f);
                 break;
             case 2:
-                Destroy(Instantiate(slashFX[1], transform, false), 1.5f);
+                var tmp = Instantiate(slashFX[1], (transform.position + (transform.forward * 1.5f)) +
+                    new Vector3(0.0f, slashFX[1].transform.position.y, 0.0f), Quaternion.Euler(new Vector3(slashFX[1].transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, slashFX[1].transform.rotation.eulerAngles.z)));
+                tmp.transform.DOMove(tmp.transform.position + transform.forward * 0.15f, 0.1f, false);
+                Destroy(tmp, 1.5f);
                 break;
             case 3:
                 Destroy(Instantiate(slashFX[2], transform, false), 1.5f);
@@ -80,14 +85,31 @@ public class PlayerAnimator : MonoBehaviour
 
     public void DashFX()
     {
-        ParticleSystem fx = Instantiate(dashFX, transform, false).GetComponent<ParticleSystem>();
-        StartCoroutine(StopEmission(fx, 0.3f));
+        dashfxs.Clear();
+        foreach (GameObject effect in dashFX)
+        {
+            Transform fx = Instantiate(effect, transform, false).transform;
+            StartCoroutine(StopEmission(fx, 0.3f));
+            dashfxs.Add(fx.gameObject);
+        }
     }
 
-    private IEnumerator StopEmission(ParticleSystem targetFX, float time)
+    private IEnumerator StopEmission(Transform targetFX, float time)
     {
         yield return new WaitForSeconds(time);
-        targetFX.enableEmission = false;
+        var tmp = targetFX.GetComponent<ParticleSystem>();
+        if (tmp != null)
+        {
+            tmp.enableEmission = false;
+        }
+        else
+        {
+            var trail = targetFX.GetComponent<TrailRenderer>();
+            if (trail != null)
+            {
+                trail.emitting = false;
+            }
+        }
     }
 
     public void StartDealDamage(float time)
