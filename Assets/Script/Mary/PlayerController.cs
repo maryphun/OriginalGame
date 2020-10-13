@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Configuration")]
+    [SerializeField, Range(1, 27)] int initiateHitPoint = 3;
     [SerializeField] float moveSpeed = 2;
     [SerializeField] float turnSmoothTime = 0.065f;
     [SerializeField] float comboResetTime = 0.333f;
@@ -14,6 +15,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float[] attackAnimFrame;
     [SerializeField] float damageRange = 1.5f;
     [SerializeField] float damageAngle = 45;
+    [SerializeField] float invulnerableTime = 0.75f;
+    [SerializeField] float attackBaseDamage = 10f;
     [SerializeField] LayerMask wall;
 
     private PlayerInput input;
@@ -26,6 +29,7 @@ public class PlayerController : MonoBehaviour
     private bool isDashing, canRegisterDash;
     private Collider collider;
     private List<Transform> attackedEnemy = new List<Transform>();
+    private List<Transform> immuneEnemy = new List<Transform>();
     private HitPoint hpbar;
     [HideInInspector] public bool canAttack;
 
@@ -39,7 +43,7 @@ public class PlayerController : MonoBehaviour
         visualScript = GetComponentInChildren<PlayerAnimator>();
         collider = GetComponent<Collider>();
         hpbar = GameObject.FindGameObjectWithTag("Hpbar").GetComponent<HitPoint>();
-
+       
         // key registration
         input.Player.Attack.performed += _ => Attack();
         input.Player.Dash.performed += _ => Dash(new Vector2(input.Player.HorizontalMove.ReadValue<float>(), input.Player.VerticalMove.ReadValue<float>()));
@@ -48,6 +52,7 @@ public class PlayerController : MonoBehaviour
         moveSpeedMax = moveSpeed;
         isAttacking = false;
         attackedEnemy.Clear();
+        immuneEnemy.Clear();
         shouldAttack = false;
         canAttack = true;
         canRegisterAttack = false;
@@ -56,6 +61,11 @@ public class PlayerController : MonoBehaviour
 
         //debug
         // Time.timeScale = 0.2f;
+    }
+
+    private void Start()
+    {
+        hpbar.ChangeHp(initiateHitPoint);
     }
 
     private void OnEnable()
@@ -71,6 +81,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsDeath()) return;
+
         // read input
         Vector2 moveInput = new Vector2(input.Player.HorizontalMove.ReadValue<float>(), input.Player.VerticalMove.ReadValue<float>());
         comboTimerCount = Mathf.Clamp(comboTimerCount - Time.deltaTime, 0.0f, comboResetTime);
@@ -256,7 +268,7 @@ public class PlayerController : MonoBehaviour
                 EnemyHitPoint enemyScript = enemy.GetComponent<EnemyHitPoint>();
                 if (enemyScript != null)
                 {
-                    enemyScript.TakeDamage(20f);
+                    enemyScript.TakeDamage(attackBaseDamage);
                 }
                 else
                 {
@@ -292,13 +304,17 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-    public void TakeDamage(int value)
+    public void TakeDamage(int value, Transform source)
     {
+        if (IsDeath() || IsImmumeTarget(source)) return;
+
         hpbar.ChangeHp(-value);
 
-        // Check if character is death after taking damage
+        // Check if character is death again after taking damage
         if (IsDeath())
         {
+            anim.Play("sofuckingded", 0, 0.2f);
+
             // Shouldn't be allowed to do these action
             canAttack = false;
             canRegisterAttack = false;
@@ -307,12 +323,18 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Character survived this attack.
+            /// Character survived this attack.
+
+            // immune attack from this target for a period of time
+            StartCoroutine(ImmuneDamageFromTarget(source, invulnerableTime));
 
             // Camera Shake
             StartCoroutine(camera.GetComponent<CameraFollow>().CameraShake(0.05f, 0.05f));
 
-            anim.Play("Damaged", 0, 0.05f);
+            if (!isAttacking && !isDashing)
+            {
+                anim.Play("Damaged", 0, 0.05f);
+            }
         }
     }
 
@@ -320,5 +342,17 @@ public class PlayerController : MonoBehaviour
     {
         // Character is considered death if hp equal to 0
         return hpbar.GetCurrentHP() == 0;
+    }
+
+    private IEnumerator ImmuneDamageFromTarget(Transform target, float time)
+    {
+        immuneEnemy.Add(target);
+        yield return new WaitForSeconds(time);
+        immuneEnemy.Remove(target);
+    }
+
+    public bool IsImmumeTarget(Transform target)
+    {
+        return immuneEnemy.Contains(target);
     }
 }

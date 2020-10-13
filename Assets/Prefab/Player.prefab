@@ -434,6 +434,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
         type: 3}
+      propertyPath: dashFX.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
+        type: 3}
       propertyPath: headAim
       value: 
       objectReference: {fileID: 54942569}
@@ -478,6 +483,18 @@ PrefabInstance:
       propertyPath: hitFX.Array.data[2]
       value: 
       objectReference: {fileID: 1814450909871590, guid: b1fdcbeb2d155e547b136670366c9cb4,
+        type: 3}
+    - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
+        type: 3}
+      propertyPath: dashFX.Array.data[0]
+      value: 
+      objectReference: {fileID: 1049843463841446, guid: cbddbe61932ac4049a1f0b6e7922acd0,
+        type: 3}
+    - target: {fileID: 2794447239925992362, guid: 880858dfd9b1e784e89d45242bf78d2b,
+        type: 3}
+      propertyPath: dashFX.Array.data[1]
+      value: 
+      objectReference: {fileID: 3828996889057287131, guid: 137dddf37170f5c49b31561f161c1d4c,
         type: 3}
     - target: {fileID: 3789448736045965556, guid: 880858dfd9b1e784e89d45242bf78d2b,
         type: 3}

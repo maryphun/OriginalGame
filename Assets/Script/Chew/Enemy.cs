@@ -175,7 +175,7 @@ public class Enemy : MonoBehaviour
     {
         if (DetectObject(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
         {
-            targetPlayer.GetComponent<PlayerController>().TakeDamage(1);
+            targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
         }
         //if (DetectObjectInArea())
         //{

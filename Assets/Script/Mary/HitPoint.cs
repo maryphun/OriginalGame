@@ -6,20 +6,19 @@ using DG.Tweening;
 
 public class HitPoint : MonoBehaviour
 {
-    public int currentHp;
+    public int currentHp = 0;
     [SerializeField] private Image heart;
     [SerializeField] private Image[] breakFX;
+    [SerializeField] private GameObject gameOverCanvas;
 
     private List<RectTransform> hearts;
     //private PlayerInput input;
     private int maxHp = 27;
 
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        currentHp = 3;
         hearts = new List<RectTransform>();
-        UpdateHP();
 
         //input = new PlayerInput();
         //input.Enable();
@@ -84,6 +83,12 @@ public class HitPoint : MonoBehaviour
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
         UpdateHP();
 
+        // trigger Game over canvas
+        if (currentHp == 0)
+        {
+            DeathCanvas();
+        }
+
         return currentHp;
     }
 
@@ -101,5 +106,26 @@ public class HitPoint : MonoBehaviour
     public int GetCurrentHP()
     {
         return currentHp;
+    }
+
+    public void DeathCanvas()
+    {
+        var gameover = gameOverCanvas;
+        var camScript = Camera.main.GetComponent<CameraFollow>();
+        if (gameover == null)
+        {
+            Debug.Log("gameover reference is null.");
+            gameOverCanvas = GameObject.Find("GameOver Canvas");
+        }
+
+        if (camScript == null)
+        {
+            Debug.LogWarning("camera script refernece not found.");
+        }
+
+        gameover.SetActive(true);
+        gameover.GetComponent<CanvasGroup>().DOFade(1.0f, 4f);
+
+        Camera.main.GetComponent<CameraFollow>().SetCameraToMiddle();
     }
 }
