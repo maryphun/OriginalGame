@@ -5871,25 +5871,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 427083867158740297, guid: e582fdcb1b54f084b97794112dbea878,
-        type: 3}
-      propertyPath: enemyStat.attackAngle
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 427083867158740297, guid: e582fdcb1b54f084b97794112dbea878,
-        type: 3}
-      propertyPath: enemyStat.escapeRange
-      value: Infinity
-      objectReference: {fileID: 0}
     - target: {fileID: 904338040190982498, guid: e582fdcb1b54f084b97794112dbea878,
         type: 3}
       propertyPath: m_Name
       value: cyberpunk
-      objectReference: {fileID: 0}
-    - target: {fileID: 5058491890467669056, guid: e582fdcb1b54f084b97794112dbea878,
-        type: 3}
-      propertyPath: itemDropNum
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7551590771715758851, guid: e582fdcb1b54f084b97794112dbea878,
         type: 3}
