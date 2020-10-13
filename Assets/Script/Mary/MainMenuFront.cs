@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class MainMenuFront : MonoBehaviour
 {
     [SerializeField] TMP_Text title;
     [SerializeField] Button start, exit, option;
-
+    [SerializeField] Image transition;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -36,10 +38,20 @@ public class MainMenuFront : MonoBehaviour
 
     public void doStartGame()
     {
+        SoundManager.Instance().FadeOutBGM(2f);
+        SoundManager.Instance().FadeOutSE("rain", 2f);
+        transition.DOFade(1.0f, 1.5f);
+        StartCoroutine(ChangeScene("SampleScene", 1.5f));
     }
 
     public void doOption()
     {
        
+    }
+
+    private IEnumerator ChangeScene(string scene, float time)
+    {
+        yield return new WaitForSeconds(time);
+        SceneManager.LoadScene(scene);
     }
 }

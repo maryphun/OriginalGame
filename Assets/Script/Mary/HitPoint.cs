@@ -8,9 +8,11 @@ public class HitPoint : MonoBehaviour
 {
     public int currentHp = 0;
     [SerializeField] private Image heart;
+    [SerializeField] private Image damageIndicator;
+    [SerializeField, Range(0.0f, 5.0f)] private float damageIndicatorFadeTime = 0.5f;
     [SerializeField] private Image[] breakFX;
     [SerializeField] private GameObject gameOverCanvas;
-
+    
     private List<RectTransform> hearts;
     //private PlayerInput input;
     private int maxHp = 27;
@@ -41,6 +43,8 @@ public class HitPoint : MonoBehaviour
         }
         else if (hearts.Count > currentHp)
         {
+            damageIndicator.DOFade(1.0f, 0.0f);
+            damageIndicator.DOFade(0.0f, damageIndicatorFadeTime);
             do
             {
                 RectTransform heartToRemove = hearts[(int)hearts.Count / 2];

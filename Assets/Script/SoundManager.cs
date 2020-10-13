@@ -24,42 +24,50 @@ public class SoundManager : Singleton<SoundManager>
 
     public class Handle
     {
+        public string name;
         public float volume = 0.5f;
         public float fadeSpeed = 1.0f;
         public long frame = 0;
 
-        public void FadeIn()
+        public void FadeIn(float time, float targetVolume)
         {
-            Instance().StartCoroutine(fadeIn());
+            Instance().StartCoroutine(fadeIn(time, targetVolume));
         }
 
-        public void FadeOut()
+        public void FadeOut(float time)
         {
-            Instance().StartCoroutine(fadeOut());
+            Instance().StartCoroutine(fadeOut(time));
         }
 
         public void ResetParams()
         {
+            name = null;
             volume = 1.0f;
             fadeSpeed = 1.0f;
             frame = 0;
         }
 
-        private IEnumerator fadeIn()
+        private IEnumerator fadeIn(float time, float targetVolume)
         {
-            while (volume < 1.0f)
+            float timePassed = 0;
+            float originalVol = volume;
+            while (timePassed < time)
             {
-                volume += fadeSpeed * Time.deltaTime;
+                timePassed += Time.deltaTime;
+                volume = Mathf.Lerp(originalVol, targetVolume, timePassed / time);
                 yield return null;
             }
-            volume = 1.0f;
+            volume = targetVolume;
         }
 
-        private IEnumerator fadeOut()
+        private IEnumerator fadeOut(float time)
         {
-            while (volume > 0.0f)
+            float timePassed = 0;
+            float originalVol = volume;
+            while (timePassed < time)
             {
-                volume -= fadeSpeed * Time.deltaTime;
+                timePassed += Time.deltaTime;
+                volume = Mathf.Lerp(originalVol, 0.0f, timePassed / time);
                 yield return null;
             }
             volume = 0.0f;
@@ -235,6 +243,7 @@ public class SoundManager : Singleton<SoundManager>
                 source.Play();
                 handle.frame = frameCounter;
                 handle.volume = volume;
+                handle.name = ;
                 return handle;
             }
         }
@@ -270,11 +279,33 @@ public class SoundManager : Singleton<SoundManager>
     {
         if (index < 0 || index >= seClips.Length)
         {
-            Debug.Log("Index " + index + " is not exist");
+            Debug.Log("Index " + index + " does not exist");
             return;
         }
 
         seSources[index].loop = flag;
+    }
+
+    public void FadeOutBGM(float time)
+    {
+        bgmHandle.FadeOut(time);
+    }
+
+    public void FadeInBGM(float time, float targetVolume)
+    {
+        bgmHandle.FadeIn(time, targetVolume);
+    }
+
+    public void FadeOutSE(string name, float time)
+    {
+        foreach (KeyValuePair<Handle, AudioSource> pair in seHandles)
+        {
+            Debug.Log(pair.Value.name + " comparing to " + name);
+            if (pair.Value.name == name)
+            {
+                pair.Key.FadeOut(time);
+            }
+        }
     }
 
     //public void SetSeVolume(string name, float volume)

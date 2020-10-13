@@ -41,7 +41,9 @@ public class Cinematic : MonoBehaviour
         input.Cinematic.Disable();
         canvas.DOFade(0.0f, cinematicTime);
         StartCoroutine(CinematicEnd(cinematicTime));
-        Camera.main.GetComponent<CameraFollow>().SetCameraToMiddle();
+        CameraFollow camScript = Camera.main.GetComponent<CameraFollow>();
+        camScript.SetCameraToMiddle();
+        //StartCoroutine(camScript.ZoomOut(5f, cinematicTime));
 
         playerCharacter.PlayAnim("rise", 0, 0f);
     }

@@ -15,12 +15,14 @@ public class CameraFollow : MonoBehaviour
     private Camera cam;
     private Vector3 lastDelta, targetPos;
     private float cameraDiff;
+    private float zoom, originalPosY;
 
     private void Awake()
     {
         mouseInput = new CameraInput();
         cam = GetComponent<Camera>();
         cameraDiff = maxCameraDifferent;
+        originalPosY = transform.position.y;
     }
 
     private void OnEnable()
@@ -60,7 +62,7 @@ public class CameraFollow : MonoBehaviour
         targetPos = lastDelta + followCharacter.position;
 
         // Set Camera
-        transform.DOMove(new Vector3(targetPos.x + cameraDistance.x, transform.position.y, targetPos.z + cameraDistance.z), followSpeed, false);
+        transform.DOMove(new Vector3(targetPos.x + cameraDistance.x, originalPosY, targetPos.z + cameraDistance.z), followSpeed, false);
     }
     
     private Vector3 GetWorldPosition(Vector2 mouseValue)
@@ -126,5 +128,20 @@ public class CameraFollow : MonoBehaviour
     public void ResetCameraDiff()
     {
         cameraDiff = maxCameraDifferent;
+    }
+
+    public IEnumerator ZoomOut(float value, float time)
+    {
+        zoom = value;
+
+        float elapsed = 0.0f;
+
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            zoom = Mathf.Lerp(value, 0.0f, elapsed / time);
+            yield return null;
+        }
+        zoom = 0.0f;
     }
 }

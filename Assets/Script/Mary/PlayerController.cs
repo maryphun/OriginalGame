@@ -49,26 +49,20 @@ public class PlayerController : MonoBehaviour
         input.Player.Dash.performed += _ => Dash(new Vector2(input.Player.HorizontalMove.ReadValue<float>(), input.Player.VerticalMove.ReadValue<float>()));
 
         // value initialization
-        //moveSpeedMax = moveSpeed;
-        //isAttacking = false;
-        //attackedEnemy.Clear();
-        //immuneEnemy.Clear();
-        //shouldAttack = false;
-        //canAttack = false;
-        //canRegisterAttack = false;
-        //isDashing = false;
-        //canRegisterDash = false;
-        VariableInitialization();
+        moveSpeedMax = moveSpeed;
+        isAttacking = false;
+        attackedEnemy.Clear();
+        immuneEnemy.Clear();
+        shouldAttack = false;
+        canAttack = false;
+        canRegisterAttack = false;
+        isDashing = false;
+        canRegisterDash = false;
 
         //debug
         // Time.timeScale = 0.2f;
     }
-
-    private void Start()
-    {
-        hpbar.ChangeHp(initiateHitPoint);
-    }
-
+    
     private void OnEnable()
     {
         input.Enable();
@@ -374,5 +368,7 @@ public class PlayerController : MonoBehaviour
         canRegisterAttack = false;
         isDashing = false;
         canRegisterDash = true;
+        
+        hpbar.ChangeHp(initiateHitPoint);
     }
 }
