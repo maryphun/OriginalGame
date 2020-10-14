@@ -88,7 +88,7 @@ public class EnemyMovement : IState<Enemy>
 
         enemy.Anim.SetFloat("Speed", enemy.EnemyStat.movementSpeed );
 
-        if (enemy.CheckDistance() <= (enemy.EnemyStat.attackRange + enemy.EnemyStat.attackRadiusOfArea/2))
+        if (enemy.CheckDistance() <= (enemy.EnemyStat.attackRange/* + enemy.EnemyStat.attackRadiusOfArea/2*/))
         {
                 enemy.ChangeState(new EnemyAttack());
         }

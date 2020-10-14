@@ -151,7 +151,7 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public bool DetectObjectInArea()
+    public bool AttackObjectInArea()
     {
         Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
         origin = new Vector3(origin.x, 0.0f, origin.z);
@@ -169,15 +169,50 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public void DealDamage()
+    public void SpawnProjectile()
+    {
+        if (enemyStat.projectiles)
+        {
+            if (enemyStat.projectiles.muzzlePrefab != null)
+            {
+                var muzzleVFX = Instantiate(enemyStat.projectiles.muzzlePrefab, transform.position, Quaternion.identity);
+                muzzleVFX.transform.forward = gameObject.transform.forward;
+                var ps = muzzleVFX.GetComponent<ParticleSystem>();
+                if (ps != null)
+                    Destroy(muzzleVFX, ps.main.duration);
+                else
+                {
+                    var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+                    Destroy(muzzleVFX, psChild.main.duration);
+                }
+            }
+            Instantiate(enemyStat.projectiles, transform.position + Vector3.up  + transform.forward, transform.rotation);
+        }
+        else
+        {
+            Debug.LogWarning("Projectile not found");
+        }
+    }
+
+
+
+    public void DealDamage(bool isProjectile =false)
     {
         //if (DetectObject(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
         //{
         //    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
         //}
-        if (DetectObjectInArea())
+        //if (AttackObjectInArea())
+        //{
+        //    targetPlayer.GetComponent<PlayerController>().TakeDamage(1,transform);
+        //}
+        if (isProjectile)
         {
-            targetPlayer.GetComponent<PlayerController>().TakeDamage(1,transform);
+            if (!targetPlayer)
+            {
+                targetPlayer = GameObject.FindGameObjectWithTag("Player");
+            }
+            targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
         }
     }
 
@@ -201,4 +236,5 @@ public class Enemy : MonoBehaviour
         }
         transform.DOMove(transform.position + normalizedVector * distance, time, false);
     }
+
 }

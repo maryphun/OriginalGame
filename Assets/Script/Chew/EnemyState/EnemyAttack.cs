@@ -22,7 +22,7 @@ public class EnemyAttack : IState<Enemy>
     // Update is called once per frame
     public void Execute(Enemy enemy)
     {
-        if (enemy.CheckDistance() < enemy.EnemyStat.attackRange + enemy.EnemyStat.attackRadiusOfArea / 2)
+        if (enemy.CheckDistance() < enemy.EnemyStat.attackRange /*+ enemy.EnemyStat.attackRadiusOfArea / 2*/)
         {
             if (enemy.canAttack)
             {

@@ -23,6 +23,8 @@ public class EnemyStat
     public float attackAngle;
     [ConditionalField(nameof(attackType),false,AttackType.AreaMelee)]
     public float attackRadiusOfArea;
+    [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
+    public Projectiles projectiles;
     public float visionRadius;
     public float visionAngle;
     public float stunTime;

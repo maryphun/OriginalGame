@@ -51,10 +51,12 @@ MonoBehaviour:
   enemyStat:
     health: 50
     movementSpeed: 3
-    attackType: 0
+    attackType: 2
     attackDelay: 1
     attackRange: 1.5
     attackAngle: 60
+    attackRadiusOfArea: 2
+    projectiles: {fileID: 0}
     visionRadius: 5
     visionAngle: 60
     stunTime: 2
