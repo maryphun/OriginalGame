@@ -11,6 +11,7 @@ public class MainMenuFront : MonoBehaviour
     [SerializeField] TMP_Text title;
     [SerializeField] Button start, exit, option;
     [SerializeField] Image transition;
+    [SerializeField] MainMenuBack backmenu;
     
     // Start is called before the first frame update
     void Start()
@@ -33,20 +34,23 @@ public class MainMenuFront : MonoBehaviour
 
     public void doExitGame()
     {
+        if (backmenu.isStarted) return;
         Application.Quit();
     }
 
     public void doStartGame()
     {
-        SoundManager.Instance().FadeOutBGM(2f);
-        SoundManager.Instance().FadeOutSE("rain", 2f);
+        if (backmenu.isStarted) return;
+
+        JSAM.AudioManager.FadeMusicOut(3f);
+        backmenu.isStarted = true;
         transition.DOFade(1.0f, 1.5f);
-        StartCoroutine(ChangeScene("SampleScene", 1.5f));
+        StartCoroutine(ChangeScene("SampleScene", 2f));
     }
 
     public void doOption()
     {
-       
+        if (backmenu.isStarted) return;
     }
 
     private IEnumerator ChangeScene(string scene, float time)
