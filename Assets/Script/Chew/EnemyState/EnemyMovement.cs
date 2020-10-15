@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class EnemyMovement : IState<Enemy>
@@ -48,14 +46,13 @@ public class EnemyMovement : IState<Enemy>
 
         //    //if (playerRayHit.distance < wallRayHit.distance)
         //    //{
-           
+
         //            //}
         //        }
         //        else
         //{
         //    direction =enemy.transform.forward;
         //}
-        direction = tmpDir;
         //if (Vector3.Distance(targetPos,enemy.transform.position) > Vector3.Distance(targetPos + enemy.TargetPlayer.transform.forward, enemy.transform.position))
         //{
         //    direction = leftRay.direction;
@@ -77,28 +74,36 @@ public class EnemyMovement : IState<Enemy>
         //    }
         //    Debug.DrawLine(enemy.transform.position, enemy.transform.forward * enemy.EnemyStat.visionRadius, Color.green);
         //}
+        float offset = enemy.EnemyStat.attackType != AttackType.Ranged ? enemy.EnemyStat.attackRange / 4 * 3 : enemy.EnemyStat.attackRange;
 
-        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-      
-        enemy.transform.position = new Vector3(enemy.transform.position.x + direction.x * enemy.EnemyStat.movementSpeed * Time.deltaTime,
-                     enemy.transform.position.y, enemy.transform.position.z + direction.z * enemy.EnemyStat.movementSpeed * Time.deltaTime);
-    
-        float angle = Mathf.SmoothDampAngle(enemy.transform.eulerAngles.y, targetAngle,ref turnVelocity, 0.05f);
-        enemy.transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
-
-        enemy.Anim.SetFloat("Speed", enemy.EnemyStat.movementSpeed );
-
-        if (enemy.CheckDistance() <= (enemy.EnemyStat.attackRange/* + enemy.EnemyStat.attackRadiusOfArea/2*/))
+        if (enemy.CheckDistance() < enemy.EnemyStat.escapeRange)
         {
-                enemy.ChangeState(new EnemyAttack());
+            enemy.StartCoroutine(enemy.FaceDirection(-enemy.TargetPlayer.transform.position));
+            enemy.transform.position = new Vector3(enemy.transform.position.x + (-direction.x * enemy.EnemyStat.movementSpeed) * Time.deltaTime,
+                     enemy.transform.position.y, enemy.transform.position.z + (-direction.z * enemy.EnemyStat.movementSpeed) * Time.deltaTime);
         }
+        else if (enemy.CheckDistance() < (offset + enemy.EnemyStat.attackRadiusOfArea / 2))
+        {
+            enemy.ChangeState(new EnemyAttack());
+        }
+        else
+        {
+            direction = tmpDir;
+            enemy.StartCoroutine(enemy.FaceDirection(enemy.TargetPlayer.transform.position));
+            enemy.transform.position = new Vector3(enemy.transform.position.x + direction.x * enemy.EnemyStat.movementSpeed * Time.deltaTime,
+                         enemy.transform.position.y, enemy.transform.position.z + direction.z * enemy.EnemyStat.movementSpeed * Time.deltaTime);
+
+            enemy.Anim.SetFloat("Speed", enemy.EnemyStat.movementSpeed);
+        }
+      
 
     }
 
     public void Exit(Enemy enemy)
     {
-        
+        enemy.Anim.SetFloat("Speed", 0);
+
     }
 
-  
+
 }

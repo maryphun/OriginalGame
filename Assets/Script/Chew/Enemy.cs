@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using DG.Tweening;
+using MyBox;
 
+[RequireTag("Enemy")]
+[RequireLayer("Enemy")]
 [RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
@@ -16,6 +19,8 @@ public class Enemy : MonoBehaviour
     private string currentState;
     [ReadOnly]
     public string lastState;
+    [ReadOnly]
+    public float debugAngle;
     private StateMachine<Enemy> stateMachine;
     private GameObject targetPlayer;
     public EnemyEvent enemyEvent;
@@ -50,6 +55,10 @@ public class Enemy : MonoBehaviour
         canAttack = true;
         canMove = true;
         maxHealth = enemyStat.health;
+        if (enemyStat.attackType != AttackType.AreaMelee)
+        {
+            enemyStat.attackRadiusOfArea = 0;
+        }
 
         input = new Debuginput();
         input.Enable();
@@ -101,12 +110,12 @@ public class Enemy : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Quaternion rightRayRotation = Quaternion.AngleAxis(enemyStat.visionAngle/2, Vector3.up);
-        Quaternion leftRayRotation = Quaternion.AngleAxis(-enemyStat.visionAngle/2, Vector3.up);
+        Quaternion rightRayRotation = Quaternion.AngleAxis(EnemyStat.attackAngle / 2, Vector3.up);
+        Quaternion leftRayRotation = Quaternion.AngleAxis(-EnemyStat.attackAngle / 2, Vector3.up);
         Vector3 rightRayDirection = rightRayRotation * transform.forward;
         Vector3 leftRayDirection = leftRayRotation * transform.forward;
-        Gizmos.DrawRay(transform.position + Vector3.up, leftRayDirection * enemyStat.visionRadius);
-        Gizmos.DrawRay(transform.position + Vector3.up, rightRayDirection * enemyStat.visionRadius);
+        Gizmos.DrawRay(transform.position + Vector3.up, leftRayDirection * EnemyStat.attackRange);
+        Gizmos.DrawRay(transform.position + Vector3.up, rightRayDirection * EnemyStat.attackRange);
     }
 
     public void ReceiveDamage(float damage)
@@ -119,9 +128,9 @@ public class Enemy : MonoBehaviour
 
         enemyStat.health = Mathf.Clamp(enemyStat.health - damage, 0.0f, maxHealth);
 
-       // Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
-       // enemyRigidbody.AddForce(moveDirection * -500f);
-    
+        Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
+        enemyRigidbody.AddForce(moveDirection * -200f);
+
     }
 
     public float CheckDistance()    
@@ -198,22 +207,33 @@ public class Enemy : MonoBehaviour
 
     public void DealDamage(bool isProjectile =false)
     {
-        //if (DetectObject(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
+        switch(enemyStat.attackType)
+        {
+            case AttackType.Melee:
+                Debug.Log("Attack");    
+                if (DetectObject(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
+                {
+                    Debug.Log("AttackNobug");
+
+                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
+                }
+                break;
+            case AttackType.AreaMelee:
+                if (AttackObjectInArea())
+                {
+                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
+                }
+                break;
+
+        }
+        //if (isProjectile)
         //{
+        //    if (!targetPlayer)
+        //    {
+        //        targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        //    }
         //    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
         //}
-        //if (AttackObjectInArea())
-        //{
-        //    targetPlayer.GetComponent<PlayerController>().TakeDamage(1,transform);
-        //}
-        if (isProjectile)
-        {
-            if (!targetPlayer)
-            {
-                targetPlayer = GameObject.FindGameObjectWithTag("Player");
-            }
-            targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-        }
     }
 
     public void MoveWithRayCast(Vector3 normalizedVector, float distance, float time)
@@ -237,4 +257,14 @@ public class Enemy : MonoBehaviour
         transform.DOMove(transform.position + normalizedVector * distance, time, false);
     }
 
+    public IEnumerator FaceDirection(Vector3 direction, float smoothtime = 0.05f)
+    {
+        //float targetAngle = (Mathf.Atan2(dirX, dirZ) * Mathf.Rad2Deg);
+        //float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, smoothtime);
+        //transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
+        //debugAngle = angle;
+        transform.DOLookAt(direction, smoothtime,AxisConstraint.Y);
+
+        yield return new WaitForSeconds(smoothtime);
+    }
 }

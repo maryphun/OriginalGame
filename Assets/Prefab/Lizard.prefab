@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 2590907147602895850}
   - component: {fileID: 6442389341178255602}
   - component: {fileID: 7931245538291354915}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Lizard
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -64,18 +64,20 @@ MonoBehaviour:
   enemyStat:
     health: 50
     movementSpeed: 3
-    attackType: 2
-    attackDelay: 1
-    attackRange: 1.5
+    attackType: 1
+    attackDelay: 2
+    attackRange: 6
     attackAngle: 60
     attackRadiusOfArea: 2
-    projectiles: {fileID: 0}
+    projectiles: {fileID: -461193340541228237, guid: 4793e691fcc8b384f819cd27c3f15c8d,
+      type: 3}
     visionRadius: 5
     visionAngle: 60
     stunTime: 2
-    escapeRange: Infinity
+    escapeRange: 3
   currentState: 
   lastState: 
+  debugAngle: 0
   enemyEvent:
     onDetectingPlayer:
       m_PersistentCalls:
@@ -148,7 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpbar: {fileID: 7234720166968363483, guid: c7d910599cab3ae498941bb276a53916, type: 3}
-  hpBarRoot: {fileID: 0}
+  hpBarRoot: {fileID: 5842570624025262182}
   enemyName: mary bobo
   hpBarColor:
     serializedVersion: 2
@@ -257,6 +259,12 @@ GameObject:
 --- !u!4 &5839853319299381310 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4438700912050984, guid: b057ea2a8dfb7544fa2448a2e1357367,
+    type: 3}
+  m_PrefabInstance: {fileID: 5837957450083941142}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5842570624025262182 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4622726017926000, guid: b057ea2a8dfb7544fa2448a2e1357367,
     type: 3}
   m_PrefabInstance: {fileID: 5837957450083941142}
   m_PrefabAsset: {fileID: 0}

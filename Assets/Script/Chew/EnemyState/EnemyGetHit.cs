@@ -8,8 +8,8 @@ public class EnemyGetHit : IState<Enemy>
     // Start is called before the first frame update
     public void Enter(Enemy enemy)
     {
-        enemy.Anim.Play("Stun", 0, 0.0f);
         enemy.Anim.SetFloat("Speed", 0);
+        enemy.Anim.Play("Stun", 0, 0.0f);
         timeNow = Time.time;
     }
 
@@ -22,7 +22,10 @@ public class EnemyGetHit : IState<Enemy>
 
         if (Time.time > timeNow + enemy.EnemyStat.stunTime)
         {
-            enemy.ChangeState(new EnemyMovement());
+            if (!enemy.Anim.GetCurrentAnimatorStateInfo(0).IsTag("Stun"))
+            {
+                enemy.ChangeState(new EnemyMovement());
+            }
         }
     }
 

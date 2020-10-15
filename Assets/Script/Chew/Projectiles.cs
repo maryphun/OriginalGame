@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using MyBox;
 
 
 [System.Serializable]
@@ -12,6 +12,7 @@ public struct ProjectileEvent
 
 }
 
+[RequireTag("Bullet")]
 public class Projectiles : MonoBehaviour
 {
 
@@ -76,8 +77,12 @@ public class Projectiles : MonoBehaviour
         return false;
     }
 
-    void OnCollisionEnter(Collision co)
+    void OnTriggerEnter(Collider co)
     {
+        if (co.gameObject.tag == "Bullet" || co.gameObject.tag == "Enemy")
+        {
+            return;
+        }
         if (co.gameObject.tag != "Bullet" && !collided)
         {
             collided = true;
@@ -99,13 +104,11 @@ public class Projectiles : MonoBehaviour
             speed = 0;
             GetComponent<Rigidbody>().isKinematic = true;
 
-            ContactPoint contact = co.contacts[0];
-            Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
-            Vector3 pos = contact.point;
+            
 
             if (hitPrefab != null)
             {
-                var hitVFX = Instantiate(hitPrefab, pos, rot) as GameObject;
+                var hitVFX = Instantiate(hitPrefab, co.ClosestPointOnBounds(transform.position), transform.rotation) as GameObject;
 
                 var ps = hitVFX.GetComponent<ParticleSystem>();
                 if (ps == null)
@@ -116,13 +119,13 @@ public class Projectiles : MonoBehaviour
                 else
                     Destroy(hitVFX, ps.main.duration);
             }
+            StartCoroutine(DestroyParticle(0f));
 
             if (co.gameObject.tag == "Player")
             {
                 co.gameObject.GetComponent<PlayerController>().TakeDamage(1, transform);
             }
 
-            StartCoroutine(DestroyParticle(0f));
         }
     }
 

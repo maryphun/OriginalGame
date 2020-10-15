@@ -63,6 +63,7 @@ MonoBehaviour:
     escapeRange: Infinity
   currentState: 
   lastState: 
+  debugAngle: 0
   enemyEvent:
     onDetectingPlayer:
       m_PersistentCalls:
@@ -240,7 +241,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 1410cffd42739ab4a872855e8ca50937, type: 2}
+      objectReference: {fileID: 9100000, guid: f109df45ee873ae4ba13cc54ba3007f2, type: 2}
     - target: {fileID: 95020386144158004, guid: c9751ce6917e9a34fa65260bace8c38a,
         type: 3}
       propertyPath: m_ApplyRootMotion

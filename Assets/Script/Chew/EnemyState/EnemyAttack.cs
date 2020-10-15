@@ -9,6 +9,7 @@ public class EnemyAttack : IState<Enemy>
     private float tmpSpeed;
     private float attackedTime;
     private bool hasAttacked;
+    private float turnVelocity;
     // Start is called before the first frame update
     public void Enter(Enemy enemy)
     {
@@ -22,10 +23,13 @@ public class EnemyAttack : IState<Enemy>
     // Update is called once per frame
     public void Execute(Enemy enemy)
     {
-        if (enemy.CheckDistance() < enemy.EnemyStat.attackRange /*+ enemy.EnemyStat.attackRadiusOfArea / 2*/)
+        if (enemy.CheckDistance() < enemy.EnemyStat.attackRange + enemy.EnemyStat.attackRadiusOfArea / 2)
         {
+            
             if (enemy.canAttack)
             {
+
+                enemy.StartCoroutine(enemy.FaceDirection(enemy.TargetPlayer.transform.position));
                 if (Time.time >= attackedTime + attDelay)
                 {
                     if (!hasAttacked)
