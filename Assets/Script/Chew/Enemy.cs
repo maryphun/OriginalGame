@@ -11,29 +11,28 @@ using MyBox;
 [RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
+    //debugging parameter
     public Debuginput input;
-    [SerializeField]
-    private EnemyStat enemyStat;
-    [ReadOnly]
-    [SerializeField]
-    private string currentState;
-    [ReadOnly]
-    public string lastState;
-    [ReadOnly]
-    public float debugAngle;
+    [ReadOnly] [SerializeField] private string currentState, lastState;
+    //----
+
+    [SerializeField] private EnemyStat enemyStat;
     private StateMachine<Enemy> stateMachine;
-    private GameObject targetPlayer;
-    public EnemyEvent enemyEvent;
+    private GameObject targetPlayer; //information of player
     private Rigidbody enemyRigidbody;
     private Collider collider;
     private ItemDropEvent dropableItem;
     private Animator anim;
-    private bool isAttacking;
+    private float maxHealth;
+
     [HideInInspector] public bool canAttack;
     [HideInInspector] public bool canMove;
     [HideInInspector] public bool isDeath;
     [HideInInspector] public bool isDying;
-    private float maxHealth;
+    [HideInInspector] public bool forceAttack;
+    public EnemyEvent enemyEvent;
+    const float wallHitDistance = 0.5f;
+
 
     private void Awake()
     {
@@ -45,13 +44,15 @@ public class Enemy : MonoBehaviour
         dropableItem = GetComponent<ItemDropEvent>();
         anim = GetComponentInChildren<Animator>();
         collider = GetComponent<Collider>();
-
-        isDeath = false;
+        enemyRigidbody = GetComponent<Rigidbody>();
         targetPlayer = GameObject.FindGameObjectWithTag("Player");
+
         stateMachine = new StateMachine<Enemy>();
         stateMachine.Setup(this, new EnemyMovement());
         currentState = stateMachine.GetCurrentState.ToString();
-        enemyRigidbody = GetComponent<Rigidbody>();
+
+        isDeath = false;
+        forceAttack = false;
         canAttack = true;
         canMove = true;
         maxHealth = enemyStat.health;
@@ -85,8 +86,7 @@ public class Enemy : MonoBehaviour
         {
             lastState = stateMachine.GetLastState.ToString();
         }
-        currentState = stateMachine.GetCurrentState.ToString();
-     
+        currentState = stateMachine.GetCurrentState.ToString();     
     }
 
     public EnemyStat EnemyStat
@@ -108,6 +108,11 @@ public class Enemy : MonoBehaviour
         get { return anim; }
     }
 
+    public float GetWallHitDistance
+    {
+        get { return wallHitDistance; }
+    }
+
     private void OnDrawGizmosSelected()
     {
         Quaternion rightRayRotation = Quaternion.AngleAxis(EnemyStat.attackAngle / 2, Vector3.up);
@@ -116,6 +121,7 @@ public class Enemy : MonoBehaviour
         Vector3 leftRayDirection = leftRayRotation * transform.forward;
         Gizmos.DrawRay(transform.position + Vector3.up, leftRayDirection * EnemyStat.attackRange);
         Gizmos.DrawRay(transform.position + Vector3.up, rightRayDirection * EnemyStat.attackRange);
+
     }
 
     public void ReceiveDamage(float damage)
@@ -129,13 +135,44 @@ public class Enemy : MonoBehaviour
         enemyStat.health = Mathf.Clamp(enemyStat.health - damage, 0.0f, maxHealth);
 
         Vector3 moveDirection = (targetPlayer.transform.position - transform.position).normalized;
-        enemyRigidbody.AddForce(moveDirection * -200f);
+        //enemyRigidbody.AddForce(moveDirection * -200f);
 
     }
 
-    public float CheckDistance()    
+    public float CheckPlayerDistance()    
     {
         return Vector3.Distance(transform.position, targetPlayer.transform.position);
+    }
+
+    public bool CheckWallHit(float maxDistance, bool reverseDir = false)
+    {
+        LayerMask wallMask = LayerMask.GetMask("Wall");
+        RaycastHit wallRayHit = new RaycastHit();
+        Ray forwardRay;
+        if (reverseDir)
+        {
+            forwardRay = new Ray(transform.position + Vector3.up, -transform.forward);
+        }
+        else
+        {
+            forwardRay = new Ray(transform.position + Vector3.up, transform.forward);
+        }
+        if (Physics.Raycast(forwardRay, out wallRayHit, maxDistance, wallMask))
+        {
+            Debug.Log("Wall hit");
+            return true;
+        }
+        return false;
+    }
+
+    public void MoveAwayFromPlayer()
+    {
+        Vector3 direction = (TargetPlayer.transform.position - transform.position).normalized;
+        transform.position = new Vector3(transform.position.x + (-direction.x * EnemyStat.movementSpeed) * Time.deltaTime,
+                         transform.position.y, transform.position.z + (-direction.z * EnemyStat.movementSpeed) * Time.deltaTime);
+
+
+        Anim.SetFloat("Speed",EnemyStat.movementSpeed);
     }
 
     public void ChangeState(IState<Enemy> state)
@@ -143,9 +180,8 @@ public class Enemy : MonoBehaviour
         stateMachine.ChangeState(state);
     }
 
-    public bool DetectObject(float angle , float distance)
+    public bool AttackObjectInVision(float angle , float distance)
     {
-        // Vectors
         Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
         origin = new Vector3(origin.x, 0.0f, origin.z);
         Vector3 target = new Vector3(targetPlayer.transform.position.x, 0.0f, targetPlayer.transform.position.z);
@@ -211,7 +247,7 @@ public class Enemy : MonoBehaviour
         {
             case AttackType.Melee:
                 Debug.Log("Attack");    
-                if (DetectObject(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
+                if (AttackObjectInVision(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
                 {
                     Debug.Log("AttackNobug");
 
@@ -226,14 +262,6 @@ public class Enemy : MonoBehaviour
                 break;
 
         }
-        //if (isProjectile)
-        //{
-        //    if (!targetPlayer)
-        //    {
-        //        targetPlayer = GameObject.FindGameObjectWithTag("Player");
-        //    }
-        //    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-        //}
     }
 
     public void MoveWithRayCast(Vector3 normalizedVector, float distance, float time)
@@ -259,10 +287,6 @@ public class Enemy : MonoBehaviour
 
     public IEnumerator FaceDirection(Vector3 direction, float smoothtime = 0.05f)
     {
-        //float targetAngle = (Mathf.Atan2(dirX, dirZ) * Mathf.Rad2Deg);
-        //float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, smoothtime);
-        //transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
-        //debugAngle = angle;
         transform.DOLookAt(direction, smoothtime,AxisConstraint.Y);
 
         yield return new WaitForSeconds(smoothtime);

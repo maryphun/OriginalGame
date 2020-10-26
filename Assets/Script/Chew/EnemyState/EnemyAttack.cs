@@ -23,22 +23,23 @@ public class EnemyAttack : IState<Enemy>
     // Update is called once per frame
     public void Execute(Enemy enemy)
     {
-        if (enemy.CheckDistance() < enemy.EnemyStat.attackRange + enemy.EnemyStat.attackRadiusOfArea / 2)
+        if (enemy.CheckPlayerDistance() < enemy.EnemyStat.attackRange + enemy.EnemyStat.attackRadiusOfArea / 2 
+            || enemy.forceAttack)
         {
-            
             if (enemy.canAttack)
             {
-
                 enemy.StartCoroutine(enemy.FaceDirection(enemy.TargetPlayer.transform.position));
                 if (Time.time >= attackedTime + attDelay)
                 {
                     if (!hasAttacked)
                     {
+                        //reset parameter value
                         hasAttacked = true;
                         enemy.canAttack = false;
                         enemy.Anim.Play("Attack", 0, 0.0f);
                         attackedTime = Time.time;
                         attDelay = enemy.EnemyStat.attackDelay;
+                        enemy.forceAttack = false;
                     }
                     else
                     {
@@ -60,6 +61,7 @@ public class EnemyAttack : IState<Enemy>
 
     public void Exit(Enemy enemy)
     {
+
     }
 
 

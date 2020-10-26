@@ -18,8 +18,6 @@ public class EnemyAnimator : MonoBehaviour
 
         if (enemyScript.canAttack)
         {
-            //enemyScript.ResetMoveSpeedMax();
-            //enemyScript.SetIsAttacking(false);
         }
     }
 
@@ -29,8 +27,6 @@ public class EnemyAnimator : MonoBehaviour
 
         if (enemyScript.canMove)
         {
-            //enemyScript.ResetMoveSpeedMax();
-            //enemyScript.SetIsAttacking(false);
         }
     }
 

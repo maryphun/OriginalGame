@@ -16,12 +16,12 @@ public class EnemyMovement : IState<Enemy>
     public void Execute(Enemy enemy)
     {
         Vector3 targetPos = enemy.TargetPlayer.transform.position;
-        LayerMask wallMask = LayerMask.GetMask("Wall");
-        LayerMask playerMask = LayerMask.GetMask("Player");
-        RaycastHit wallRayHit = new RaycastHit();
-        Ray forwardRay = new Ray(enemy.transform.position + Vector3.up, enemy.transform.forward);
-        Ray leftRay = new Ray(enemy.transform.position + Vector3.up, Quaternion.AngleAxis(-enemy.EnemyStat.visionAngle , Vector3.up) * enemy.transform.forward);
-        Ray rightRay = new Ray(enemy.transform.position + Vector3.up, Quaternion.AngleAxis(enemy.EnemyStat.visionAngle, Vector3.up) * enemy.transform.forward);
+        //LayerMask wallMask = LayerMask.GetMask("Wall");
+        //LayerMask playerMask = LayerMask.GetMask("Player");
+        //RaycastHit wallRayHit = new RaycastHit();
+        //Ray forwardRay = new Ray(enemy.transform.position + Vector3.up, enemy.transform.forward);
+        //Ray leftRay = new Ray(enemy.transform.position + Vector3.up, Quaternion.AngleAxis(-enemy.EnemyStat.visionAngle , Vector3.up) * enemy.transform.forward);
+        //Ray rightRay = new Ray(enemy.transform.position + Vector3.up, Quaternion.AngleAxis(enemy.EnemyStat.visionAngle, Vector3.up) * enemy.transform.forward);
         Vector3 tmpDir = (targetPos - enemy.transform.position).normalized;
 
 
@@ -74,15 +74,25 @@ public class EnemyMovement : IState<Enemy>
         //    }
         //    Debug.DrawLine(enemy.transform.position, enemy.transform.forward * enemy.EnemyStat.visionRadius, Color.green);
         //}
-        float offset = enemy.EnemyStat.attackType != AttackType.Ranged ? enemy.EnemyStat.attackRange / 4 * 3 : enemy.EnemyStat.attackRange;
+        float offset = enemy.EnemyStat.attackRange;
 
-        if (enemy.CheckDistance() < enemy.EnemyStat.escapeRange)
+        if (enemy.CheckPlayerDistance() < enemy.EnemyStat.escapeRange)
         {
-            enemy.StartCoroutine(enemy.FaceDirection(-enemy.TargetPlayer.transform.position));
-            enemy.transform.position = new Vector3(enemy.transform.position.x + (-direction.x * enemy.EnemyStat.movementSpeed) * Time.deltaTime,
-                     enemy.transform.position.y, enemy.transform.position.z + (-direction.z * enemy.EnemyStat.movementSpeed) * Time.deltaTime);
+            enemy.StartCoroutine(enemy.FaceDirection(2 * enemy.transform.position - enemy.TargetPlayer.transform.position));
+
+            if (enemy.CheckWallHit(enemy.GetWallHitDistance))
+            {
+                enemy.forceAttack = true;
+                enemy.ChangeState(new EnemyAttack());
+            }
+            else
+            {
+                
+               enemy.MoveAwayFromPlayer();
+            }
+
         }
-        else if (enemy.CheckDistance() < (offset + enemy.EnemyStat.attackRadiusOfArea / 2))
+        else if (enemy.CheckPlayerDistance() < (offset + enemy.EnemyStat.attackRadiusOfArea / 2))
         {
             enemy.ChangeState(new EnemyAttack());
         }

@@ -9,26 +9,32 @@ public enum AttackType
 {
     Melee,
     Ranged,
-    AreaMelee
+    AreaMelee,
+    AreaRanged
 };
 
 [System.Serializable]
 public class EnemyStat
 {
-    public float health;
-    public float movementSpeed;
+    [PositiveValueOnly] public float health;
+    [PositiveValueOnly] public float movementSpeed;
+    [PositiveValueOnly] public float attackDelay;
+    [PositiveValueOnly] public float attackRange;
+    [PositiveValueOnly] public float visionRadius;
+    [PositiveValueOnly] public float visionAngle;
+    [PositiveValueOnly] public float stunTime;
+    [PositiveValueOnly] public float escapeRange; //distance required to run away from player
+
     public AttackType attackType;
-    public float attackDelay;
-    public float attackRange;
-    public float attackAngle;
-    [ConditionalField(nameof(attackType),false,AttackType.AreaMelee)]
+    [ConditionalField(nameof(attackType), false, AttackType.Melee)]
+    [PositiveValueOnly]
+    public float attackAngle;   //angle required to form cone for attack area
+    [ConditionalField(nameof(attackType),false,AttackType.AreaMelee,AttackType.AreaRanged)]
+    [PositiveValueOnly]
     public float attackRadiusOfArea;
     [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
+    [PositiveValueOnly]
     public Projectiles projectiles;
-    public float visionRadius;
-    public float visionAngle;
-    public float stunTime;
-    public float escapeRange;
 }
 
 [System.Serializable]

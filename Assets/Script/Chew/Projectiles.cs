@@ -21,9 +21,9 @@ public class Projectiles : MonoBehaviour
     public LayerMask blockableMask;
     public bool destroyOnDetect;
     private ParticleSystem particleSystem;
-    public GameObject muzzlePrefab;
-    public GameObject hitPrefab;
-    public List<GameObject> trails;
+    public GameObject muzzlePrefab; //asset effect
+    public GameObject hitPrefab;    //asset effect
+    public List<GameObject> trails; //asset effect
 
     private bool collided;
 
@@ -53,7 +53,6 @@ public class Projectiles : MonoBehaviour
         {
             particleSystem.enableEmission = false;
             
-
             Debug.Log("Wall Detected");
             Destroy(gameObject, 2f);
             return;
@@ -81,12 +80,14 @@ public class Projectiles : MonoBehaviour
     {
         if (co.gameObject.tag == "Bullet" || co.gameObject.tag == "Enemy")
         {
+            //do nothing
             return;
         }
         if (co.gameObject.tag != "Bullet" && !collided)
         {
             collided = true;
 
+            //stop trails effect
             if (trails.Count > 0)
             {
                 for (int i = 0; i < trails.Count; i++)
@@ -104,8 +105,7 @@ public class Projectiles : MonoBehaviour
             speed = 0;
             GetComponent<Rigidbody>().isKinematic = true;
 
-            
-
+            // play hit effect
             if (hitPrefab != null)
             {
                 var hitVFX = Instantiate(hitPrefab, co.ClosestPointOnBounds(transform.position), transform.rotation) as GameObject;
@@ -117,7 +117,9 @@ public class Projectiles : MonoBehaviour
                     Destroy(hitVFX, psChild.main.duration);
                 }
                 else
+                {
                     Destroy(hitVFX, ps.main.duration);
+                }
             }
             StartCoroutine(DestroyParticle(0f));
 
