@@ -2,54 +2,56 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using MyBox;
 
 public class EnemyManager : MonoBehaviour
 {
-
+    [MustBeAssigned] public Collider spawnArea;
     [System.Serializable]
-    public class SpawnData
+    public class WaveDetail
     {
-        public Vector3 spawnPosition;
-        public float SpawnTime;
         public Enemy prototype;
-        [ReadOnly]
-        public bool isSpawned;
+        public int spawnNum;
+        public int maxNumPerSpawn;
+        [HideInInspector] public bool isSpawned;
     }
+    
+    [PositiveValueOnly] public int waveNumber;
+    public WaveDetail[] wavePattern;
 
-    public SpawnData[] spawnDatas;
+
     private float timer = 0;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        foreach (SpawnData spawner in spawnDatas)
+        foreach( WaveDetail wave in wavePattern)
         {
-            spawner.isSpawned = false;
+            wave.isSpawned = false;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        foreach (SpawnData spawner in spawnDatas)
+        foreach (WaveDetail wave in wavePattern)
         {
-            if (timer > spawner.SpawnTime)
-            {
-                Spawn(spawner);
-            }
         }
-        timer+= Time.deltaTime;
+            timer += Time.deltaTime;
     }
 
-    Enemy Spawn(SpawnData spawner)
+
+
+    public Vector3 RandomPointInBounds(Bounds bounds)
     {
-        if(spawner.isSpawned)
-        {
-            return null;
-        }
-        spawner.isSpawned = true;
-        return Instantiate(spawner.prototype,spawner.spawnPosition, Quaternion.identity);
+        return new Vector3(
+            Random.Range(bounds.min.x, bounds.max.x),
+            Random.Range(1, 1),
+            Random.Range(bounds.min.z, bounds.max.z)
+        );
     }
 }
+
 
