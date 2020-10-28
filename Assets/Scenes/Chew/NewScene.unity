@@ -4667,51 +4667,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 1204800827}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 551805adfe9a81646a181528abb69585, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f9687dfcb2541e4883d60130d503189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spawnArea: {fileID: 1204800830}
-  waveNumber: 0
+  spawnDelay: 2
+  waveNumber: 1
   wavePattern:
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
+  - spawnInfo:
+    - prototype: {fileID: 7781163835438263452, guid: e5942e87ca9659b4a961bb5d1d6763cb,
+        type: 3}
+      spawnNum: 2
+    - prototype: {fileID: 427083867158740297, guid: e582fdcb1b54f084b97794112dbea878,
+        type: 3}
+      spawnNum: 3
+    maxNumPerSpawn: 3
+    randomSpawn: 1
     isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
+  - spawnInfo: []
     maxNumPerSpawn: 0
-    isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
-    isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
-    isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
-    isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
-    isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
-    isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
-    isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
-    isSpawned: 0
-  - prototype: {fileID: 0}
-    spawnNum: 0
-    maxNumPerSpawn: 0
+    randomSpawn: 0
     isSpawned: 0
 --- !u!4 &1204800829
 Transform:
