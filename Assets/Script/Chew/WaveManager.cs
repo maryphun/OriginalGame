@@ -8,18 +8,20 @@ public class WaveManager : MonoBehaviour
 {
     [MustBeAssigned] public Collider spawnArea;
 
+    public GameObject spawnEffect;
+
     [System.Serializable]
     public class SpawnInfo
     {
         public Enemy prototype;
-        public int spawnNum;
+        public int spawnLimit;
     }
     
     [System.Serializable]
     public class WaveDetail
     {
         public SpawnInfo[] spawnInfo;
-        public int maxNumPerSpawn;
+        public int maxEnemyPerSpawn;
         public bool randomSpawn;
         [HideInInspector] public bool isSpawned;
     }
@@ -28,7 +30,8 @@ public class WaveManager : MonoBehaviour
     [PositiveValueOnly] public int waveNumber;
     public WaveDetail[] wavePattern;
 
-
+    private bool waveOngoing;
+    private int spawnSequence = 0;
     private float timer = 0;
 
 
@@ -36,6 +39,7 @@ public class WaveManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        waveOngoing = false;
         foreach( WaveDetail wave in wavePattern)
         {
             wave.isSpawned = false;
@@ -49,57 +53,83 @@ public class WaveManager : MonoBehaviour
 
         if (timer < spawnDelay )
         {
-            
             return;
         }
         foreach (WaveDetail wave in wavePattern)
         {
-            if(wave.isSpawned)
+
+            if (wave.isSpawned)
             {
                 continue;
             }
-            for (int i = 0; i < wave.maxNumPerSpawn; i++)
+            // Start spawn enemy unitl max enemy per spawn
+            for (int i = 0; i < wave.maxEnemyPerSpawn; i++)
             {
+                // If random spawn, spawn and continue
                 if (wave.randomSpawn)
                 {
                     int rand = Random.Range(0, wave.spawnInfo.Length);
-                    SpawnEnemy(wave.spawnInfo[rand]);
+                    StartCoroutine(SpawnEnemy(wave.spawnInfo[rand]));
+                    continue;
                 }
-                else
+
+                // Spawn in sequnce
+                for (int j = 0; j < wave.spawnInfo.Length;)
                 {
-                    for (int j = 0; j < wave.spawnInfo.Length; j++)
+                    if (wave.spawnInfo[j].spawnLimit <= 0)
                     {
-                        if (SpawnEnemy(wave.spawnInfo[j]))
-                        {
-                            //spawn same enemy until run out
-                            break;
-                        }
+                        j++; continue;
                     }
+
+                    StartCoroutine(SpawnEnemy(wave.spawnInfo[j]));
+                    break;
                 }
             }
-            wave.isSpawned = true;
+
+
+            waveOngoing = true;
+            bool allSpawned = true;
+            for (int j = 0; j< wave.spawnInfo.Length;j++)
+            {
+                //allSpawned = false if one of the enemy is not spawned yet
+                allSpawned &= (wave.spawnInfo[j].spawnLimit <= 0);
+            }
+            if (allSpawned)
+            {
+                wave.isSpawned = true;
+            }
         }
+        
     }
 
-    bool SpawnEnemy(SpawnInfo prototype)
+    IEnumerator SpawnEnemy(SpawnInfo prototype)
     {
-        if (prototype.spawnNum > 0)
+        if (prototype.spawnLimit > 0)
         {
-            Instantiate(prototype.prototype, RandomPointInBounds(spawnArea.bounds), Quaternion.identity);
-            prototype.spawnNum--;
-            return true;
+            var randPos = RandomPointInBounds(spawnArea.bounds);
+            var spawnFX = Instantiate(spawnEffect, randPos, transform.rotation) as GameObject;
+            var ps = spawnFX.GetComponent<ParticleSystem>();
+            Destroy(spawnFX, ps.main.duration );
+            prototype.spawnLimit--;
+            yield return new WaitForSeconds(ps.main.duration - 1f);
+            Instantiate(prototype.prototype, randPos, Quaternion.identity);
         }
-        return false;
+        yield break;
     }
 
     public Vector3 RandomPointInBounds(Bounds bounds)
     {
         return new Vector3(
             Random.Range(bounds.min.x, bounds.max.x),
-            Random.Range(1, 1),
+            Random.Range(0.1f, 0.1f),
             Random.Range(bounds.min.z, bounds.max.z)
         );
     }
+
+    //IEnumerator SpawnEffect(Vector3 pos)
+    //{
+        
+    //}
 }
 
 
