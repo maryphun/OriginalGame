@@ -189,7 +189,8 @@ public class Enemy : MonoBehaviour
         var dir = (target - origin).normalized;
         float calcAngle = Vector3.Angle(dir, transform.forward);
         var dist = Vector3.Distance(origin, target);
-        if (Mathf.Abs(calcAngle) < angle && dist < distance)
+        //0.5f as offset(fix later)
+        if (Mathf.Abs(calcAngle) < angle && dist < distance + 0.5f)
         {
             return true;
         }
