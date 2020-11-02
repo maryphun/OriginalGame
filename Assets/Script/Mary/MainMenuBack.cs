@@ -10,6 +10,8 @@ public class MainMenuBack : MonoBehaviour
 
     [SerializeField] private float timeCnt;
 
+    [HideInInspector] public bool isStarted;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,21 +19,24 @@ public class MainMenuBack : MonoBehaviour
         Random.InitState((int)Time.time);
 
         // sound manager singleton init
-        SoundManager.Instance().Initialize();
-        SoundManager.Instance().PlayBgm("MainMenuBGM", 0.85f);
-        
-        //SoundManager.Instance().SetSeLoop(2, true);
-        SoundManager.Instance().PlaySe("rain", 0.035f);
+        var bgm = JSAM.AudioManager.PlayMusic(JSAM.Music.MainMenuBGM);
+        bgm.volume = 0.85f;
+
+        var rain = JSAM.AudioManager.PlaySoundLoop(JSAM.Sounds.Rain);
+        //rain.volume = 0.35f;
+
+        isStarted = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!isStarted)
         timeCnt -= Time.deltaTime * (Random.Range(0.25f, 1.5f));
         if (timeCnt <= 0.0f)
         {
             timeCnt = lightningTime;
-            SoundManager.Instance().PlaySe("thunder", 0.25f);
+            JSAM.AudioManager.PlaySound(JSAM.Sounds.Thunder);
             StartCoroutine(Lightning(backImage));
         }
     }
