@@ -17,7 +17,6 @@ public class EnemyAttack : IState<Enemy>
         attDelay = 0;
         hasAttacked = false;
 
-
     }
 
     // Update is called once per frame

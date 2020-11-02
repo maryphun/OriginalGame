@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyDeath : IState<Enemy>
 {
+    const float hpBarFadeOutTime = 0.5f;
     private ItemDropEvent dropableItem;
     private EnemyHitPoint hpBar;
     private float deathTime;
@@ -23,7 +24,7 @@ public class EnemyDeath : IState<Enemy>
     public void Execute(Enemy enemy)
     {
         enemy.isDying = true;
-        if(enemy.isDying && Time.time >= (deathTime + hpBar.HpBarDisplayTime))
+        if(enemy.isDying && Time.time >= (deathTime + hpBar.HpBarDisplayTime + hpBarFadeOutTime))
         {
             Exit(enemy);
         }
@@ -31,6 +32,7 @@ public class EnemyDeath : IState<Enemy>
 
     public void Exit(Enemy enemy)
     {
+        WaveManager.enemyCount--;
         SelfDestruct.Destroy(enemy.gameObject);
 
     }

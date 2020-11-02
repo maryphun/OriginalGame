@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 using DG.Tweening;
+using MyBox;
 
 public class Cinematic : MonoBehaviour
 {
     [SerializeField] private float cinematicTime = 3f;
     [SerializeField] private PlayerController playerCharacter;
+    [SerializeField] private WaveManager waveManager;
 
     private PlayerInput input;
     private CanvasGroup canvas;
@@ -18,7 +20,6 @@ public class Cinematic : MonoBehaviour
         input = new PlayerInput();
         input.Cinematic.Clicked.performed += _ => Wake();
         Cursor.visible = false;
-
         if (playerCharacter == null)
         {
             playerCharacter = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
@@ -38,6 +39,7 @@ public class Cinematic : MonoBehaviour
 
     private void Wake()
     {
+
         input.Cinematic.Disable();
         canvas.DOFade(0.0f, cinematicTime);
         StartCoroutine(CinematicEnd(cinematicTime));
@@ -55,5 +57,7 @@ public class Cinematic : MonoBehaviour
         gameObject.SetActive(false);
         Cursor.visible = true;
         Camera.main.GetComponent<CameraFollow>().ResetCameraDiff();
+        waveManager.gameObject.SetActive(true);
     }
+
 }
