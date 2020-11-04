@@ -56,7 +56,7 @@ public class Enemy : MonoBehaviour
         canAttack = true;
         canMove = true;
         maxHealth = enemyStat.health;
-        if (enemyStat.attackType != AttackType.AreaMelee)
+        if (enemyStat.attackType != AttackType.AreaMelee && enemyStat.attackType != AttackType.AreaRanged)
         {
             enemyStat.attackRadiusOfArea = 0;
         }
@@ -197,7 +197,7 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public bool AttackObjectInArea()
+    public bool CheckPlayerInArea()
     {
         Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
         origin = new Vector3(origin.x, 0.0f, origin.z);
@@ -213,6 +213,30 @@ public class Enemy : MonoBehaviour
         }
 
         return false;
+    }
+
+    public IEnumerator AoeAttack(float aoeEffectStartTime = 0.5f)
+    {
+        Vector3 attPoint = transform.position + (transform.forward * EnemyStat.attackRange / 2);
+        attPoint.y = 0.1f;
+        var aoe = Instantiate(enemyStat.aoeIndicator, attPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
+        aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
+        Debug.Log(enemyStat.attackRadiusOfArea);
+        var ps = aoe.GetComponent<ParticleSystem>();
+        Destroy(aoe, ps.main.duration);
+        //localScale is set to 0.5f radius as default
+        yield return new WaitForSeconds(aoeEffectStartTime);
+        Debug.Log("show");
+        var aoeEffect = Instantiate(enemyStat.indicatorEffect, attPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
+        aoeEffect.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
+        var psEff = aoe.GetComponent<ParticleSystem>();
+       Destroy(aoeEffect, psEff.main.duration);
+
+        yield return new WaitForSeconds(enemyStat.indicatorTime);
+        if (CheckPlayerInArea())
+        {
+            targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
+        }
     }
 
     public void SpawnProjectile()
@@ -255,12 +279,19 @@ public class Enemy : MonoBehaviour
                     targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
                 }
                 break;
-            case AttackType.AreaMelee:
-                if (AttackObjectInArea())
+            case AttackType.AreaRanged:
+                if (CheckPlayerInArea())
                 {
                     targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
                 }
                 break;
+            case AttackType.AreaMelee:
+                if (CheckPlayerInArea())
+                {
+                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
+                }
+                break;
+
 
         }
     }

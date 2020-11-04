@@ -31,7 +31,9 @@ public class EnemyStat
     public float attackAngle;   //angle required to form cone for attack area
     [ConditionalField(nameof(attackType),false,AttackType.AreaMelee,AttackType.AreaRanged)]
     [PositiveValueOnly]
-    public float attackRadiusOfArea;
+    public float attackRadiusOfArea,indicatorTime;
+    [ConditionalField(nameof(attackType), false, AttackType.AreaMelee, AttackType.AreaRanged)]
+    public GameObject aoeIndicator,indicatorEffect;
     [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
     [PositiveValueOnly]
     public Projectiles projectiles;
