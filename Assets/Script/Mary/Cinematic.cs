@@ -9,6 +9,7 @@ public class Cinematic : MonoBehaviour
 {
     [SerializeField] private float cinematicTime = 3f;
     [SerializeField] private PlayerController playerCharacter;
+    [SerializeField] private MaryTimer timer;
     [SerializeField] private WaveManager waveManager;
 
     private PlayerInput input;
@@ -57,6 +58,9 @@ public class Cinematic : MonoBehaviour
         gameObject.SetActive(false);
         Cursor.visible = true;
         Camera.main.GetComponent<CameraFollow>().ResetCameraDiff();
+        timer.InitiateTime(100f);   // 1 minute and 40 seconds
+        timer.SetPauseTimer(false);  // set active
+        timer.ShowTimer(true, true, 1f);
         waveManager.gameObject.SetActive(true);
     }
 
