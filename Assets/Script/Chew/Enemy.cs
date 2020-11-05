@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
     private ItemDropEvent dropableItem;
     private Animator anim;
     private float maxHealth;
+    private Vector3 attackPoint;
 
     [HideInInspector] public bool canAttack;
     [HideInInspector] public bool canMove;
@@ -56,7 +57,7 @@ public class Enemy : MonoBehaviour
         canAttack = true;
         canMove = true;
         maxHealth = enemyStat.health;
-        if (enemyStat.attackType != AttackType.AreaMelee)
+        if (enemyStat.attackType != AttackType.AreaMelee && enemyStat.attackType != AttackType.AreaRanged)
         {
             enemyStat.attackRadiusOfArea = 0;
         }
@@ -197,22 +198,39 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public bool AttackObjectInArea()
+    public bool CheckPlayerInArea()
     {
         Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
         origin = new Vector3(origin.x, 0.0f, origin.z);
         Vector3 target = new Vector3(targetPlayer.transform.position.x, 0.0f, targetPlayer.transform.position.z);
 
         var dir = (target - origin).normalized;
-        Vector3 attPoint = transform.position + (transform.forward * EnemyStat.attackRange / 2);
-        Debug.DrawLine(attPoint - transform.forward * (enemyStat.attackRadiusOfArea / 2), attPoint + transform.forward * (enemyStat.attackRadiusOfArea / 2), Color.red, 2f);
-
-        if (Vector3.Distance(attPoint,target) <= enemyStat.attackRadiusOfArea)
+        if (Vector3.Distance(attackPoint, target) <= enemyStat.attackRadiusOfArea)
         {
             return true;
         }
 
         return false;
+    }
+
+    public IEnumerator AoeAttack()
+    {
+        attackPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * EnemyStat.attackRange);
+        attackPoint.y = 0.1f;
+        var aoe = Instantiate(enemyStat.aoeIndicator, attackPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
+        aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
+        Debug.Log(enemyStat.attackRadiusOfArea);
+        var ps = aoe.GetComponent<ParticleSystem>();
+        Destroy(aoe, enemyStat.indicatorTime);
+        //localScale is set to 0.5f radius as default
+        Debug.Log("show");
+        var aoeEffect = Instantiate(enemyStat.indicatorEffect, attackPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
+        aoeEffect.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
+        var psEff = aoe.GetComponent<ParticleSystem>();
+        Destroy(aoeEffect, enemyStat.indicatorTime);
+
+        yield return new WaitForSeconds(enemyStat.indicatorTime);
+        DealDamage();
     }
 
     public void SpawnProjectile()
@@ -255,12 +273,19 @@ public class Enemy : MonoBehaviour
                     targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
                 }
                 break;
-            case AttackType.AreaMelee:
-                if (AttackObjectInArea())
+            case AttackType.AreaRanged:
+                if (CheckPlayerInArea())
                 {
                     targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
                 }
                 break;
+            case AttackType.AreaMelee:
+                if (CheckPlayerInArea())
+                {
+                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
+                }
+                break;
+
 
         }
     }

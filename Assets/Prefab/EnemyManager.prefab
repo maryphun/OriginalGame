@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7348710430910611553
 Transform:
   m_ObjectHideFlags: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   spawnArea: {fileID: 7348710430910611554}
   spawnEffect: {fileID: 1796635450895110, guid: 86632ea119f95da4a911d1bdf0ea579b,
     type: 3}
-  spawnDelay: 2
+  spawnDelay: 3
   waveNumber: 1
   wavePattern:
   - spawnInfo:

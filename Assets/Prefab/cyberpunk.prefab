@@ -1333,9 +1333,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 137370067460240068, guid: c9751ce6917e9a34fa65260bace8c38a,
         type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 137370067460240068, guid: c9751ce6917e9a34fa65260bace8c38a,
+        type: 3}
       propertyPath: m_CastShadows
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 137370067460240068, guid: c9751ce6917e9a34fa65260bace8c38a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 06d40dc2e1401784eb420a0d2d5d7235, type: 2}
+    - target: {fileID: 137370067460240068, guid: c9751ce6917e9a34fa65260bace8c38a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 06d40dc2e1401784eb420a0d2d5d7235, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9751ce6917e9a34fa65260bace8c38a, type: 3}
 --- !u!1 &3606879467673050592 stripped
@@ -1433,5 +1448,20 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 23301198901387044, guid: e80d304552ca5494ea53a05500259e80,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 23301198901387044, guid: e80d304552ca5494ea53a05500259e80,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 06d40dc2e1401784eb420a0d2d5d7235, type: 2}
+    - target: {fileID: 23301198901387044, guid: e80d304552ca5494ea53a05500259e80,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 06d40dc2e1401784eb420a0d2d5d7235, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e80d304552ca5494ea53a05500259e80, type: 3}

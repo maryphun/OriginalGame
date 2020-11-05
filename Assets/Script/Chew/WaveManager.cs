@@ -9,12 +9,15 @@ public class WaveManager : MonoBehaviour
     [MustBeAssigned] public Collider spawnArea;
 
     public GameObject spawnEffect;
+    [HideInInspector] public static int enemyCount = 0;
 
     [System.Serializable]
     public class SpawnInfo
     {
         public Enemy prototype;
         public int spawnLimit;
+        public bool spawnInSpecificLocation;
+        [ConditionalField(nameof(spawnInSpecificLocation),false,true)] public Vector3 spawnLocation;
     }
     
     [System.Serializable]
@@ -55,14 +58,22 @@ public class WaveManager : MonoBehaviour
         {
             return;
         }
+        if (enemyCount <= 0)
+        {
+            waveOngoing = false;
+        }
         foreach (WaveDetail wave in wavePattern)
         {
+            if(waveOngoing )
+            {
+                break;
+            }
 
             if (wave.isSpawned)
             {
                 continue;
             }
-            // Start spawn enemy unitl max enemy per spawn
+            // Start spawn enemy until max enemy per spawn
             for (int i = 0; i < wave.maxEnemyPerSpawn; i++)
             {
                 // If random spawn, spawn and continue
@@ -73,7 +84,7 @@ public class WaveManager : MonoBehaviour
                     continue;
                 }
 
-                // Spawn in sequnce
+                // Spawn in sequence
                 for (int j = 0; j < wave.spawnInfo.Length;)
                 {
                     if (wave.spawnInfo[j].spawnLimit <= 0)
@@ -85,7 +96,6 @@ public class WaveManager : MonoBehaviour
                     break;
                 }
             }
-
 
             waveOngoing = true;
             bool allSpawned = true;
@@ -111,8 +121,16 @@ public class WaveManager : MonoBehaviour
             var ps = spawnFX.GetComponent<ParticleSystem>();
             Destroy(spawnFX, ps.main.duration );
             prototype.spawnLimit--;
+            enemyCount++;
             yield return new WaitForSeconds(ps.main.duration - 1f);
-            Instantiate(prototype.prototype, randPos, Quaternion.identity);
+            if (prototype.spawnInSpecificLocation)
+            {
+                Instantiate(prototype.prototype, prototype.spawnLocation, Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(prototype.prototype, randPos, Quaternion.identity);
+            }
         }
         yield break;
     }
@@ -126,6 +144,7 @@ public class WaveManager : MonoBehaviour
         );
     }
 
+ 
     //IEnumerator SpawnEffect(Vector3 pos)
     //{
         

@@ -83,6 +83,10 @@ public class EnemyHitPoint : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (GetCurrentHitPoint() <= 0)
+        {   
+            return;
+        }
         enemyScript.ReceiveDamage(damage);
 
         if (hpbarHandle == null)

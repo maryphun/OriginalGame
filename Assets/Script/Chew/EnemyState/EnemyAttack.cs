@@ -17,7 +17,6 @@ public class EnemyAttack : IState<Enemy>
         attDelay = 0;
         hasAttacked = false;
 
-
     }
 
     // Update is called once per frame
@@ -33,6 +32,7 @@ public class EnemyAttack : IState<Enemy>
                 {
                     if (!hasAttacked)
                     {
+                        enemy.StartCoroutine(enemy.AoeAttack());
                         //reset parameter value
                         hasAttacked = true;
                         enemy.canAttack = false;
