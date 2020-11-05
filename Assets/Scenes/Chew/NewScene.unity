@@ -6014,6 +6014,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2274950989951491624, guid: aabbe57cd6cf8664d9a0f68f2268a01e,
+        type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2274950989951491626, guid: aabbe57cd6cf8664d9a0f68f2268a01e,
         type: 3}
       propertyPath: m_Name
@@ -7333,6 +7338,11 @@ PrefabInstance:
         type: 3}
       propertyPath: enemyStat.attackRadiusOfArea
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5066283709472679345, guid: 04b78854cca92db44bc8a8520a77663d,
+        type: 3}
+      propertyPath: enemyStat.indicatorTime
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5705667194374357402, guid: 04b78854cca92db44bc8a8520a77663d,
         type: 3}

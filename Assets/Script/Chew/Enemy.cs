@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
     private ItemDropEvent dropableItem;
     private Animator anim;
     private float maxHealth;
+    private Vector3 attackPoint;
 
     [HideInInspector] public bool canAttack;
     [HideInInspector] public bool canMove;
@@ -204,10 +205,7 @@ public class Enemy : MonoBehaviour
         Vector3 target = new Vector3(targetPlayer.transform.position.x, 0.0f, targetPlayer.transform.position.z);
 
         var dir = (target - origin).normalized;
-        Vector3 attPoint = transform.position + (transform.forward * EnemyStat.attackRange / 2);
-        Debug.DrawLine(attPoint - transform.forward * (enemyStat.attackRadiusOfArea / 2), attPoint + transform.forward * (enemyStat.attackRadiusOfArea / 2), Color.red, 2f);
-
-        if (Vector3.Distance(attPoint,target) <= enemyStat.attackRadiusOfArea)
+        if (Vector3.Distance(attackPoint, target) <= enemyStat.attackRadiusOfArea)
         {
             return true;
         }
@@ -215,28 +213,24 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public IEnumerator AoeAttack(float aoeEffectStartTime = 0.5f)
+    public IEnumerator AoeAttack()
     {
-        Vector3 attPoint = transform.position + (transform.forward * EnemyStat.attackRange / 2);
-        attPoint.y = 0.1f;
-        var aoe = Instantiate(enemyStat.aoeIndicator, attPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
+        attackPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * EnemyStat.attackRange);
+        attackPoint.y = 0.1f;
+        var aoe = Instantiate(enemyStat.aoeIndicator, attackPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
         aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
         Debug.Log(enemyStat.attackRadiusOfArea);
         var ps = aoe.GetComponent<ParticleSystem>();
-        Destroy(aoe, ps.main.duration);
+        Destroy(aoe, enemyStat.indicatorTime);
         //localScale is set to 0.5f radius as default
-        yield return new WaitForSeconds(aoeEffectStartTime);
         Debug.Log("show");
-        var aoeEffect = Instantiate(enemyStat.indicatorEffect, attPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
+        var aoeEffect = Instantiate(enemyStat.indicatorEffect, attackPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
         aoeEffect.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
         var psEff = aoe.GetComponent<ParticleSystem>();
-       Destroy(aoeEffect, psEff.main.duration);
+        Destroy(aoeEffect, enemyStat.indicatorTime);
 
         yield return new WaitForSeconds(enemyStat.indicatorTime);
-        if (CheckPlayerInArea())
-        {
-            targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-        }
+        DealDamage();
     }
 
     public void SpawnProjectile()

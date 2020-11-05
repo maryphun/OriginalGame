@@ -32,6 +32,7 @@ public class EnemyAttack : IState<Enemy>
                 {
                     if (!hasAttacked)
                     {
+                        enemy.StartCoroutine(enemy.AoeAttack());
                         //reset parameter value
                         hasAttacked = true;
                         enemy.canAttack = false;

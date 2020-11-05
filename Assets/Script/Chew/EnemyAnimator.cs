@@ -35,11 +35,6 @@ public class EnemyAnimator : MonoBehaviour
         enemyScript.DealDamage();
     }
 
-    public void AoeAttack(float aoeEffectStartTime = 0.5f) 
-    {
-        StartCoroutine(enemyScript.AoeAttack(aoeEffectStartTime));
-    }
-
     public void MoveForward(float dist)
     {
         enemyScript.transform.DOMove(enemyScript.transform.position + (enemyScript.transform.forward * dist), 0.1f, false);
