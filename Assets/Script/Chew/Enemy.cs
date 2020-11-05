@@ -209,20 +209,26 @@ public class Enemy : MonoBehaviour
         {
             return true;
         }
-
+        
         return false;
     }
 
     public IEnumerator AoeAttack()
     {
+        if (enemyStat.attackType != AttackType.AreaMelee && enemyStat.attackType != AttackType.AreaRanged)
+        {
+            yield break; 
+        }
         attackPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * EnemyStat.attackRange);
         attackPoint.y = 0.1f;
         var aoe = Instantiate(enemyStat.aoeIndicator, attackPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
+        //localScale is set to 0.5f radius as default
         aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
         Debug.Log(enemyStat.attackRadiusOfArea);
         var ps = aoe.GetComponent<ParticleSystem>();
-        Destroy(aoe, enemyStat.indicatorTime);
-        //localScale is set to 0.5f radius as default
+        //wait the aoe circle to reach its maximum size before the effect occur
+        Destroy(aoe, enemyStat.indicatorTime + 0.5f);
+        yield return new WaitForSeconds(0.5f);
         Debug.Log("show");
         var aoeEffect = Instantiate(enemyStat.indicatorEffect, attackPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
         aoeEffect.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
@@ -264,12 +270,9 @@ public class Enemy : MonoBehaviour
     {
         switch(enemyStat.attackType)
         {
-            case AttackType.Melee:
-                Debug.Log("Attack");    
+            case AttackType.Melee:   
                 if (AttackObjectInVision(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
                 {
-                    Debug.Log("AttackNobug");
-
                     targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
                 }
                 break;

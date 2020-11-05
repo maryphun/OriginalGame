@@ -114,6 +114,11 @@ public class WaveManager : MonoBehaviour
 
     IEnumerator SpawnEnemy(SpawnInfo prototype)
     {
+        if (prototype == null)
+        {
+            prototype.spawnLimit = 0;
+            yield break;
+        }
         if (prototype.spawnLimit > 0)
         {
             var randPos = RandomPointInBounds(spawnArea.bounds);

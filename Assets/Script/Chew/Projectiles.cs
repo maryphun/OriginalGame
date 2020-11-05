@@ -24,6 +24,7 @@ public class Projectiles : MonoBehaviour
     public GameObject muzzlePrefab; //asset effect
     public GameObject hitPrefab;    //asset effect
     public List<GameObject> trails; //asset effect
+    public float projectileDamage = 1;
 
     private bool collided;
 
@@ -78,7 +79,7 @@ public class Projectiles : MonoBehaviour
 
     void OnTriggerEnter(Collider co)
     {
-        if (co.gameObject.tag == "Bullet" || co.gameObject.tag == "Enemy")
+        if (co.gameObject.tag == "Bullet" || co.gameObject.tag == gameObject.tag)
         {
             //do nothing
             return;
@@ -125,7 +126,11 @@ public class Projectiles : MonoBehaviour
 
             if (co.gameObject.tag == "Player")
             {
-                co.gameObject.GetComponent<PlayerController>().TakeDamage(1, transform);
+                co.gameObject.GetComponent<PlayerController>().TakeDamage((int)projectileDamage, transform);
+            }
+            else if (co.gameObject.tag == "Enemy")
+            {
+                co.gameObject.GetComponent<EnemyHitPoint>().TakeDamage(projectileDamage);
             }
 
         }

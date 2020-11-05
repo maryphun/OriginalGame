@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7348710430910611559
+--- !u!1 &3050850697860503972
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7348710430910611553}
-  - component: {fileID: 7348710430910611552}
-  - component: {fileID: 7348710430910611554}
+  - component: {fileID: 3050850697860503970}
+  - component: {fileID: 3050850697110150321}
+  - component: {fileID: 3050850697860503973}
   m_Layer: 0
-  m_Name: EnemyManager
+  m_Name: WaveManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!4 &7348710430910611553
+--- !u!4 &3050850697860503970
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7348710430910611559}
+  m_GameObject: {fileID: 3050850697860503972}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.1469944, y: -0.796637, z: -4.1670737}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,41 +32,49 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7348710430910611552
+--- !u!114 &3050850697110150321
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7348710430910611559}
+  m_GameObject: {fileID: 3050850697860503972}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f9687dfcb2541e4883d60130d503189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnArea: {fileID: 7348710430910611554}
+  spawnArea: {fileID: 3050850697860503973}
   spawnEffect: {fileID: 1796635450895110, guid: 86632ea119f95da4a911d1bdf0ea579b,
     type: 3}
   spawnDelay: 3
   waveNumber: 1
   wavePattern:
   - spawnInfo:
+    - prototype: {fileID: 0}
+      spawnLimit: 1
+      spawnInSpecificLocation: 0
+      spawnLocation: {x: 0, y: 0, z: 0}
     - prototype: {fileID: 7781163835438263452, guid: e5942e87ca9659b4a961bb5d1d6763cb,
         type: 3}
-      spawnLimit: 2
+      spawnLimit: 1
+      spawnInSpecificLocation: 0
+      spawnLocation: {x: 0, y: 0, z: 0}
     - prototype: {fileID: 427083867158740297, guid: e582fdcb1b54f084b97794112dbea878,
         type: 3}
-      spawnLimit: 3
+      spawnLimit: 1
+      spawnInSpecificLocation: 0
+      spawnLocation: {x: 0, y: 0, z: 0}
     maxEnemyPerSpawn: 3
     randomSpawn: 0
     isSpawned: 0
---- !u!65 &7348710430910611554
+--- !u!65 &3050850697860503973
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7348710430910611559}
+  m_GameObject: {fileID: 3050850697860503972}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
