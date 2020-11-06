@@ -78,57 +78,57 @@ public class Projectiles : MonoBehaviour
 
     void OnTriggerEnter(Collider co)
     {
-        if (co.gameObject.tag == "Bullet" || co.gameObject.tag == "Enemy")
-        {
-            //do nothing
-            return;
-        }
-        if (co.gameObject.tag != "Bullet" && !collided)
-        {
-            collided = true;
+        //if (co.gameObject.tag == "Bullet" || co.gameObject.tag == "Enemy")
+        //{
+        //    //do nothing
+        //    return;
+        //}
+        //if (co.gameObject.tag != "Bullet" && !collided)
+        //{
+        //    collided = true;
 
-            //stop trails effect
-            if (trails.Count > 0)
-            {
-                for (int i = 0; i < trails.Count; i++)
-                {
-                    trails[i].transform.parent = null;
-                    var ps = trails[i].GetComponent<ParticleSystem>();
-                    if (ps != null)
-                    {
-                        ps.Stop();
-                        Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
-                    }
-                }
-            }
+        //    //stop trails effect
+        //    if (trails.Count > 0)
+        //    {
+        //        for (int i = 0; i < trails.Count; i++)
+        //        {
+        //            trails[i].transform.parent = null;
+        //            var ps = trails[i].GetComponent<ParticleSystem>();
+        //            if (ps != null)
+        //            {
+        //                ps.Stop();
+        //                Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
+        //            }
+        //        }
+        //    }
 
-            speed = 0;
-            GetComponent<Rigidbody>().isKinematic = true;
+        //    speed = 0;
+        //    GetComponent<Rigidbody>().isKinematic = true;
 
-            // play hit effect
-            if (hitPrefab != null)
-            {
-                var hitVFX = Instantiate(hitPrefab, co.ClosestPointOnBounds(transform.position), transform.rotation) as GameObject;
+        //    // play hit effect
+        //    if (hitPrefab != null)
+        //    {
+        //        var hitVFX = Instantiate(hitPrefab, co.ClosestPointOnBounds(transform.position), transform.rotation) as GameObject;
 
-                var ps = hitVFX.GetComponent<ParticleSystem>();
-                if (ps == null)
-                {
-                    var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
-                    Destroy(hitVFX, psChild.main.duration);
-                }
-                else
-                {
-                    Destroy(hitVFX, ps.main.duration);
-                }
-            }
-            StartCoroutine(DestroyParticle(0f));
+        //        var ps = hitVFX.GetComponent<ParticleSystem>();
+        //        if (ps == null)
+        //        {
+        //            var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+        //            Destroy(hitVFX, psChild.main.duration);
+        //        }
+        //        else
+        //        {
+        //            Destroy(hitVFX, ps.main.duration);
+        //        }
+        //    }
+        //    StartCoroutine(DestroyParticle(0f));
 
-            if (co.gameObject.tag == "Player")
-            {
-                co.gameObject.GetComponent<PlayerController>().TakeDamage(1, transform);
-            }
+        //    if (co.gameObject.tag == "Player")
+        //    {
+        //        co.gameObject.GetComponent<PlayerController>().TakeDamage(1, transform);
+        //    }
 
-        }
+        //}
     }
 
     public IEnumerator DestroyParticle(float waitTime)

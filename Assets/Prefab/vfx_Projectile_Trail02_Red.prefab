@@ -45,7 +45,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046377441548030}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 219644c0b6ca15f499663a8b748b15af, type: 3}
   m_Name: 
@@ -71,7 +71,7 @@ MonoBehaviour:
   blockableMask:
     serializedVersion: 2
     m_Bits: 512
-  destroyOnDetect: 1
+  destroyOnDetect: 0
   muzzlePrefab: {fileID: 1733671065153278, guid: bbd28345e6e61194e9a4a4cbcfcfe7b9,
     type: 3}
   hitPrefab: {fileID: 1182663495075756, guid: 3da99b3918b04c84a8a613311e7bcaeb, type: 3}

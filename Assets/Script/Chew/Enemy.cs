@@ -215,6 +215,10 @@ public class Enemy : MonoBehaviour
 
     public IEnumerator AoeAttack()
     {
+        if(enemyStat.aoeIndicator == null)
+        {
+            yield break;
+        }
         attackPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * EnemyStat.attackRange);
         attackPoint.y = 0.1f;
         var aoe = Instantiate(enemyStat.aoeIndicator, attackPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
@@ -265,11 +269,8 @@ public class Enemy : MonoBehaviour
         switch(enemyStat.attackType)
         {
             case AttackType.Melee:
-                Debug.Log("Attack");    
                 if (AttackObjectInVision(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
                 {
-                    Debug.Log("AttackNobug");
-
                     targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
                 }
                 break;

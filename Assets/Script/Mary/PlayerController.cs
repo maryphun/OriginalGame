@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float invulnerableTime = 0.75f;
     [SerializeField] float attackBaseDamage = 10f;
     [SerializeField] LayerMask wall;
+    [SerializeField] private ProjectileManager projectilescript;
 
     private PlayerInput input;
     private float turnMoveVelocity, targetAngle, moveSpeedMax, attackAngle, comboTimerCount;
@@ -331,6 +332,11 @@ public class PlayerController : MonoBehaviour
                 anim.Play("Damaged", 0, 0.05f);
             }
         }
+    }
+
+    public void Callback()
+    {
+        Debug.Log("callback called");
     }
 
     public bool IsDeath()
