@@ -19,15 +19,16 @@ public class EnemyAttackFinish : IState<Enemy>
     // Update is called once per frame
     public void Execute(Enemy enemy)
     {
-        if (!enemy.CheckWallHit(enemy.GetWallHitDistance, true))
-        {
-            enemy.StartCoroutine(enemy.FaceDirection(2 * enemy.transform.position - enemy.TargetPlayer.transform.position));
-            enemy.MoveAwayFromPlayer();
-        }
         if (enemy.CheckPlayerDistance() >= (enemy.EnemyStat.visionRadius) || Time.time > timeNow + actionTime)
         {
             enemy.ChangeState(new EnemyMovement());
         }
+        if (!enemy.CheckWallHit(enemy.GetWallHitDistance, true))
+        {
+            enemy.FaceDirection(enemy.TargetPlayer.transform.position,true);
+            enemy.MoveAwayFromPlayer();
+        }
+       
     }
 
     public void Exit(Enemy enemy)

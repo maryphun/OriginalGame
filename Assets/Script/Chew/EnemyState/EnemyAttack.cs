@@ -27,7 +27,7 @@ public class EnemyAttack : IState<Enemy>
         {
             if (enemy.canAttack)
             {
-                enemy.StartCoroutine(enemy.FaceDirection(enemy.TargetPlayer.transform.position));
+                enemy.FaceDirection(enemy.TargetPlayer.transform.position);
                 if (Time.time >= attackedTime + attDelay)
                 {
                     if (!hasAttacked)

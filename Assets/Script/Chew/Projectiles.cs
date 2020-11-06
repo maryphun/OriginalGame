@@ -25,6 +25,7 @@ public class Projectiles : MonoBehaviour
     public GameObject hitPrefab;    //asset effect
     public List<GameObject> trails; //asset effect
     public float projectileDamage = 1;
+    [Tag] public string originTag;
 
     private bool collided;
 
@@ -32,6 +33,25 @@ public class Projectiles : MonoBehaviour
     void Start()
     {
         particleSystem = GetComponent<ParticleSystem>();
+        //projectile effect
+        if (muzzlePrefab != null)
+        {
+            var muzzleVFX = Instantiate(muzzlePrefab, transform.position, Quaternion.identity);
+            muzzleVFX.transform.forward = gameObject.transform.forward;
+            var ps = muzzleVFX.GetComponent<ParticleSystem>();
+            if (ps != null)
+                Destroy(muzzleVFX, ps.main.duration);
+            else
+            {
+                var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+                Destroy(muzzleVFX, psChild.main.duration);
+            }
+        }
+    }
+
+    private void Awake()
+    {
+        
     }
 
     // Update is called once per frame
@@ -79,7 +99,7 @@ public class Projectiles : MonoBehaviour
 
     void OnTriggerEnter(Collider co)
     {
-        if (co.gameObject.tag == "Bullet" || co.gameObject.tag == gameObject.tag)
+        if (co.gameObject.tag == "Bullet" || co.gameObject.tag == originTag)
         {
             //do nothing
             return;

@@ -78,7 +78,7 @@ public class EnemyMovement : IState<Enemy>
 
         if (enemy.CheckPlayerDistance() < enemy.EnemyStat.escapeRange)
         {
-            enemy.StartCoroutine(enemy.FaceDirection(2 * enemy.transform.position - enemy.TargetPlayer.transform.position));
+            enemy.FaceDirection(enemy.TargetPlayer.transform.position,true);
 
             if (enemy.CheckWallHit(enemy.GetWallHitDistance))
             {
@@ -87,7 +87,6 @@ public class EnemyMovement : IState<Enemy>
             }
             else
             {
-                
                enemy.MoveAwayFromPlayer();
             }
 
@@ -98,12 +97,15 @@ public class EnemyMovement : IState<Enemy>
         }
         else
         {
-            direction = tmpDir;
-            enemy.StartCoroutine(enemy.FaceDirection(enemy.TargetPlayer.transform.position));
-            enemy.transform.position = new Vector3(enemy.transform.position.x + direction.x * enemy.EnemyStat.movementSpeed * Time.deltaTime,
-                         enemy.transform.position.y, enemy.transform.position.z + direction.z * enemy.EnemyStat.movementSpeed * Time.deltaTime);
+            if (enemy.CheckPlayerDistance() <  enemy.EnemyStat.visionRadius)
+            {
+                direction = tmpDir;
+                enemy.FaceDirection(enemy.TargetPlayer.transform.position);
+                enemy.transform.position = new Vector3(enemy.transform.position.x + direction.x * enemy.EnemyStat.movementSpeed * Time.deltaTime,
+                             enemy.transform.position.y, enemy.transform.position.z + direction.z * enemy.EnemyStat.movementSpeed * Time.deltaTime);
 
-            enemy.Anim.SetFloat("Speed", enemy.EnemyStat.movementSpeed);
+                enemy.Anim.SetFloat("Speed", enemy.EnemyStat.movementSpeed);
+            }
         }
       
 

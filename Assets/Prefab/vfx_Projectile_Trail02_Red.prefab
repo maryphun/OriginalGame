@@ -79,6 +79,8 @@ MonoBehaviour:
   - {fileID: 1535027785422254}
   - {fileID: 1625312047117836}
   - {fileID: 1963513821895232}
+  projectileDamage: 1
+  originTag: Enemy
 --- !u!65 &65732263249307976
 BoxCollider:
   m_ObjectHideFlags: 0

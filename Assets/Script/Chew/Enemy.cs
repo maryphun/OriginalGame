@@ -24,13 +24,14 @@ public class Enemy : MonoBehaviour
     private ItemDropEvent dropableItem;
     private Animator anim;
     private float maxHealth;
-    private Vector3 attackPoint;
+    private Vector3 aoeAimPoint;
 
     [HideInInspector] public bool canAttack;
     [HideInInspector] public bool canMove;
     [HideInInspector] public bool isDeath;
     [HideInInspector] public bool isDying;
     [HideInInspector] public bool forceAttack;
+    [HideInInspector] public bool isStun;
     public EnemyEvent enemyEvent;
     const float wallHitDistance = 0.5f;
 
@@ -56,6 +57,7 @@ public class Enemy : MonoBehaviour
         forceAttack = false;
         canAttack = true;
         canMove = true;
+        isStun = false;
         maxHealth = enemyStat.health;
         if (enemyStat.attackType != AttackType.AreaMelee && enemyStat.attackType != AttackType.AreaRanged)
         {
@@ -181,7 +183,7 @@ public class Enemy : MonoBehaviour
         stateMachine.ChangeState(state);
     }
 
-    public bool AttackObjectInVision(float angle , float distance)
+    public bool CheckTargetInRange(float angle , float distance)
     {
         Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
         origin = new Vector3(origin.x, 0.0f, origin.z);
@@ -190,51 +192,43 @@ public class Enemy : MonoBehaviour
         var dir = (target - origin).normalized;
         float calcAngle = Vector3.Angle(dir, transform.forward);
         var dist = Vector3.Distance(origin, target);
-        //0.5f as offset(fix later)
-        if (Mathf.Abs(calcAngle) < angle && dist < distance + 0.5f)
+        if (Mathf.Abs(calcAngle) <= angle && dist <= distance)
         {
             return true;
         }
         return false;
     }
 
-    public bool CheckPlayerInArea()
+    public bool CheckTargetInRange(float angle, float distance, Vector3 pos)
     {
-        Vector3 origin = transform.position - (transform.forward * collider.bounds.extents.z);
-        origin = new Vector3(origin.x, 0.0f, origin.z);
         Vector3 target = new Vector3(targetPlayer.transform.position.x, 0.0f, targetPlayer.transform.position.z);
-
-        var dir = (target - origin).normalized;
-        if (Vector3.Distance(attackPoint, target) <= enemyStat.attackRadiusOfArea)
+        var dir = (target - pos).normalized;
+        float calcAngle = Vector3.Angle(dir, transform.forward);
+        var dist = Vector3.Distance(pos, target);
+        if (Mathf.Abs(calcAngle) <= angle && dist <= distance)
         {
             return true;
         }
-        
         return false;
     }
 
-    public IEnumerator AoeAttack()
+    public IEnumerator AoeAttack(float waitTime = 0.5f)
     {
         if (enemyStat.attackType != AttackType.AreaMelee && enemyStat.attackType != AttackType.AreaRanged)
         {
             yield break; 
         }
-        attackPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * EnemyStat.attackRange);
-        attackPoint.y = 0.1f;
-        var aoe = Instantiate(enemyStat.aoeIndicator, attackPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
-        //localScale is set to 0.5f radius as default
+        aoeAimPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * EnemyStat.attackRange);
+        aoeAimPoint.y = 0.1f;
+        var aoe = Instantiate(enemyStat.aoeIndicator, aoeAimPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
+        //radius of effect is set to 0.5f as default 
         aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
-        Debug.Log(enemyStat.attackRadiusOfArea);
-        var ps = aoe.GetComponent<ParticleSystem>();
         //wait the aoe circle to reach its maximum size before the effect occur
-        Destroy(aoe, enemyStat.indicatorTime + 0.5f);
-        yield return new WaitForSeconds(0.5f);
-        Debug.Log("show");
-        var aoeEffect = Instantiate(enemyStat.indicatorEffect, attackPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
+        Destroy(aoe, enemyStat.indicatorTime + waitTime);
+        yield return new WaitForSeconds(waitTime);
+        var aoeEffect = Instantiate(enemyStat.indicatorEffect, aoeAimPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
         aoeEffect.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
-        var psEff = aoe.GetComponent<ParticleSystem>();
         Destroy(aoeEffect, enemyStat.indicatorTime);
-
         yield return new WaitForSeconds(enemyStat.indicatorTime);
         DealDamage();
     }
@@ -243,20 +237,8 @@ public class Enemy : MonoBehaviour
     {
         if (enemyStat.projectiles)
         {
-            if (enemyStat.projectiles.muzzlePrefab != null)
-            {
-                var muzzleVFX = Instantiate(enemyStat.projectiles.muzzlePrefab, transform.position, Quaternion.identity);
-                muzzleVFX.transform.forward = gameObject.transform.forward;
-                var ps = muzzleVFX.GetComponent<ParticleSystem>();
-                if (ps != null)
-                    Destroy(muzzleVFX, ps.main.duration);
-                else
-                {
-                    var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
-                    Destroy(muzzleVFX, psChild.main.duration);
-                }
-            }
-            Instantiate(enemyStat.projectiles, transform.position + Vector3.up  + transform.forward, transform.rotation);
+            var proj = Instantiate(enemyStat.projectiles, transform.position + Vector3.up  + transform.forward, transform.rotation);
+            proj.originTag = gameObject.tag;
         }
         else
         {
@@ -268,56 +250,32 @@ public class Enemy : MonoBehaviour
 
     public void DealDamage(bool isProjectile =false)
     {
+        bool ret = false;
         switch(enemyStat.attackType)
         {
-            case AttackType.Melee:   
-                if (AttackObjectInVision(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
-                {
-                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-                }
+            case AttackType.Melee:
+                ret = CheckTargetInRange(EnemyStat.attackAngle / 2, EnemyStat.attackRange);
                 break;
             case AttackType.AreaRanged:
-                if (CheckPlayerInArea())
-                {
-                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-                }
+                ret = CheckTargetInRange(360, enemyStat.attackRadiusOfArea, aoeAimPoint);
                 break;
             case AttackType.AreaMelee:
-                if (CheckPlayerInArea())
-                {
-                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-                }
+                ret = CheckTargetInRange(360, enemyStat.attackRadiusOfArea);
                 break;
-
-
         }
-    }
-
-    public void MoveWithRayCast(Vector3 normalizedVector, float distance, float time)
-    {
-        LayerMask wallMask = LayerMask.GetMask("Wall");
-        LayerMask playerMask = LayerMask.GetMask("Player");
-        var finalmask = wallMask | playerMask;
-
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, normalizedVector, out hit, distance, finalmask))
+        if (ret)
         {
-            //New Distance 
-            float newDistance = Vector3.Distance(hit.point, transform.position);
-            if (collider.bounds.extents.z > newDistance)
-            {
-                return;
-            }
-            transform.DOMove(hit.point, time, false);
-            return;
+            targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
         }
-        transform.DOMove(transform.position + normalizedVector * distance, time, false);
     }
 
-    public IEnumerator FaceDirection(Vector3 direction, float smoothtime = 0.05f)
+    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.05f)
     {
-        transform.DOLookAt(direction, smoothtime,AxisConstraint.Y);
+        if (reverse)
+        {
+            towards = 2 * transform.position - towards;
+        }
+        transform.DOLookAt(towards, smoothtime,AxisConstraint.Y);
 
-        yield return new WaitForSeconds(smoothtime);
     }
 }
