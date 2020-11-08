@@ -5371,6 +5371,11 @@ PrefabInstance:
       propertyPath: debugModeEnabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2144061198382548950, guid: 62c2c42fa74520a41b3b3665b34ad240,
+        type: 3}
+      propertyPath: followPlayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2928207760538240022, guid: 62c2c42fa74520a41b3b3665b34ad240,
         type: 3}
       propertyPath: m_Name

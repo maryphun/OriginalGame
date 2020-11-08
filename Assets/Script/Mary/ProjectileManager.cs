@@ -29,7 +29,7 @@ public class ProjectileManager : MonoBehaviour
     {
         if (followTime > 1.0f) Debug.LogWarning("WARNING: followTime should be float between 0.01f and 1.0f");
         Mathf.Clamp(followTime, 0.0f, 1.0f);
-        //StartCoroutine(ProjectileFollow(projectile, startPoint, followTarget, followTime, time, returnCallBack));
+        StartCoroutine(ProjectileFollow(projectile, startPoint, followTarget, followTime, time, returnCallBack));
     }
 
     private IEnumerator ProjectileLoop(Transform owner, Transform projectile, Vector3 startPoint, Vector3 endPoint, float time, CustomDelegate returnCallBack)
@@ -77,11 +77,49 @@ public class ProjectileManager : MonoBehaviour
         }
     }
 
-    //private IEnumerator ProjectileFollow(Transform projectile, Vector3 startPoint, Transform followTarget, float followTime, float time, CustomDelegate returnCallBack)
-    //{
-        
-    //}
+    private IEnumerator ProjectileFollow(Transform projectile, Vector3 startPoint, Transform followTarget, float followTime, float time, CustomDelegate returnCallBack)
+    {
+        float timeElapsed = 0.0f;
+        float lerp = 0.0f;
 
+        var proj = Instantiate(projectile, startPoint, Quaternion.identity);
+        proj.LookAt(followTarget.position);
+        Vector3 targetPoint = new Vector3(followTarget.position.x, startPoint.y, followTarget.position.z);
+        Vector3 originPoint = startPoint;
+
+        while (lerp < 1.0f)
+        {
+            timeElapsed += Time.deltaTime;
+            lerp = (timeElapsed / time) * 1.0f;
+            
+
+            if (lerp < followTime)
+            {
+                // still following player
+                targetPoint.x = followTarget.position.x;
+                targetPoint.z = followTarget.position.z;
+            }
+
+            // update position
+            Vector3 newPos = Vector3.Lerp(originPoint, targetPoint, lerp);
+            proj.position = new Vector3 (newPos.x, proj.position.y, newPos.z);
+
+            // update rotation
+            Vector3 relativePos = targetPoint - proj.position;
+            Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+            proj.rotation = rotation;
+
+            yield return null;
+        }
+
+        DestroyProjectile(proj);
+
+        if (returnCallBack != null)
+        {
+            returnCallBack();
+        }
+    }
+    
     private void DestroyProjectile(Transform proj)
     {
         List<Transform> trails = new List<Transform>(); ;
