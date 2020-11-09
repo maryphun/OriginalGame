@@ -32,6 +32,11 @@ public class ProjectileManager : MonoBehaviour
         StartCoroutine(ProjectileFollow(projectile, startPoint, followTarget, followTime, time, returnCallBack));
     }
 
+    public void InitiateProjectileWithDirection(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float lastingtime, CustomDelegate returnCallBack)
+    {
+        StartCoroutine(ProjectilePlain(owner, projectile, startPoint, directionVector, lastingtime, returnCallBack));
+    }
+
     private IEnumerator ProjectileLoop(Transform owner, Transform projectile, Vector3 startPoint, Vector3 endPoint, float time, CustomDelegate returnCallBack)
     {
         float timeElapsed = 0.0f;
@@ -86,6 +91,9 @@ public class ProjectileManager : MonoBehaviour
         proj.LookAt(followTarget.position);
         Vector3 targetPoint = new Vector3(followTarget.position.x, startPoint.y, followTarget.position.z);
         Vector3 originPoint = startPoint;
+        Vector3 lastLoc = proj.position;
+        float height = originPoint.y;
+        bool changeTargetPoint = false;
 
         while (lerp < 1.0f)
         {
@@ -96,18 +104,33 @@ public class ProjectileManager : MonoBehaviour
             if (lerp < followTime)
             {
                 // still following player
-                targetPoint.x = followTarget.position.x;
-                targetPoint.z = followTarget.position.z;
+                height = Mathf.Lerp(0.0f, 8.0f, lerp / followTime);
+                targetPoint.y = height;
+            }
+            else
+            {
+                if (!changeTargetPoint)
+                {
+                    originPoint = proj.position;
+                    targetPoint.x = followTarget.position.x;
+                    targetPoint.z = followTarget.position.z;
+                    changeTargetPoint = true;
+                }
+                //(currentX - minX) / (maxX - minX)
+                lerp = (lerp - followTime) / (1.0f - followTime);
+                targetPoint.y = Mathf.Lerp(height, 0.0f, lerp);
             }
 
             // update position
             Vector3 newPos = Vector3.Lerp(originPoint, targetPoint, lerp);
-            proj.position = new Vector3 (newPos.x, proj.position.y, newPos.z);
+            proj.position = newPos;
 
             // update rotation
-            Vector3 relativePos = targetPoint - proj.position;
+            Vector3 relativePos = proj.position - lastLoc;
             Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-            proj.rotation = rotation;
+            //proj.DORotateQuaternion(rotation.eulerAngles, 1f, RotateMode.WorldAxisAdd);
+            proj.DORotateQuaternion(rotation, 0.15f);
+            lastLoc = proj.position;
 
             yield return null;
         }
@@ -119,7 +142,43 @@ public class ProjectileManager : MonoBehaviour
             returnCallBack();
         }
     }
-    
+
+    private IEnumerator ProjectilePlain(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float lastingTime, CustomDelegate returnCallBack)
+    {
+        var proj = Instantiate(projectile, startPoint, Quaternion.identity);
+        var script = proj.gameObject.AddComponent<MaryProjectile>();
+        script.Initialization("Player");
+        float timeElapsed = 0.0f;
+
+        proj.LookAt(proj.position + directionVector);
+
+        while (timeElapsed < lastingTime)
+        {
+            timeElapsed += Time.deltaTime;
+
+            proj.DOMove(proj.position + directionVector.normalized, Time.deltaTime, false);
+
+            Transform target = script.IsCollidedWithTarget();
+            if (target != null)
+            {
+                // collided
+                if (target.GetComponent<PlayerController>() != null)
+                {
+                    target.GetComponent<PlayerController>().TakeDamage(1, owner);
+                }
+            }
+
+            yield return null;
+        }
+
+        // Destroy the projectile
+        DestroyProjectile(proj);
+        if (returnCallBack != null)
+        {
+            returnCallBack();
+        }
+    }
+
     private void DestroyProjectile(Transform proj)
     {
         List<Transform> trails = new List<Transform>(); ;
