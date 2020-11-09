@@ -167,12 +167,32 @@ public class Enemy : MonoBehaviour
         }
         return false;
     }
+    public bool CheckWallHit(float maxDistance,out RaycastHit wallRayHit, bool reverseDir = false)
+    {
+        LayerMask wallMask = LayerMask.GetMask("Wall");
+        Ray forwardRay;
+        if (reverseDir)
+        {
+            forwardRay = new Ray(transform.position + Vector3.up, -transform.forward);
+        }
+        else
+        {
+            forwardRay = new Ray(transform.position + Vector3.up, transform.forward);
+        }
+        if (Physics.Raycast(forwardRay, out wallRayHit, maxDistance, wallMask))
+        {
+            Debug.Log("Wall hit");
+            return true;
+        }
+        return false;
+    }
 
     public void MoveAwayFromPlayer()
     {
-        Vector3 direction = (TargetPlayer.transform.position - transform.position).normalized;
-        transform.position = new Vector3(transform.position.x + (-direction.x * EnemyStat.movementSpeed) * Time.deltaTime,
-                         transform.position.y, transform.position.z + (-direction.z * EnemyStat.movementSpeed) * Time.deltaTime);
+        Vector3 direction = -(TargetPlayer.transform.position - transform.position).normalized;
+      
+        transform.position = new Vector3(transform.position.x + (direction.x * EnemyStat.movementSpeed) * Time.deltaTime,
+                         transform.position.y, transform.position.z + (direction.z * EnemyStat.movementSpeed) * Time.deltaTime);
 
 
         Anim.SetFloat("Speed",EnemyStat.movementSpeed);
@@ -218,7 +238,14 @@ public class Enemy : MonoBehaviour
         {
             yield break; 
         }
-        aoeAimPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * EnemyStat.attackRange);
+        if (CheckPlayerDistance() < enemyStat.attackRange)
+        {
+            aoeAimPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * CheckPlayerDistance());
+        }
+        else
+        {
+            aoeAimPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * enemyStat.attackRange);
+        }
         aoeAimPoint.y = 0.1f;
         var aoe = Instantiate(enemyStat.aoeIndicator, aoeAimPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
         //radius of effect is set to 0.5f as default 
@@ -248,7 +275,7 @@ public class Enemy : MonoBehaviour
 
 
 
-    public void DealDamage(bool isProjectile =false)
+    public void DealDamage()
     {
         bool ret = false;
         switch(enemyStat.attackType)
@@ -269,13 +296,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.05f)
+    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.1f)
     {
         if (reverse)
         {
             towards = 2 * transform.position - towards;
         }
+        
         transform.DOLookAt(towards, smoothtime,AxisConstraint.Y);
-
     }
+
 }

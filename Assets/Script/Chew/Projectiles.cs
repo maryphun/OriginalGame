@@ -70,14 +70,14 @@ public class Projectiles : MonoBehaviour
         RaycastHit hit;
         LayerMask wallMask = LayerMask.GetMask("Wall");
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit, speed * Time.deltaTime, wallMask))
-        {
-            particleSystem.enableEmission = false;
+        //if (Physics.Raycast(transform.position, transform.forward, out hit, speed * Time.deltaTime, wallMask))
+        //{
+        //    particleSystem.enableEmission = false;
             
-            Debug.Log("Wall Detected");
-            Destroy(gameObject, 2f);
-            return;
-        }
+        //    Debug.Log("Wall Detected");
+        //    Destroy(gameObject, 2f);
+        //    return;
+        //}
         transform.position += transform.forward * speed * Time.deltaTime;
     }
 
@@ -104,7 +104,7 @@ public class Projectiles : MonoBehaviour
             //do nothing
             return;
         }
-        if (co.gameObject.tag != "Bullet" && !collided)
+        if (!collided)
         {
             collided = true;
 

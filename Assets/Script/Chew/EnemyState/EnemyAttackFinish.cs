@@ -1,34 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class EnemyAttackFinish : IState<Enemy>
 {
-    private Vector3 direction;
-    private float turnVelocity;
-    private float actionTime;
     private float timeNow;
+    Vector3 direction;
     // Start is called before the first frame update
     public void Enter(Enemy enemy)
     {
         timeNow = Time.time;
-        actionTime = 1.5f;
-
+        direction = (2 * enemy.transform.position - enemy.TargetPlayer.transform.position).normalized;
+        enemy.Anim.SetFloat("Speed", enemy.EnemyStat.movementSpeed);
     }
         
     // Update is called once per frame
     public void Execute(Enemy enemy)
     {
-        if (enemy.CheckPlayerDistance() >= (enemy.EnemyStat.visionRadius) || Time.time > timeNow + actionTime)
+        if (Time.time > timeNow + enemy.EnemyStat.attackDelay)
         {
             enemy.ChangeState(new EnemyMovement());
+                
         }
-        if (!enemy.CheckWallHit(enemy.GetWallHitDistance, true))
+        RaycastHit wallhit = new RaycastHit();
+        if (enemy.CheckWallHit(1.0f,out wallhit))
         {
-            enemy.FaceDirection(enemy.TargetPlayer.transform.position,true);
-            enemy.MoveAwayFromPlayer();
+            direction = (Quaternion.AngleAxis(Random.Range(-70.0f, 70.0f), Vector3.up) * wallhit.normal);
+            Debug.DrawRay(enemy.transform.position, direction,Color.blue,3f);
+
         }
-       
+        Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+        enemy.transform.DORotateQuaternion(targetRotation,0.1f);
+        enemy.transform.position = new Vector3(enemy.transform.position.x + direction.x * enemy.EnemyStat.movementSpeed * Time.deltaTime,
+                             enemy.transform.position.y, enemy.transform.position.z + direction.z * enemy.EnemyStat.movementSpeed * Time.deltaTime);
     }
 
     public void Exit(Enemy enemy)
