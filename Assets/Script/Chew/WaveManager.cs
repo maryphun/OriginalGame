@@ -114,23 +114,22 @@ public class WaveManager : MonoBehaviour
 
     IEnumerator SpawnEnemy(SpawnInfo prototype)
     {
+        if (prototype.prototype == null)
+        {
+            prototype.spawnLimit = 0;
+            yield break;
+        }
         if (prototype.spawnLimit > 0)
         {
-            var randPos = RandomPointInBounds(spawnArea.bounds);
-            var spawnFX = Instantiate(spawnEffect, randPos, transform.rotation) as GameObject;
+            Vector3 spawnPos = prototype.spawnInSpecificLocation ? prototype.spawnLocation:RandomPointInBounds(spawnArea.bounds);
+            var spawnFX = Instantiate(spawnEffect, spawnPos, transform.rotation) as GameObject;
             var ps = spawnFX.GetComponent<ParticleSystem>();
             Destroy(spawnFX, ps.main.duration );
             prototype.spawnLimit--;
             enemyCount++;
+            //spawn before destroying the effect
             yield return new WaitForSeconds(ps.main.duration - 1f);
-            if (prototype.spawnInSpecificLocation)
-            {
-                Instantiate(prototype.prototype, prototype.spawnLocation, Quaternion.identity);
-            }
-            else
-            {
-                Instantiate(prototype.prototype, randPos, Quaternion.identity);
-            }
+            Instantiate(prototype.prototype, spawnPos, Quaternion.identity);
         }
         yield break;
     }
@@ -144,11 +143,6 @@ public class WaveManager : MonoBehaviour
         );
     }
 
- 
-    //IEnumerator SpawnEffect(Vector3 pos)
-    //{
-        
-    //}
 }
 
 

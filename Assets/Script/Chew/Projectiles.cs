@@ -24,6 +24,8 @@ public class Projectiles : MonoBehaviour
     public GameObject muzzlePrefab; //asset effect
     public GameObject hitPrefab;    //asset effect
     public List<GameObject> trails; //asset effect
+    public float projectileDamage = 1;
+    [Tag] public string originTag;
 
     private bool collided;
 
@@ -31,6 +33,25 @@ public class Projectiles : MonoBehaviour
     void Start()
     {
         particleSystem = GetComponent<ParticleSystem>();
+        //projectile effect
+        if (muzzlePrefab != null)
+        {
+            var muzzleVFX = Instantiate(muzzlePrefab, transform.position, Quaternion.identity);
+            muzzleVFX.transform.forward = gameObject.transform.forward;
+            var ps = muzzleVFX.GetComponent<ParticleSystem>();
+            if (ps != null)
+                Destroy(muzzleVFX, ps.main.duration);
+            else
+            {
+                var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+                Destroy(muzzleVFX, psChild.main.duration);
+            }
+        }
+    }
+
+    private void Awake()
+    {
+        
     }
 
     // Update is called once per frame
@@ -49,14 +70,14 @@ public class Projectiles : MonoBehaviour
         RaycastHit hit;
         LayerMask wallMask = LayerMask.GetMask("Wall");
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit, speed * Time.deltaTime, wallMask))
-        {
-            particleSystem.enableEmission = false;
+        //if (Physics.Raycast(transform.position, transform.forward, out hit, speed * Time.deltaTime, wallMask))
+        //{
+        //    particleSystem.enableEmission = false;
             
-            Debug.Log("Wall Detected");
-            Destroy(gameObject, 2f);
-            return;
-        }
+        //    Debug.Log("Wall Detected");
+        //    Destroy(gameObject, 2f);
+        //    return;
+        //}
         transform.position += transform.forward * speed * Time.deltaTime;
     }
 

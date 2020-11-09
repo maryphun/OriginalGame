@@ -5,16 +5,10 @@ using DG.Tweening;
 
 public class EnemyAttack : IState<Enemy>
 {
-    private float attDelay;
-    private float tmpSpeed;
-    private float attackedTime;
     private bool hasAttacked;
-    private float turnVelocity;
     // Start is called before the first frame update
     public void Enter(Enemy enemy)
     {
-        attackedTime = Time.time;
-        attDelay = 0;
         hasAttacked = false;
 
     }
@@ -27,25 +21,21 @@ public class EnemyAttack : IState<Enemy>
         {
             if (enemy.canAttack)
             {
-                enemy.StartCoroutine(enemy.FaceDirection(enemy.TargetPlayer.transform.position));
-                if (Time.time >= attackedTime + attDelay)
+                enemy.FaceDirection(enemy.TargetPlayer.transform.position);
+                if (!hasAttacked)
                 {
-                    if (!hasAttacked)
-                    {
-                        enemy.StartCoroutine(enemy.AoeAttack());
-                        //reset parameter value
-                        hasAttacked = true;
-                        enemy.canAttack = false;
-                        enemy.Anim.Play("Attack", 0, 0.0f);
-                        attackedTime = Time.time;
-                        attDelay = enemy.EnemyStat.attackDelay;
-                        enemy.forceAttack = false;
-                    }
-                    else
-                    {
-                        enemy.ChangeState(new EnemyAttackFinish());
-                    }
+                    enemy.StartCoroutine(enemy.AoeAttack());
+                    //reset parameter value
+                    hasAttacked = true;
+                    enemy.canAttack = false;
+                    enemy.Anim.Play("Attack", 0, 0.0f);
+                    enemy.forceAttack = false;
                 }
+                else
+                {
+                    enemy.ChangeState(new EnemyAttackFinish());
+                }
+                
             }
 
         }
