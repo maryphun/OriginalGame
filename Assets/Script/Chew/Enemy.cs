@@ -9,6 +9,7 @@ using MyBox;
 [RequireTag("Enemy")]
 [RequireLayer("Enemy")]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(BoxCollider))]
 public class Enemy : MonoBehaviour
 {
     //debugging parameter
@@ -26,6 +27,7 @@ public class Enemy : MonoBehaviour
     private float maxHealth;
     private Vector3 aoeAimPoint;
 
+    [HideInInspector] public ProjectileManager projectileMng;
     [HideInInspector] public bool canAttack;
     [HideInInspector] public bool canMove;
     [HideInInspector] public bool isDeath;
@@ -48,6 +50,7 @@ public class Enemy : MonoBehaviour
         collider = GetComponent<Collider>();
         enemyRigidbody = GetComponent<Rigidbody>();
         targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        projectileMng = GameObject.FindGameObjectWithTag("Manager").GetComponentInChildren<ProjectileManager>();
 
         stateMachine = new StateMachine<Enemy>();
         stateMachine.Setup(this, new EnemyMovement());
@@ -260,16 +263,11 @@ public class Enemy : MonoBehaviour
         DealDamage();
     }
 
-    public void SpawnProjectile()
+    public void SpawnProjectile(float speed)
     {
         if (enemyStat.projectiles)
         {
-            var proj = Instantiate(enemyStat.projectiles, transform.position + Vector3.up  + transform.forward, transform.rotation);
-            proj.originTag = gameObject.tag;
-        }
-        else
-        {
-            Debug.LogWarning("Projectile not found");
+            projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, transform.forward,speed, Mathf.Infinity, null);
         }
     }
 
@@ -281,13 +279,7 @@ public class Enemy : MonoBehaviour
         switch(enemyStat.attackType)
         {
             case AttackType.Melee:
-                Debug.Log("Attack");    
-                if (AttackObjectInVision(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
-                {
-                    Debug.Log("AttackNobug");
-
-                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-                }
+                ret = CheckTargetInRange(EnemyStat.attackAngle / 2, EnemyStat.attackRange);
                 break;
             case AttackType.AreaRanged:
                 ret = CheckTargetInRange(360, enemyStat.attackRadiusOfArea, aoeAimPoint);
@@ -302,7 +294,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.1f)
+    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.5f)
     {
         if (reverse)
         {

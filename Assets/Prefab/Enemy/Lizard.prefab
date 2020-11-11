@@ -78,8 +78,10 @@ MonoBehaviour:
     indicatorTime: 0
     aoeIndicator: {fileID: 0}
     indicatorEffect: {fileID: 0}
-    projectiles: {fileID: -461193340541228237, guid: 4793e691fcc8b384f819cd27c3f15c8d,
+    projectiles: {fileID: 5070892155465184456, guid: 4793e691fcc8b384f819cd27c3f15c8d,
       type: 3}
+  projectileMng: {fileID: 2144061198382548950, guid: 62c2c42fa74520a41b3b3665b34ad240,
+    type: 3}
   canAttack: 0
   canMove: 0
   isDeath: 0

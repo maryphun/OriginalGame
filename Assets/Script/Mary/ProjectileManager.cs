@@ -32,9 +32,9 @@ public class ProjectileManager : MonoBehaviour
         StartCoroutine(ProjectileFollow(projectile, startPoint, followTarget, followTime, time, returnCallBack));
     }
 
-    public void InitiateProjectileWithDirection(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float lastingtime, CustomDelegate returnCallBack)
+    public void InitiateProjectileWithDirection(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float speed, float lastingtime, CustomDelegate returnCallBack)
     {
-        StartCoroutine(ProjectilePlain(owner, projectile, startPoint, directionVector, lastingtime, returnCallBack));
+        StartCoroutine(ProjectilePlain(owner, projectile, startPoint, directionVector, speed, lastingtime, returnCallBack));
     }
 
     private IEnumerator ProjectileLoop(Transform owner, Transform projectile, Vector3 startPoint, Vector3 endPoint, float time, CustomDelegate returnCallBack)
@@ -143,7 +143,7 @@ public class ProjectileManager : MonoBehaviour
         }
     }
 
-    private IEnumerator ProjectilePlain(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float lastingTime, CustomDelegate returnCallBack)
+    private IEnumerator ProjectilePlain(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float speed, float lastingTime, CustomDelegate returnCallBack)
     {
         var proj = Instantiate(projectile, startPoint, Quaternion.identity);
         var script = proj.gameObject.AddComponent<MaryProjectile>();
@@ -156,7 +156,7 @@ public class ProjectileManager : MonoBehaviour
         {
             timeElapsed += Time.deltaTime;
 
-            proj.DOMove(proj.position + directionVector.normalized, Time.deltaTime, false);
+            proj.DOMove(proj.position + directionVector.normalized * speed * Time.deltaTime, Time.deltaTime, false);
 
             Transform target = script.IsCollidedWithTarget();
             if (target != null)
@@ -164,6 +164,11 @@ public class ProjectileManager : MonoBehaviour
                 // collided
                 if (target.GetComponent<PlayerController>() != null)
                 {
+                    DestroyProjectile(proj);
+                    if (returnCallBack != null)
+                    {
+                        returnCallBack();
+                    }
                     target.GetComponent<PlayerController>().TakeDamage(1, owner);
                 }
             }
