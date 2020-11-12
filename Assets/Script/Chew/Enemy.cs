@@ -9,6 +9,7 @@ using MyBox;
 [RequireTag("Enemy")]
 [RequireLayer("Enemy")]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(BoxCollider))]
 public class Enemy : MonoBehaviour
 {
     //debugging parameter
@@ -26,6 +27,7 @@ public class Enemy : MonoBehaviour
     private float maxHealth;
     private Vector3 aoeAimPoint;
 
+    [HideInInspector] public ProjectileManager projectileMng;
     [HideInInspector] public bool canAttack;
     [HideInInspector] public bool canMove;
     [HideInInspector] public bool isDeath;
@@ -48,6 +50,7 @@ public class Enemy : MonoBehaviour
         collider = GetComponent<Collider>();
         enemyRigidbody = GetComponent<Rigidbody>();
         targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        projectileMng = GameObject.FindGameObjectWithTag("Manager").GetComponentInChildren<ProjectileManager>();
 
         stateMachine = new StateMachine<Enemy>();
         stateMachine.Setup(this, new EnemyMovement());
@@ -247,6 +250,11 @@ public class Enemy : MonoBehaviour
             aoeAimPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * enemyStat.attackRange);
         }
         aoeAimPoint.y = 0.1f;
+        if (enemyStat.attackType == AttackType.AreaRanged)
+        {
+            projectileMng.InitiateProjectile(transform, enemyStat.projectiles.transform, transform.position, aoeAimPoint, enemyStat.indicatorTime + waitTime, null);
+        }
+
         var aoe = Instantiate(enemyStat.aoeIndicator, aoeAimPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
         //radius of effect is set to 0.5f as default 
         aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
@@ -260,16 +268,42 @@ public class Enemy : MonoBehaviour
         DealDamage();
     }
 
-    public void SpawnProjectile()
+    //public IEnumerator AoeAttack(bool followTarget,float followTime = 0.5f, float waitTime = 0.5f)
+    //{
+    //    if (!followTarget)
+    //    {
+    //        AoeAttack();
+    //        yield break;
+    //    }
+    //    if (enemyStat.attackType != AttackType.AreaMelee && enemyStat.attackType != AttackType.AreaRanged)
+    //    {
+    //        yield break;
+    //    }
+    //    aoeAimPoint.y = 0.1f;
+    //    if (enemyStat.attackType == AttackType.AreaRanged)
+    //    {
+    //        projectileMng.InitiateProjectile(transform, enemyStat.projectiles.transform, transform.position, targetPlayer.transform, followTime, enemyStat.indicatorTime + waitTime, null);
+    //    }
+
+    //    var aoe = Instantiate(enemyStat.aoeIndicator, aoeAimPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
+    //    //radius of effect is set to 0.5f as default 
+    //    aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
+    //    //wait the aoe circle to reach its maximum size before the effect occur
+    //    Destroy(aoe, enemyStat.indicatorTime + waitTime);
+    //    yield return new WaitForSeconds(waitTime);
+    //    var aoeEffect = Instantiate(enemyStat.indicatorEffect, aoeAimPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
+    //    aoeEffect.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
+    //    Destroy(aoeEffect, enemyStat.indicatorTime);
+    //    yield return new WaitForSeconds(enemyStat.indicatorTime);
+    //    DealDamage();
+    //}
+
+
+    public void SpawnProjectile(float speed)
     {
         if (enemyStat.projectiles)
         {
-            var proj = Instantiate(enemyStat.projectiles, transform.position + Vector3.up  + transform.forward, transform.rotation);
-            proj.originTag = gameObject.tag;
-        }
-        else
-        {
-            Debug.LogWarning("Projectile not found");
+            projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, transform.forward,speed, Mathf.Infinity, null);
         }
     }
 
@@ -302,7 +336,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.1f)
+    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.5f)
     {
         if (reverse)
         {

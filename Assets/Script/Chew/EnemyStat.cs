@@ -35,9 +35,10 @@ public class EnemyStat
     public float attackRadiusOfArea,indicatorTime;
     [ConditionalField(nameof(attackType), false, AttackType.AreaMelee, AttackType.AreaRanged)]
     public GameObject aoeIndicator,indicatorEffect;
-    [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
-    [PositiveValueOnly]
-    public Projectiles projectiles;
+    [ConditionalField(nameof(attackType), false, AttackType.Ranged,AttackType.AreaRanged)]
+    public GameObject projectiles;
+    [ConditionalField(nameof(attackType), false, AttackType.Ranged, AttackType.AreaRanged)]
+    public bool followTarget;
 }
 
 [System.Serializable]
