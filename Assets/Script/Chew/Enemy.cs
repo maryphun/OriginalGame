@@ -273,7 +273,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void Golem()
+    {
 
+    }
 
     public void DealDamage()
     {
@@ -281,19 +284,16 @@ public class Enemy : MonoBehaviour
         switch(enemyStat.attackType)
         {
             case AttackType.Melee:
-                Debug.Log("Attack");    
-                if (AttackObjectInVision(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
-                {
-                    Debug.Log("AttackNobug");
-
-                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-                }
+                ret = CheckTargetInRange(EnemyStat.attackAngle / 2, EnemyStat.attackRange);
                 break;
             case AttackType.AreaRanged:
                 ret = CheckTargetInRange(360, enemyStat.attackRadiusOfArea, aoeAimPoint);
                 break;
             case AttackType.AreaMelee:
                 ret = CheckTargetInRange(360, enemyStat.attackRadiusOfArea);
+                break;
+            case AttackType.Golem:
+                //ret = CheckTargetInRange()
                 break;
         }
         if (ret)

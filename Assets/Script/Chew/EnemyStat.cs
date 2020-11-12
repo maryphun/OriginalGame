@@ -10,7 +10,8 @@ public enum AttackType
     Melee,
     Ranged,
     AreaMelee,
-    AreaRanged
+    AreaRanged,
+    Golem
 };
 
 [System.Serializable]
