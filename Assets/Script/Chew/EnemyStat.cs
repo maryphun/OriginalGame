@@ -35,8 +35,9 @@ public class EnemyStat
     [ConditionalField(nameof(attackType), false, AttackType.AreaMelee, AttackType.AreaRanged)]
     public GameObject aoeIndicator,indicatorEffect;
     [ConditionalField(nameof(attackType), false, AttackType.Ranged,AttackType.AreaRanged)]
-    [PositiveValueOnly]
-    public MaryProjectile projectiles;
+    public GameObject projectiles;
+    [ConditionalField(nameof(attackType), false, AttackType.Ranged, AttackType.AreaRanged)]
+    public bool followTarget;
 }
 
 [System.Serializable]

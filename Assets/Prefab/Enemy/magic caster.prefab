@@ -80,8 +80,9 @@ MonoBehaviour:
       type: 3}
     indicatorEffect: {fileID: 5622836873516563875, guid: e7adaa863ca20d842aea7f77438bab10,
       type: 3}
-    projectiles: {fileID: -2406041091151441021, guid: 4299b951a37b5204e8acacfab46de0a8,
+    projectiles: {fileID: 1367524025346344, guid: 4299b951a37b5204e8acacfab46de0a8,
       type: 3}
+    followTarget: 0
   projectileMng: {fileID: 0}
   canAttack: 0
   canMove: 0

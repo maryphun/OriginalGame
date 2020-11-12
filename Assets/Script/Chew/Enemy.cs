@@ -250,6 +250,11 @@ public class Enemy : MonoBehaviour
             aoeAimPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * enemyStat.attackRange);
         }
         aoeAimPoint.y = 0.1f;
+        if (enemyStat.attackType == AttackType.AreaRanged)
+        {
+            projectileMng.InitiateProjectile(transform, enemyStat.projectiles.transform, transform.position, aoeAimPoint, enemyStat.indicatorTime + waitTime, null);
+        }
+
         var aoe = Instantiate(enemyStat.aoeIndicator, aoeAimPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
         //radius of effect is set to 0.5f as default 
         aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
@@ -262,6 +267,37 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(enemyStat.indicatorTime);
         DealDamage();
     }
+
+    //public IEnumerator AoeAttack(bool followTarget,float followTime = 0.5f, float waitTime = 0.5f)
+    //{
+    //    if (!followTarget)
+    //    {
+    //        AoeAttack();
+    //        yield break;
+    //    }
+    //    if (enemyStat.attackType != AttackType.AreaMelee && enemyStat.attackType != AttackType.AreaRanged)
+    //    {
+    //        yield break;
+    //    }
+    //    aoeAimPoint.y = 0.1f;
+    //    if (enemyStat.attackType == AttackType.AreaRanged)
+    //    {
+    //        projectileMng.InitiateProjectile(transform, enemyStat.projectiles.transform, transform.position, targetPlayer.transform, followTime, enemyStat.indicatorTime + waitTime, null);
+    //    }
+
+    //    var aoe = Instantiate(enemyStat.aoeIndicator, aoeAimPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
+    //    //radius of effect is set to 0.5f as default 
+    //    aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
+    //    //wait the aoe circle to reach its maximum size before the effect occur
+    //    Destroy(aoe, enemyStat.indicatorTime + waitTime);
+    //    yield return new WaitForSeconds(waitTime);
+    //    var aoeEffect = Instantiate(enemyStat.indicatorEffect, aoeAimPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
+    //    aoeEffect.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
+    //    Destroy(aoeEffect, enemyStat.indicatorTime);
+    //    yield return new WaitForSeconds(enemyStat.indicatorTime);
+    //    DealDamage();
+    //}
+
 
     public void SpawnProjectile(float speed)
     {
