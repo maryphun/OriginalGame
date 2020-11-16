@@ -17,6 +17,7 @@ public class EnemyMovement : IState<Enemy>
     {
         Vector3 targetPos = enemy.TargetPlayer.transform.position;
         Vector3 tmpDir = (targetPos - enemy.transform.position).normalized;
+        RaycastHit raycastHit;
 
         float offset = enemy.EnemyStat.attackRange;
 
@@ -24,7 +25,7 @@ public class EnemyMovement : IState<Enemy>
         {
             enemy.FaceDirection(enemy.TargetPlayer.transform.position,true);
 
-            if (enemy.CheckWallHit(enemy.GetWallHitDistance))
+            if (enemy.CheckWallHit(enemy.GetWallHitDistance,out raycastHit))
             {
                 enemy.forceAttack = true;
                 enemy.ChangeState(new EnemyAttack());
