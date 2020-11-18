@@ -24,6 +24,7 @@ public class EnemyStat
     [PositiveValueOnly] public float visionRadius;
     [PositiveValueOnly] public float visionAngle;
     [PositiveValueOnly] public float stunTime;
+    public bool escapeAfterAttack;
     [PositiveValueOnly] public float escapeRange; //distance required to run away from player
 
     public AttackType attackType;

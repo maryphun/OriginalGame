@@ -10,7 +10,6 @@ public class EnemyMovement : IState<Enemy>
     {
         direction = (enemy.TargetPlayer.transform.position - enemy.transform.position).normalized;
     }
-    
 
     // Update is called once per frame
     public void Execute(Enemy enemy)
@@ -25,14 +24,14 @@ public class EnemyMovement : IState<Enemy>
         {
             enemy.FaceDirection(enemy.TargetPlayer.transform.position,true);
 
-            if (enemy.CheckWallHit(enemy.GetWallHitDistance,out raycastHit))
+            if (enemy.CheckWallHit(enemy.GetWallHitDistance,out raycastHit) || enemy.CheckWallHit(enemy.GetWallHitDistance, out raycastHit,true))
             {
                 enemy.forceAttack = true;
                 enemy.ChangeState(new EnemyAttack());
             }
             else
             {
-               enemy.MoveAwayFromPlayer();
+                enemy.ChangeState(new EnemyEscape());
             }
 
         }

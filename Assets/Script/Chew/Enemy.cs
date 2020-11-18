@@ -36,7 +36,7 @@ public class Enemy : MonoBehaviour
     public EnemyEvent enemyEvent;
     public Vector3 aoeAimPoint;
 
-    const float wallHitDistance = 0.5f;
+    const float wallHitDistance = 0.8f;
 
 
     private void Awake()
@@ -169,17 +169,6 @@ public class Enemy : MonoBehaviour
             return true;
         }
         return false;
-    }
-
-    public void MoveAwayFromPlayer()
-    {
-        Vector3 direction = -(TargetPlayer.transform.position - transform.position).normalized;
-      
-        transform.position = new Vector3(transform.position.x + (direction.x * EnemyStat.movementSpeed) * Time.deltaTime,
-                         transform.position.y, transform.position.z + (direction.z * EnemyStat.movementSpeed) * Time.deltaTime);
-
-
-        Anim.SetFloat("Speed",EnemyStat.movementSpeed);
     }
 
     public void ChangeState(IState<Enemy> state)

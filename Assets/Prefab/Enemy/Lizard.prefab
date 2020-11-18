@@ -66,11 +66,12 @@ MonoBehaviour:
   enemyStat:
     health: 50
     movementSpeed: 3
-    attackDelay: 2
+    attackDelay: 0.5
     attackRange: 6
     visionRadius: 5
     visionAngle: 60
     stunTime: 2
+    escapeAfterAttack: 1
     escapeRange: 3
     attackType: 1
     attackAngle: 60
@@ -99,6 +100,7 @@ MonoBehaviour:
     onTriggerEnter:
       m_PersistentCalls:
         m_Calls: []
+  aoeAimPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &2891924871714379157
 MonoBehaviour:
   m_ObjectHideFlags: 0
