@@ -23,8 +23,7 @@ public class EnemyMovement : IState<Enemy>
         if (enemy.CheckPlayerDistance() < enemy.EnemyStat.escapeRange)
         {
             enemy.FaceDirection(enemy.TargetPlayer.transform.position,true);
-
-            if (enemy.CheckWallHit(enemy.GetWallHitDistance,out raycastHit) || enemy.CheckWallHit(enemy.GetWallHitDistance, out raycastHit,true))
+            if (enemy.CheckWallHit(3f,out raycastHit) || enemy.CheckWallHit(3f, out raycastHit,true))
             {
                 enemy.forceAttack = true;
                 enemy.ChangeState(new EnemyAttack());

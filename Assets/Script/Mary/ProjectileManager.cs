@@ -158,6 +158,15 @@ public class ProjectileManager : MonoBehaviour
 
             proj.DOMove(proj.position + directionVector.normalized * speed * Time.deltaTime, Time.deltaTime, false);
 
+            RaycastHit hit;
+            LayerMask wallMask = LayerMask.GetMask("Wall");
+            if (Physics.Raycast(proj.position, directionVector, out hit, speed * Time.deltaTime, wallMask))
+            {
+
+                Debug.Log("Wall Detected");
+                DestroyProjectile(proj);
+            }
+
             Transform target = script.IsCollidedWithTarget();
             if (target != null)
             {

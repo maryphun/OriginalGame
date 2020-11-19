@@ -13,15 +13,15 @@ public class MaryProjectile : MonoBehaviour
         targetTag = targettag;
         target = null;
     }
-
+        
     public Transform IsCollidedWithTarget()
     {
         return target;
     }
 
     void OnTriggerEnter(Collider co)
-    {
-        if (co.gameObject.tag != targetTag)
+    { 
+       if (co.gameObject.tag != targetTag)
         {
             //do nothing
             return;

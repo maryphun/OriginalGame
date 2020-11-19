@@ -163,8 +163,11 @@ public class Enemy : MonoBehaviour
         {
             forwardRay = new Ray(transform.position + Vector3.up, transform.forward);
         }
+        Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.red,3f);
         if (Physics.Raycast(forwardRay, out wallRayHit, maxDistance, wallMask))
         {
+            Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green,3f);
+
             Debug.Log("Wall hit");
             return true;
         }
@@ -210,6 +213,19 @@ public class Enemy : MonoBehaviour
         if (enemyStat.projectiles)
         {
             projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, transform.forward,speed, Mathf.Infinity, null);
+        }
+    }
+
+    public void SpawnProjectile(float speed,float num,float angle)
+    {
+        if (enemyStat.projectiles)
+        {
+            for (int i = 0; i < num; i ++)
+            {
+                var direction = (Quaternion.AngleAxis((i * angle / num) - (angle/ 2) , Vector3.up) * transform.forward);
+                projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, transform.forward, speed, Mathf.Infinity, null);
+
+            }
         }
     }
 
