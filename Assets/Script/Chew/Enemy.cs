@@ -33,6 +33,8 @@ public class Enemy : MonoBehaviour
     [HideInInspector] public bool isDying;
     [HideInInspector] public bool forceAttack;
     [HideInInspector] public bool isStun;
+    [HideInInspector] public bool isAttacking;
+
     public EnemyEvent enemyEvent;
     public Vector3 aoeAimPoint;
 
@@ -93,7 +95,7 @@ public class Enemy : MonoBehaviour
         {
             lastState = stateMachine.GetLastState.ToString();
         }
-        currentState = stateMachine.GetCurrentState.ToString();     
+        currentState = stateMachine.GetCurrentState.ToString();
     }
 
     public EnemyStat EnemyStat
@@ -223,7 +225,7 @@ public class Enemy : MonoBehaviour
             for (int i = 0; i < num; i ++)
             {
                 var direction = (Quaternion.AngleAxis((i * angle / num) - (angle/ 2) , Vector3.up) * transform.forward);
-                projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, transform.forward, speed, Mathf.Infinity, null);
+                projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, direction, speed, Mathf.Infinity, null);
 
             }
         }

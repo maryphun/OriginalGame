@@ -38,6 +38,11 @@ public class EnemyStat
     public GameObject aoeIndicator,indicatorEffect;
     [ConditionalField(nameof(attackType), false, AttackType.Ranged,AttackType.AreaRanged)]
     public GameObject projectiles;
+    [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
+    [Min(1)]
+    public int projectilesNumPerShot;
+    [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
+    public int projectilesAnglePerShot;
     [ConditionalField(nameof(attackType), false, AttackType.Ranged, AttackType.AreaRanged)]
     public bool followTarget;
 }
@@ -45,8 +50,5 @@ public class EnemyStat
 [System.Serializable]
 public struct EnemyEvent
 {
-    public UnityEvent onDetectingPlayer;
-    public UnityEvent onMoving;
-    public UnityEvent onTriggerEnter;
 }
 
