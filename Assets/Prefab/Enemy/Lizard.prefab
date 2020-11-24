@@ -81,8 +81,11 @@ MonoBehaviour:
     indicatorEffect: {fileID: 0}
     projectiles: {fileID: 1046377441548030, guid: 4793e691fcc8b384f819cd27c3f15c8d,
       type: 3}
-    projectilesNumPerShot: 1
-    projectilesAnglePerShot: 0
+    projectileProperties:
+      speed: 10
+      spawnNum: 5
+      angle: 360
+      delay: 0.2
     followTarget: 0
   projectileMng: {fileID: 2144061198382548950, guid: 62c2c42fa74520a41b3b3665b34ad240,
     type: 3}
@@ -93,6 +96,7 @@ MonoBehaviour:
   forceAttack: 0
   isStun: 0
   isAttacking: 0
+  isSpawningProjectile: 0
   aoeAimPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &2891924871714379157
 MonoBehaviour:

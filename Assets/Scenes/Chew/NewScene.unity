@@ -7473,14 +7473,12 @@ PrefabInstance:
         type: 3}
       propertyPath: wavePattern.Array.data[0].spawnInfo.Array.data[1].prototype
       value: 
-      objectReference: {fileID: 5066283709472679345, guid: 04b78854cca92db44bc8a8520a77663d,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 3050850697110150321, guid: 7c50d860ccc07f9478f9db3767f3640b,
         type: 3}
       propertyPath: wavePattern.Array.data[0].spawnInfo.Array.data[2].prototype
       value: 
-      objectReference: {fileID: 427083867158740297, guid: e582fdcb1b54f084b97794112dbea878,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 3050850697860503970, guid: 7c50d860ccc07f9478f9db3767f3640b,
         type: 3}
       propertyPath: m_LocalPosition.x

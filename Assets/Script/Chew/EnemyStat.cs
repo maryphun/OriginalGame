@@ -15,6 +15,15 @@ public enum AttackType
 };
 
 [System.Serializable]
+public struct ProjectileProperties
+{
+    public float speed;
+    public float spawnNum;
+    public float angle;
+    public float delay;
+}
+
+[System.Serializable]
 public class EnemyStat
 {
     [PositiveValueOnly] public float health;
@@ -39,10 +48,7 @@ public class EnemyStat
     [ConditionalField(nameof(attackType), false, AttackType.Ranged,AttackType.AreaRanged)]
     public GameObject projectiles;
     [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
-    [Min(1)]
-    public int projectilesNumPerShot;
-    [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
-    public int projectilesAnglePerShot;
+    public ProjectileProperties projectileProperties;
     [ConditionalField(nameof(attackType), false, AttackType.Ranged, AttackType.AreaRanged)]
     public bool followTarget;
 }

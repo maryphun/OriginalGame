@@ -42,7 +42,7 @@ public class EnemyAnimator : MonoBehaviour
 
     public void SpawnProjectile(float speed)
     {
-        enemyScript.SpawnProjectile(speed,enemyScript.EnemyStat.projectilesNumPerShot, enemyScript.EnemyStat.projectilesAnglePerShot);
+        StartCoroutine(enemyScript.SpawnProjectile());
     }
 
 }

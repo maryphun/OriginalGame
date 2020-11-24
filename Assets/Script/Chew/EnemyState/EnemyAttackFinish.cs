@@ -19,7 +19,7 @@ public class EnemyAttackFinish : IState<Enemy>
         {
             enemy.ChangeState(new EnemyMovement());
         }
-        if (enemy.EnemyStat.escapeAfterAttack)
+        if (enemy.EnemyStat.escapeAfterAttack || enemy.isSpawningProjectile)
         {
             enemy.ChangeState(new EnemyEscape(enemy.EnemyStat.attackDelay));
         }

@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
     [HideInInspector] public bool forceAttack;
     [HideInInspector] public bool isStun;
     [HideInInspector] public bool isAttacking;
+    [HideInInspector] public bool isSpawningProjectile;
 
     public EnemyEvent enemyEvent;
     public Vector3 aoeAimPoint;
@@ -210,25 +211,39 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public void SpawnProjectile(float speed)
-    {
-        if (enemyStat.projectiles)
-        {
-            projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, transform.forward,speed, Mathf.Infinity, null);
-        }
-    }
+    //public void SpawnProjectile(float speed)
+    //{
+    //    if (enemyStat.projectiles)
+    //    {
+    //        projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, transform.forward,speed, Mathf.Infinity, null);
+    //    }
+    //}
 
-    public void SpawnProjectile(float speed,float num,float angle)
+    public IEnumerator SpawnProjectile()
     {
         if (enemyStat.projectiles)
         {
-            for (int i = 0; i < num; i ++)
+            float spawnCnt = 0;
+            Vector3 enemyForward = transform.forward;
+            isSpawningProjectile = true;
+            while (spawnCnt < enemyStat.projectileProperties.spawnNum)
             {
-                var direction = (Quaternion.AngleAxis((i * angle / num) - (angle/ 2) , Vector3.up) * transform.forward);
-                projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, direction, speed, Mathf.Infinity, null);
-
+                Vector3 direction;
+                if (enemyStat.projectileProperties.delay == 0f)
+                {
+                    direction = (Quaternion.AngleAxis((spawnCnt * enemyStat.projectileProperties.angle / enemyStat.projectileProperties.spawnNum) - (enemyStat.projectileProperties.angle / 2), Vector3.up) * enemyForward);
+                }
+                else
+                {
+                    direction = Quaternion.AngleAxis(spawnCnt * enemyStat.projectileProperties.angle / enemyStat.projectileProperties.spawnNum,Vector3.up) * enemyForward;
+                }
+                projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, direction, enemyStat.projectileProperties.speed, Mathf.Infinity, null);
+                spawnCnt++;
+                yield return new WaitForSeconds(enemyStat.projectileProperties.delay);
             }
         }
+        isSpawningProjectile = false;
+   
     }
 
     private void Golem()
