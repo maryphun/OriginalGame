@@ -83,8 +83,8 @@ MonoBehaviour:
       type: 3}
     projectileProperties:
       speed: 10
-      spawnNum: 5
-      angle: 360
+      spawnNum: 1
+      angle: 0
       delay: 0.2
     followTarget: 0
   projectileMng: {fileID: 2144061198382548950, guid: 62c2c42fa74520a41b3b3665b34ad240,
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hpbar: {fileID: 7234720166968363483, guid: c7d910599cab3ae498941bb276a53916, type: 3}
   hpBarRoot: {fileID: 5842570624025262182}
-  enemyName: mary bobo
+  enemyName: Lizard
   hpBarColor:
     serializedVersion: 2
     key0: {r: 0.509434, g: 0, b: 0, a: 1}

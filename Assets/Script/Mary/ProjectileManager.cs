@@ -146,14 +146,19 @@ public class ProjectileManager : MonoBehaviour
     private IEnumerator ProjectilePlain(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float speed, float lastingTime, CustomDelegate returnCallBack)
     {
         var proj = Instantiate(projectile, startPoint, Quaternion.identity);
-        var script = proj.gameObject.AddComponent<MaryProjectile>();
-        script.Initialization("Player");
+        //var script = proj.gameObject.AddComponent<MaryProjectile>();
+        var script = proj.gameObject.GetComponent<Projectiles>();
+        script.Initialization(owner);
         float timeElapsed = 0.0f;
 
         proj.LookAt(proj.position + directionVector);
 
         while (timeElapsed < lastingTime)
         {
+            if (proj == null)
+            {
+                break;
+            }
             timeElapsed += Time.deltaTime;
 
             proj.DOMove(proj.position + directionVector.normalized * speed * Time.deltaTime, Time.deltaTime, false);
@@ -164,7 +169,7 @@ public class ProjectileManager : MonoBehaviour
             {
 
                 Debug.Log("Wall Detected");
-                DestroyProjectile(proj);
+                //DestroyProjectile(proj);
             }
 
             Transform target = script.IsCollidedWithTarget();
@@ -173,12 +178,12 @@ public class ProjectileManager : MonoBehaviour
                 // collided
                 if (target.GetComponent<PlayerController>() != null)
                 {
-                    DestroyProjectile(proj);
+                   // DestroyProjectile(proj);
                     if (returnCallBack != null)
                     {
                         returnCallBack();
                     }
-                    target.GetComponent<PlayerController>().TakeDamage(1, owner);
+                   // target.GetComponent<PlayerController>().TakeDamage(1, owner);
                 }
             }
 
@@ -186,7 +191,11 @@ public class ProjectileManager : MonoBehaviour
         }
 
         // Destroy the projectile
-        DestroyProjectile(proj);
+        if (script)
+        {
+            StartCoroutine(script.DestroySelf(0f));
+        }
+        //DestroyProjectile(proj);
         if (returnCallBack != null)
         {
             returnCallBack();

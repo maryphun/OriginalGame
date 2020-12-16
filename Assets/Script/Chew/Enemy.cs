@@ -211,14 +211,6 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    //public void SpawnProjectile(float speed)
-    //{
-    //    if (enemyStat.projectiles)
-    //    {
-    //        projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, transform.forward,speed, Mathf.Infinity, null);
-    //    }
-    //}
-
     public IEnumerator SpawnProjectile()
     {
         if (enemyStat.projectiles)
@@ -231,13 +223,16 @@ public class Enemy : MonoBehaviour
                 Vector3 direction;
                 if (enemyStat.projectileProperties.delay == 0f)
                 {
+                    //releasing all projectile at once
                     direction = (Quaternion.AngleAxis((spawnCnt * enemyStat.projectileProperties.angle / enemyStat.projectileProperties.spawnNum) - (enemyStat.projectileProperties.angle / 2), Vector3.up) * enemyForward);
                 }
                 else
                 {
+                    //releasing as spiral by delaying timing
                     direction = Quaternion.AngleAxis(spawnCnt * enemyStat.projectileProperties.angle / enemyStat.projectileProperties.spawnNum,Vector3.up) * enemyForward;
                 }
-                projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, transform.position, direction, enemyStat.projectileProperties.speed, Mathf.Infinity, null);
+                var projStartPoint = transform.position + (Vector3.up / 2);
+                projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, projStartPoint, direction, enemyStat.projectileProperties.speed, Mathf.Infinity, null);
                 spawnCnt++;
                 yield return new WaitForSeconds(enemyStat.projectileProperties.delay);
             }
