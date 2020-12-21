@@ -14,10 +14,7 @@ public class EnemyDeath : IState<Enemy>
         deathTime = Time.time;
         hpBar = enemy.GetComponent<EnemyHitPoint>();
         dropableItem = enemy.GetComponent<ItemDropEvent>();
-        if (dropableItem)
-        {
-            dropableItem.DropItem();
-        }
+        
     }
 
     // Update is called once per frame
@@ -33,6 +30,10 @@ public class EnemyDeath : IState<Enemy>
     public void Exit(Enemy enemy)
     {
         WaveManager.enemyCount--;
+        if (dropableItem)
+        {
+            dropableItem.DropItem();
+        }
         SelfDestruct.Destroy(enemy.gameObject);
 
     }

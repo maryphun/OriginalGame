@@ -113,7 +113,7 @@ MonoBehaviour:
   itemDropList:
   - {fileID: 6456358585776252309, guid: 30e1719da1238134b8c47e6b469de4a4, type: 3}
   - {fileID: 2032507886197601345, guid: c295ea0cd75d1e348a6ea91dbf2079f4, type: 3}
-  itemDropNum: 0
+  itemDropNum: 2
 --- !u!65 &2590907147602895850
 BoxCollider:
   m_ObjectHideFlags: 0

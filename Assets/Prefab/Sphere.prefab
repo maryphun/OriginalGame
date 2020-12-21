@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 44912619367461036}
   - component: {fileID: 3745726738857811330}
   - component: {fileID: 8345295996144692664}
-  - component: {fileID: 5440214941634057274}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -126,37 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27dab2b02c39e0a4b8fb7146ed5ffd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5440214941634057274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2032507886197601345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 219644c0b6ca15f499663a8b748b15af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
-  projectileEvent:
-    onDetectingBlockableObject:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7781163835438263452, guid: e5942e87ca9659b4a961bb5d1d6763cb,
-            type: 3}
-          m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
-          m_MethodName: DealDamage
-          m_Mode: 6
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-  blockableMask:
-    serializedVersion: 2
-    m_Bits: 512
-  destroyOnDetect: 1
+  onPickUp:
+    m_PersistentCalls:
+      m_Calls: []
+  collider: {fileID: 44912619367461036}

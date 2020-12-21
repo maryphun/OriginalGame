@@ -27,8 +27,8 @@ public class ItemDropEvent : MonoBehaviour
             //Spawn effect
             float forceX = Random.Range(-0.5f, 0.5f);
             float forceZ = Random.Range(-0.2f, 0.2f);
-
-            droppedItem.GetComponent<Rigidbody>().AddForce(new Vector3(forceX, 0.5f, forceZ), ForceMode.Force);
+            
+            droppedItem.GetComponent<Rigidbody>().AddForce(new Vector3(forceX, 1f, forceZ), ForceMode.Force);
         }
     }
 
