@@ -51,6 +51,7 @@ public class MainMenuFront : MonoBehaviour
     public void doOption()
     {
         if (backmenu.isStarted) return;
+        OptionManager.Instance().OpenMenu();
     }
 
     private IEnumerator ChangeScene(string scene, float time)

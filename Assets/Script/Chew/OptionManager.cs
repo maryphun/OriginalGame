@@ -11,7 +11,7 @@ enum WindowMode
     Windowed
 };
 
-public class OptionManager : MonoBehaviour
+public class OptionManager : Singleton<OptionManager>
 {
     private List<GameObject> pauseObjects;
     private Debuginput input;
@@ -31,10 +31,6 @@ public class OptionManager : MonoBehaviour
 
     private FullScreenMode currentWindowMode;
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
     // Start is called before the first frame update
     void Start()
     {
@@ -96,6 +92,10 @@ public class OptionManager : MonoBehaviour
         foreach (GameObject obj in pauseObjects)
         {
             obj.SetActive(false);
+        }
+        if (Time.timeScale == 0)
+        {
+            Time.timeScale = 1;
         }
     }
 

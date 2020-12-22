@@ -318,6 +318,11 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
+    public void Heal(int value)
+    {
+        hpbar.ChangeHp(value);
+    }
+
     public void TakeDamage(int value, Transform source)
     {
         if (IsDeath() || IsImmumeTarget(source)) return;

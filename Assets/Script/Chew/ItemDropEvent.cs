@@ -25,10 +25,10 @@ public class ItemDropEvent : MonoBehaviour
             int itemIdx = Random.Range(0, itemDropList.Length);
             GameObject droppedItem = Instantiate(itemDropList[itemIdx], transform.position, transform.rotation);
             //Spawn effect
-            float forceX = Random.Range(-0.5f, 0.5f);
-            float forceZ = Random.Range(-0.2f, 0.2f);
+            float forceX = Random.Range(-5f, 5f);
+            float forceZ = Random.Range(-5f, 5f);
             
-            droppedItem.GetComponent<Rigidbody>().AddForce(new Vector3(forceX, 1f, forceZ), ForceMode.Force);
+            droppedItem.GetComponent<Rigidbody>().AddForce(new Vector3(forceX, 3f, forceZ), ForceMode.VelocityChange);
         }
     }
 

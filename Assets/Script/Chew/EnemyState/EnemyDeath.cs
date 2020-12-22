@@ -14,7 +14,8 @@ public class EnemyDeath : IState<Enemy>
         deathTime = Time.time;
         hpBar = enemy.GetComponent<EnemyHitPoint>();
         dropableItem = enemy.GetComponent<ItemDropEvent>();
-        
+        enemy.Anim.SetFloat("Speed", 0);
+        enemy.Anim.Play("Death", 0, 0.0f);
     }
 
     // Update is called once per frame
@@ -23,7 +24,7 @@ public class EnemyDeath : IState<Enemy>
         enemy.isDying = true;
         if(enemy.isDying && Time.time >= (deathTime + hpBar.HpBarDisplayTime + hpBarFadeOutTime))
         {
-            Exit(enemy);
+           Exit(enemy);
         }
     }
 
