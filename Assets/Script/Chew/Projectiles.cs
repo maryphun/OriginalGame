@@ -1,33 +1,43 @@
-﻿using System.Collections;
+﻿using MyBox;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using MyBox;
 
 
-[System.Serializable]
-public struct ProjectileEvent
-{
-    public UnityEvent onDetectingBlockableObject;
+//[System.Serializable]
+//public struct ProjectileEvent
+//{
+//    public UnityEvent onDetectingBlockableObject;
 
-}
+//}
 
 [RequireTag("Bullet")]
 public class Projectiles : MonoBehaviour
 {
-
-    public float speed;
-    public ProjectileEvent projectileEvent;
-    public LayerMask blockableMask;
-    public bool destroyOnDetect;
+    //public ProjectileEvent projectileEvent;
+    //public LayerMask blockableMask;
+    //public bool destroyOnDetect;
     private ParticleSystem particleSystem;
     public GameObject muzzlePrefab; //asset effect
     public GameObject hitPrefab;    //asset effect
     public List<GameObject> trails; //asset effect
-    public float projectileDamage = 1;
-    [Tag] public string originTag;
+    private Transform target;
+    private Transform owner;
+
 
     private bool collided;
+
+    public void Initialization(Transform ownerTransform)
+    {
+        owner = ownerTransform;
+        target = null;
+
+    }
+
+    public Transform IsCollidedWithTarget()
+    {
+        return target;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -40,7 +50,9 @@ public class Projectiles : MonoBehaviour
             muzzleVFX.transform.forward = gameObject.transform.forward;
             var ps = muzzleVFX.GetComponent<ParticleSystem>();
             if (ps != null)
+            {
                 Destroy(muzzleVFX, ps.main.duration);
+            }
             else
             {
                 var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
@@ -57,102 +69,82 @@ public class Projectiles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MoveWithWallCheck();
-        if (DetectObject())
-        {
-            projectileEvent.onDetectingBlockableObject.Invoke();
-        }
-
+       
     }
 
-    private void MoveWithWallCheck()
-    {
-        RaycastHit hit;
-        LayerMask wallMask = LayerMask.GetMask("Wall");
+    //public bool DetectObject()
+    //{
+    //    RaycastHit hit;
+    //    if (Physics.Raycast(transform.position, transform.forward, out hit, speed * Time.deltaTime, blockableMask))
+    //    {
+    //        if (destroyOnDetect)
+    //        {
+    //            Debug.Log("Object Detected");
 
-        //if (Physics.Raycast(transform.position, transform.forward, out hit, speed * Time.deltaTime, wallMask))
-        //{
-        //    particleSystem.enableEmission = false;
-            
-        //    Debug.Log("Wall Detected");
-        //    Destroy(gameObject, 2f);
-        //    return;
-        //}
-        transform.position += transform.forward * speed * Time.deltaTime;
-    }
-
-    public bool DetectObject()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, speed * Time.deltaTime, blockableMask))
-        {
-            if (destroyOnDetect)
-            {
-                Debug.Log("Object Detected");
-
-                Destroy(gameObject);
-            }
-            return true;
-        }
-        return false;
-    }
+    //            Destroy(gameObject);
+    //        }
+    //        return true;
+    //    }
+    //    return false;
+    //}
 
     void OnTriggerEnter(Collider co)
     {
-        //if (co.gameObject.tag == "Bullet" || co.gameObject.tag == "Enemy")
-        //{
-        //    //do nothing
-        //    return;
-        //}
-        //if (co.gameObject.tag != "Bullet" && !collided)
-        //{
-        //    collided = true;
+        if (co.gameObject.tag == "Bullet" || co.gameObject.tag == owner.tag)
+        {
+            //do nothing
+            return;
+        }
+        if (co.gameObject.tag != "Bullet" && !collided)
+        {
+            collided = true;
+            GetComponent<Rigidbody>().isKinematic = true;
+            target = co.transform;
 
-        //    //stop trails effect
-        //    if (trails.Count > 0)
-        //    {
-        //        for (int i = 0; i < trails.Count; i++)
-        //        {
-        //            trails[i].transform.parent = null;
-        //            var ps = trails[i].GetComponent<ParticleSystem>();
-        //            if (ps != null)
-        //            {
-        //                ps.Stop();
-        //                Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
-        //            }
-        //        }
-        //    }
 
-        //    speed = 0;
-        //    GetComponent<Rigidbody>().isKinematic = true;
+            //stop trails effect
+            if (trails.Count > 0)
+            {
+                for (int i = 0; i < trails.Count; i++)
+                {
+                    trails[i].transform.parent = null;
+                    var ps = trails[i].GetComponent<ParticleSystem>();
+                    if (ps != null)
+                    {
+                        ps.Stop();
+                        Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
+                    }
+                }
+            }
 
-        //    // play hit effect
-        //    if (hitPrefab != null)
-        //    {
-        //        var hitVFX = Instantiate(hitPrefab, co.ClosestPointOnBounds(transform.position), transform.rotation) as GameObject;
 
-        //        var ps = hitVFX.GetComponent<ParticleSystem>();
-        //        if (ps == null)
-        //        {
-        //            var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
-        //            Destroy(hitVFX, psChild.main.duration);
-        //        }
-        //        else
-        //        {
-        //            Destroy(hitVFX, ps.main.duration);
-        //        }
-        //    }
-        //    StartCoroutine(DestroyParticle(0f));
+            // play hit effect
+            if (hitPrefab != null)
+            {
+                var hitVFX = Instantiate(hitPrefab, co.ClosestPointOnBounds(transform.position), transform.rotation) as GameObject;
 
-        //    if (co.gameObject.tag == "Player")
-        //    {
-        //        co.gameObject.GetComponent<PlayerController>().TakeDamage(1, transform);
-        //    }
+                var ps = hitVFX.GetComponent<ParticleSystem>();
+                if (ps == null)
+                {
+                    var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+                    Destroy(hitVFX, psChild.main.duration);
+                }
+                else
+                {
+                    Destroy(hitVFX, ps.main.duration);
+                }
+            }
+            if (target.GetComponent<PlayerController>() != null)
+            {
+                target.GetComponent<PlayerController>().TakeDamage(1, owner);
+            }
+            StartCoroutine(DestroySelf(0f));
 
-        //}
+
+        }
     }
 
-    public IEnumerator DestroyParticle(float waitTime)
+    public IEnumerator DestroySelf(float waitTime)
     {
 
         if (transform.childCount > 0 && waitTime != 0)

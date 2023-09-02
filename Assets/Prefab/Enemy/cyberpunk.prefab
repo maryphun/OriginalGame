@@ -58,26 +58,31 @@ MonoBehaviour:
     visionRadius: 5
     visionAngle: 60
     stunTime: 2
+    escapeAfterAttack: 0
     escapeRange: 0
     attackType: 0
     attackAngle: 60
     attackRadiusOfArea: 2
+    indicatorTime: 0
+    aoeIndicator: {fileID: 0}
+    indicatorEffect: {fileID: 0}
     projectiles: {fileID: 0}
+    projectileProperties:
+      speed: 0
+      spawnNum: 0
+      angle: 0
+      delay: 0
+    followTarget: 0
+  projectileMng: {fileID: 0}
   canAttack: 0
   canMove: 0
   isDeath: 0
   isDying: 0
   forceAttack: 0
-  enemyEvent:
-    onDetectingPlayer:
-      m_PersistentCalls:
-        m_Calls: []
-    onMoving:
-      m_PersistentCalls:
-        m_Calls: []
-    onTriggerEnter:
-      m_PersistentCalls:
-        m_Calls: []
+  isStun: 0
+  isAttacking: 0
+  isSpawningProjectile: 0
+  aoeAimPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &5058491890467669056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hpbar: {fileID: 7234720166968363483, guid: c7d910599cab3ae498941bb276a53916, type: 3}
   hpBarRoot: {fileID: 3604940037967622764}
-  enemyName: Siew bin king
+  enemyName: Bandit
   hpBarColor:
     serializedVersion: 2
     key0: {r: 0.509434, g: 0, b: 0, a: 1}

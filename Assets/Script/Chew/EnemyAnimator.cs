@@ -40,9 +40,9 @@ public class EnemyAnimator : MonoBehaviour
         enemyScript.transform.DOMove(enemyScript.transform.position + (enemyScript.transform.forward * dist), 0.1f, false);
     }
 
-    public void SpawnProjectile()
+    public void SpawnProjectile(float speed)
     {
-
-        enemyScript.SpawnProjectile();
+        StartCoroutine(enemyScript.SpawnProjectile());
     }
+
 }

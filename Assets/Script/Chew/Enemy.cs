@@ -9,6 +9,7 @@ using MyBox;
 [RequireTag("Enemy")]
 [RequireLayer("Enemy")]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(BoxCollider))]
 public class Enemy : MonoBehaviour
 {
     //debugging parameter
@@ -24,16 +25,21 @@ public class Enemy : MonoBehaviour
     private ItemDropEvent dropableItem;
     private Animator anim;
     private float maxHealth;
-    private Vector3 aoeAimPoint;
 
+    [HideInInspector] public ProjectileManager projectileMng;
     [HideInInspector] public bool canAttack;
     [HideInInspector] public bool canMove;
     [HideInInspector] public bool isDeath;
     [HideInInspector] public bool isDying;
     [HideInInspector] public bool forceAttack;
     [HideInInspector] public bool isStun;
+    [HideInInspector] public bool isAttacking;
+    [HideInInspector] public bool isSpawningProjectile;
+
     public EnemyEvent enemyEvent;
-    const float wallHitDistance = 0.5f;
+    public Vector3 aoeAimPoint;
+
+    const float wallHitDistance = 0.8f;
 
 
     private void Awake()
@@ -48,6 +54,7 @@ public class Enemy : MonoBehaviour
         collider = GetComponent<Collider>();
         enemyRigidbody = GetComponent<Rigidbody>();
         targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        projectileMng = GameObject.FindGameObjectWithTag("Manager").GetComponentInChildren<ProjectileManager>();
 
         stateMachine = new StateMachine<Enemy>();
         stateMachine.Setup(this, new EnemyMovement());
@@ -89,7 +96,7 @@ public class Enemy : MonoBehaviour
         {
             lastState = stateMachine.GetLastState.ToString();
         }
-        currentState = stateMachine.GetCurrentState.ToString();     
+        currentState = stateMachine.GetCurrentState.ToString();
     }
 
     public EnemyStat EnemyStat
@@ -147,26 +154,6 @@ public class Enemy : MonoBehaviour
         return Vector3.Distance(transform.position, targetPlayer.transform.position);
     }
 
-    public bool CheckWallHit(float maxDistance, bool reverseDir = false)
-    {
-        LayerMask wallMask = LayerMask.GetMask("Wall");
-        RaycastHit wallRayHit = new RaycastHit();
-        Ray forwardRay;
-        if (reverseDir)
-        {
-            forwardRay = new Ray(transform.position + Vector3.up, -transform.forward);
-        }
-        else
-        {
-            forwardRay = new Ray(transform.position + Vector3.up, transform.forward);
-        }
-        if (Physics.Raycast(forwardRay, out wallRayHit, maxDistance, wallMask))
-        {
-            Debug.Log("Wall hit");
-            return true;
-        }
-        return false;
-    }
     public bool CheckWallHit(float maxDistance,out RaycastHit wallRayHit, bool reverseDir = false)
     {
         LayerMask wallMask = LayerMask.GetMask("Wall");
@@ -179,23 +166,15 @@ public class Enemy : MonoBehaviour
         {
             forwardRay = new Ray(transform.position + Vector3.up, transform.forward);
         }
+        Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.red,3f);
         if (Physics.Raycast(forwardRay, out wallRayHit, maxDistance, wallMask))
         {
+            Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green,3f);
+
             Debug.Log("Wall hit");
             return true;
         }
         return false;
-    }
-
-    public void MoveAwayFromPlayer()
-    {
-        Vector3 direction = -(TargetPlayer.transform.position - transform.position).normalized;
-      
-        transform.position = new Vector3(transform.position.x + (direction.x * EnemyStat.movementSpeed) * Time.deltaTime,
-                         transform.position.y, transform.position.z + (direction.z * EnemyStat.movementSpeed) * Time.deltaTime);
-
-
-        Anim.SetFloat("Speed",EnemyStat.movementSpeed);
     }
 
     public void ChangeState(IState<Enemy> state)
@@ -232,48 +211,40 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public IEnumerator AoeAttack(float waitTime = 0.5f)
-    {
-        if (enemyStat.attackType != AttackType.AreaMelee && enemyStat.attackType != AttackType.AreaRanged)
-        {
-            yield break; 
-        }
-        if (CheckPlayerDistance() < enemyStat.attackRange)
-        {
-            aoeAimPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * CheckPlayerDistance());
-        }
-        else
-        {
-            aoeAimPoint = transform.position + ((targetPlayer.transform.position - transform.position).normalized * enemyStat.attackRange);
-        }
-        aoeAimPoint.y = 0.1f;
-        var aoe = Instantiate(enemyStat.aoeIndicator, aoeAimPoint, enemyStat.aoeIndicator.transform.rotation) as GameObject;
-        //radius of effect is set to 0.5f as default 
-        aoe.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
-        //wait the aoe circle to reach its maximum size before the effect occur
-        Destroy(aoe, enemyStat.indicatorTime + waitTime);
-        yield return new WaitForSeconds(waitTime);
-        var aoeEffect = Instantiate(enemyStat.indicatorEffect, aoeAimPoint, enemyStat.indicatorEffect.transform.rotation) as GameObject;
-        aoeEffect.transform.localScale *= (enemyStat.attackRadiusOfArea * 2);
-        Destroy(aoeEffect, enemyStat.indicatorTime);
-        yield return new WaitForSeconds(enemyStat.indicatorTime);
-        DealDamage();
-    }
-
-    public void SpawnProjectile()
+    public IEnumerator SpawnProjectile()
     {
         if (enemyStat.projectiles)
         {
-            var proj = Instantiate(enemyStat.projectiles, transform.position + Vector3.up  + transform.forward, transform.rotation);
-            proj.originTag = gameObject.tag;
+            float spawnCnt = 0;
+            Vector3 enemyForward = transform.forward;
+            isSpawningProjectile = true;
+            while (spawnCnt < enemyStat.projectileProperties.spawnNum)
+            {
+                Vector3 direction;
+                if (enemyStat.projectileProperties.delay == 0f)
+                {
+                    //releasing all projectile at once
+                    direction = (Quaternion.AngleAxis((spawnCnt * enemyStat.projectileProperties.angle / enemyStat.projectileProperties.spawnNum) - (enemyStat.projectileProperties.angle / 2), Vector3.up) * enemyForward);
+                }
+                else
+                {
+                    //releasing as spiral by delaying timing
+                    direction = Quaternion.AngleAxis(spawnCnt * enemyStat.projectileProperties.angle / enemyStat.projectileProperties.spawnNum,Vector3.up) * enemyForward;
+                }
+                var projStartPoint = transform.position + (Vector3.up / 2);
+                projectileMng.InitiateProjectileWithDirection(transform, enemyStat.projectiles.transform, projStartPoint, direction, enemyStat.projectileProperties.speed, Mathf.Infinity, null);
+                spawnCnt++;
+                yield return new WaitForSeconds(enemyStat.projectileProperties.delay);
+            }
         }
-        else
-        {
-            Debug.LogWarning("Projectile not found");
-        }
+        isSpawningProjectile = false;
+   
     }
 
+    private void Golem()
+    {
 
+    }
 
     public void DealDamage()
     {
@@ -281,19 +252,16 @@ public class Enemy : MonoBehaviour
         switch(enemyStat.attackType)
         {
             case AttackType.Melee:
-                Debug.Log("Attack");    
-                if (AttackObjectInVision(EnemyStat.attackAngle / 2, EnemyStat.attackRange))
-                {
-                    Debug.Log("AttackNobug");
-
-                    targetPlayer.GetComponent<PlayerController>().TakeDamage(1, transform);
-                }
+                ret = CheckTargetInRange(EnemyStat.attackAngle / 2, EnemyStat.attackRange);
                 break;
             case AttackType.AreaRanged:
                 ret = CheckTargetInRange(360, enemyStat.attackRadiusOfArea, aoeAimPoint);
                 break;
             case AttackType.AreaMelee:
                 ret = CheckTargetInRange(360, enemyStat.attackRadiusOfArea);
+                break;
+            case AttackType.Golem:
+                //ret = CheckTargetInRange()
                 break;
         }
         if (ret)
@@ -302,7 +270,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.1f)
+    public void FaceDirection(Vector3 towards,bool reverse = false, float smoothtime = 0.5f)
     {
         if (reverse)
         {

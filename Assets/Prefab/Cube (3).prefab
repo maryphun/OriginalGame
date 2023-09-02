@@ -125,3 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27dab2b02c39e0a4b8fb7146ed5ffd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onPickUp:
+    m_PersistentCalls:
+      m_Calls: []
+  collider: {fileID: 1233077244811434775}

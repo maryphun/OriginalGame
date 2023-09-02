@@ -32,9 +32,9 @@ public class ProjectileManager : MonoBehaviour
         StartCoroutine(ProjectileFollow(projectile, startPoint, followTarget, followTime, time, returnCallBack));
     }
 
-    public void InitiateProjectileWithDirection(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float lastingtime, CustomDelegate returnCallBack)
+    public void InitiateProjectileWithDirection(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float speed, float lastingtime, CustomDelegate returnCallBack)
     {
-        StartCoroutine(ProjectilePlain(owner, projectile, startPoint, directionVector, lastingtime, returnCallBack));
+        StartCoroutine(ProjectilePlain(owner, projectile, startPoint, directionVector, speed, lastingtime, returnCallBack));
     }
 
     private IEnumerator ProjectileLoop(Transform owner, Transform projectile, Vector3 startPoint, Vector3 endPoint, float time, CustomDelegate returnCallBack)
@@ -143,20 +143,34 @@ public class ProjectileManager : MonoBehaviour
         }
     }
 
-    private IEnumerator ProjectilePlain(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float lastingTime, CustomDelegate returnCallBack)
+    private IEnumerator ProjectilePlain(Transform owner, Transform projectile, Vector3 startPoint, Vector3 directionVector, float speed, float lastingTime, CustomDelegate returnCallBack)
     {
         var proj = Instantiate(projectile, startPoint, Quaternion.identity);
-        var script = proj.gameObject.AddComponent<MaryProjectile>();
-        script.Initialization("Player");
+        //var script = proj.gameObject.AddComponent<MaryProjectile>();
+        var script = proj.gameObject.GetComponent<Projectiles>();
+        script.Initialization(owner);
         float timeElapsed = 0.0f;
 
         proj.LookAt(proj.position + directionVector);
 
         while (timeElapsed < lastingTime)
         {
+            if (proj == null)
+            {
+                break;
+            }
             timeElapsed += Time.deltaTime;
 
-            proj.DOMove(proj.position + directionVector.normalized, Time.deltaTime, false);
+            proj.DOMove(proj.position + directionVector.normalized * speed * Time.deltaTime, Time.deltaTime, false);
+
+            RaycastHit hit;
+            LayerMask wallMask = LayerMask.GetMask("Wall");
+            if (Physics.Raycast(proj.position, directionVector, out hit, speed * Time.deltaTime, wallMask))
+            {
+
+                Debug.Log("Wall Detected");
+                //DestroyProjectile(proj);
+            }
 
             Transform target = script.IsCollidedWithTarget();
             if (target != null)
@@ -164,7 +178,12 @@ public class ProjectileManager : MonoBehaviour
                 // collided
                 if (target.GetComponent<PlayerController>() != null)
                 {
-                    target.GetComponent<PlayerController>().TakeDamage(1, owner);
+                   // DestroyProjectile(proj);
+                    if (returnCallBack != null)
+                    {
+                        returnCallBack();
+                    }
+                   // target.GetComponent<PlayerController>().TakeDamage(1, owner);
                 }
             }
 
@@ -172,7 +191,11 @@ public class ProjectileManager : MonoBehaviour
         }
 
         // Destroy the projectile
-        DestroyProjectile(proj);
+        if (script)
+        {
+            StartCoroutine(script.DestroySelf(0f));
+        }
+        //DestroyProjectile(proj);
         if (returnCallBack != null)
         {
             returnCallBack();

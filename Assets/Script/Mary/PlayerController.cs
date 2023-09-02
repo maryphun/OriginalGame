@@ -74,9 +74,27 @@ public class PlayerController : MonoBehaviour
         input.Disable();
     }
 
+    public void SetInputAction(bool enable)
+    {
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if(OptionManager.isPaused)
+        {
+            if(input.asset.enabled)
+            {
+                input.Disable();
+            }
+        }
+        else
+        {
+            if(!input.asset.enabled)
+            {
+                input.Enable();
+            }
+        }
         if (IsDeath()) return;
 
         // read input
@@ -298,6 +316,11 @@ public class PlayerController : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void Heal(int value)
+    {
+        hpbar.ChangeHp(value);
     }
 
     public void TakeDamage(int value, Transform source)

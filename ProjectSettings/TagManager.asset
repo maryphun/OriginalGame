@@ -9,6 +9,8 @@ TagManager:
   - Hpbar
   - Enemy
   - MainCanvas
+  - Bullet
+  - Manager
   layers:
   - Default
   - TransparentFX
@@ -21,7 +23,7 @@ TagManager:
   - Wall
   - Player
   - Enemy
-  - 
+  - Item
   - 
   - 
   - 

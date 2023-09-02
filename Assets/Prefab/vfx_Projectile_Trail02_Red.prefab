@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4420882381839410}
-  - component: {fileID: -461193340541228237}
   - component: {fileID: 65732263249307976}
   - component: {fileID: 54565508062708890}
+  - component: {fileID: 1673529007617329953}
   m_Layer: 0
   m_Name: vfx_Projectile_Trail02_Red
   m_TagString: Bullet
@@ -38,49 +38,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-461193340541228237
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046377441548030}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 219644c0b6ca15f499663a8b748b15af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 10
-  projectileEvent:
-    onDetectingBlockableObject:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7781163835438263452, guid: e5942e87ca9659b4a961bb5d1d6763cb,
-            type: 3}
-          m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
-          m_MethodName: DealDamage
-          m_Mode: 6
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-  blockableMask:
-    serializedVersion: 2
-    m_Bits: 512
-  destroyOnDetect: 0
-  muzzlePrefab: {fileID: 1733671065153278, guid: bbd28345e6e61194e9a4a4cbcfcfe7b9,
-    type: 3}
-  hitPrefab: {fileID: 1182663495075756, guid: 3da99b3918b04c84a8a613311e7bcaeb, type: 3}
-  trails:
-  - {fileID: 1535027785422254}
-  - {fileID: 1625312047117836}
-  - {fileID: 1963513821895232}
-  projectileDamage: 1
-  originTag: Enemy
 --- !u!65 &65732263249307976
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -110,6 +67,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1673529007617329953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046377441548030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 219644c0b6ca15f499663a8b748b15af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  muzzlePrefab: {fileID: 1733671065153278, guid: bbd28345e6e61194e9a4a4cbcfcfe7b9,
+    type: 3}
+  hitPrefab: {fileID: 1182663495075756, guid: 3da99b3918b04c84a8a613311e7bcaeb, type: 3}
+  trails:
+  - {fileID: 1535027785422254}
+  - {fileID: 1625312047117836}
+  - {fileID: 1963513821895232}
+  originTag: 
 --- !u!1 &1272700694990398
 GameObject:
   m_ObjectHideFlags: 0

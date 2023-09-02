@@ -10,8 +10,18 @@ public enum AttackType
     Melee,
     Ranged,
     AreaMelee,
-    AreaRanged
+    AreaRanged,
+    Golem
 };
+
+[System.Serializable]
+public struct ProjectileProperties
+{
+    public float speed;
+    public float spawnNum;
+    public float angle;
+    public float delay;
+}
 
 [System.Serializable]
 public class EnemyStat
@@ -23,6 +33,7 @@ public class EnemyStat
     [PositiveValueOnly] public float visionRadius;
     [PositiveValueOnly] public float visionAngle;
     [PositiveValueOnly] public float stunTime;
+    public bool escapeAfterAttack;
     [PositiveValueOnly] public float escapeRange; //distance required to run away from player
 
     public AttackType attackType;
@@ -34,16 +45,16 @@ public class EnemyStat
     public float attackRadiusOfArea,indicatorTime;
     [ConditionalField(nameof(attackType), false, AttackType.AreaMelee, AttackType.AreaRanged)]
     public GameObject aoeIndicator,indicatorEffect;
+    [ConditionalField(nameof(attackType), false, AttackType.Ranged,AttackType.AreaRanged)]
+    public GameObject projectiles;
     [ConditionalField(nameof(attackType), false, AttackType.Ranged)]
-    [PositiveValueOnly]
-    public Projectiles projectiles;
+    public ProjectileProperties projectileProperties;
+    [ConditionalField(nameof(attackType), false, AttackType.Ranged, AttackType.AreaRanged)]
+    public bool followTarget;
 }
 
 [System.Serializable]
 public struct EnemyEvent
 {
-    public UnityEvent onDetectingPlayer;
-    public UnityEvent onMoving;
-    public UnityEvent onTriggerEnter;
 }
 

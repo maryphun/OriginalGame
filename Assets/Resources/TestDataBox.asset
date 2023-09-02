@@ -36,6 +36,6 @@ MonoBehaviour:
   googleSheetUrl: 
   googleWorksheets: []
   serializer: 0
-  errors: 0
+  errors: 3
   cloudWarnings: 0
   cloudCheck: 0

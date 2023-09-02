@@ -43,3 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27537375c88a9954bb81c54b25b0bc5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugModeEnabled: 0
+  projectileorigin: {fileID: 0}
+  player: {fileID: 0}
+  interval: 3
+  reachTime: 0.2
+  followPlayer: 1
+  _followTime: 0.5

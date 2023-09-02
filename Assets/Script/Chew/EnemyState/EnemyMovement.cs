@@ -10,28 +10,27 @@ public class EnemyMovement : IState<Enemy>
     {
         direction = (enemy.TargetPlayer.transform.position - enemy.transform.position).normalized;
     }
-    
 
     // Update is called once per frame
     public void Execute(Enemy enemy)
     {
         Vector3 targetPos = enemy.TargetPlayer.transform.position;
         Vector3 tmpDir = (targetPos - enemy.transform.position).normalized;
+        RaycastHit raycastHit;
 
         float offset = enemy.EnemyStat.attackRange;
 
         if (enemy.CheckPlayerDistance() < enemy.EnemyStat.escapeRange)
         {
             enemy.FaceDirection(enemy.TargetPlayer.transform.position,true);
-
-            if (enemy.CheckWallHit(enemy.GetWallHitDistance))
+            if (enemy.CheckWallHit(3f,out raycastHit) || enemy.CheckWallHit(3f, out raycastHit,true))
             {
                 enemy.forceAttack = true;
                 enemy.ChangeState(new EnemyAttack());
             }
             else
             {
-               enemy.MoveAwayFromPlayer();
+                enemy.ChangeState(new EnemyEscape());
             }
 
         }
